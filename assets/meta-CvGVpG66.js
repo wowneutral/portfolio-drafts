@@ -1,0 +1,1 @@
+var e={slug:`letters`,n:2,name:`The letters`,color:`#e7e2d6`,ink:`#14110d`,kind:`3D playground`,text:`ARMAAN SETH stands on a paper sweep as ten heavy black letters: push one down and it gets back up, and the camera walks along the name as you scroll.`};export{e as default};

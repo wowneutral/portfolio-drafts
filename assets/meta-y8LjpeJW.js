@@ -1,0 +1,1 @@
+var e={slug:`gloss`,n:10,name:`The gloss`,color:`#efe6d2`,ink:`#1d1812`,kind:`Idea interface`,text:`His page set like an early manuscript leaf: red initials draw themselves as you scroll, small glosses between the lines rise and redden as your pointer passes over the words, and his daily notes are leaves you turn back through.`};export{e as default};

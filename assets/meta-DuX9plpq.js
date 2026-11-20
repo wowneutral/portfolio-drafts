@@ -1,0 +1,1 @@
+var e={slug:`propositions`,n:7,name:`The propositions`,color:`#fafaf8`,ink:`#0f0f0f`,kind:`Idea interface`,text:`The site is written as numbered propositions, 1 to 7: open any number to unfold the remarks beneath it, the way the Tractatus is built.`};export{e as default};

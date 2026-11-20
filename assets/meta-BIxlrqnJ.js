@@ -1,0 +1,1 @@
+var e={slug:`ladder`,n:3,name:`The ladder`,color:`#f2f0ea`,ink:`#161614`,kind:`Idea interface`,text:`The page is the ladder from his paper: an ochre ladder runs the whole page with one rung per part of his life, you climb it by scrolling or pressing a rung, and at the top you throw it away.`};export{e as default};

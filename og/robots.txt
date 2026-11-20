@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://armaanseth.pages.dev/sitemap.xml
