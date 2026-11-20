@@ -1,0 +1,3 @@
+import type { Version } from '@/content';
+const meta: Version = { slug: 'arch', n: 26, name: 'The arch', color: '#edebe6', ink: '#151515', kind: '3D playground', text: 'A white plaster arch holds the page up, his name cut in the rose keystone: pull the keystone and every stone falls, put it back and they spring home, while the scroll walks the camera from stone to stone and under the arch.' };
+export default meta;
