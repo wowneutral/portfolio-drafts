@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'fizz', n: 25, name: 'The fizz', color: '#eef2f0', ink: '#0f1615', kind: 'Live data',
+  text: 'A tall glass of sparkling water where every stream of bubbles is one of his commits: tap it for a burst, drag it to slosh, and scroll to sink to the base, where the two championships fizz, then ride the bubbles back up through his work.',
+};
+export default meta;
