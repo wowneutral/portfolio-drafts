@@ -1,0 +1,3 @@
+import type { Version } from '@/content';
+const meta: Version = { slug: 'glass', n: 14, name: 'The glass', color: '#e8e9e6', ink: '#0f1112', kind: '3D playground', text: 'A heavy glass question mark rests on his page like a paperweight: it follows you down from heading to heading, and you can drag or throw it over any words or screenshots to look closer.' };
+export default meta;
