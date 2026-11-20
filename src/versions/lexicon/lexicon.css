@@ -1,0 +1,429 @@
+html[data-v='lexicon'] { background: #f8f6f0; }
+
+.v-lexicon {
+  --paper: #f8f6f0;
+  --ink: #131313;
+  --blue: #1f3f93;
+  --dim: #5f5b52;
+  --rule: #d8d3c6;
+  --m: clamp(110px, 15vw, 240px);
+  --col: 720px;
+  --sn: 2.6rem;
+  --spring: cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'EB Garamond Variable', Garamond, serif;
+  font-size: 19px;
+  font-weight: 440;
+  line-height: 1.55;
+  font-kerning: normal;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  min-height: 100vh;
+}
+.v-lexicon ::selection { background: var(--blue); color: var(--paper); }
+.v-lexicon a { color: inherit; }
+.v-lexicon :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 2px; }
+.v-lexicon p, .v-lexicon h1, .v-lexicon h2, .v-lexicon h3, .v-lexicon ol, .v-lexicon ul, .v-lexicon figure, .v-lexicon blockquote { margin: 0; }
+.v-lexicon ol, .v-lexicon ul { list-style: none; padding: 0; }
+.v-lexicon b, .v-lexicon .b { font-weight: 620; }
+
+/* Small capitals, built by hand (the face ships without smcp). */
+.v-lexicon .sc { text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.085em; font-weight: 540; font-style: normal; font-variant-numeric: lining-nums; }
+
+/* ---------- Page frame ---------- */
+.v-lexicon .book,
+.v-lexicon .colophon {
+  width: min(calc(var(--m) + var(--col)), calc(100vw - 250px));
+  margin-left: max(40px, calc((100vw - 190px - var(--m) - var(--col)) / 2));
+}
+
+/* ---------- Title page ---------- */
+.v-lexicon .title {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 0 56px;
+}
+.v-lexicon .t-over { color: var(--dim); }
+.v-lexicon .t-name {
+  font-size: clamp(64px, 14.4vw, 224px);
+  font-weight: 480;
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: -0.028em;
+  margin: 0.2em 0 0.12em -0.045em;
+}
+.v-lexicon .t-line {
+  font-style: italic;
+  font-size: clamp(22px, 2.15vw, 31px);
+  line-height: 1.3;
+  max-width: 36em;
+  padding-top: 0.6em;
+  border-top: 1px solid var(--ink);
+}
+.v-lexicon .t-short { margin-top: 18px; color: var(--dim); word-spacing: 0.4em; }
+.v-lexicon .t-spec { margin-top: clamp(24px, 4vh, 44px); max-width: 44em; font-size: 22px; line-height: 1.5; }
+.v-lexicon .t-hw { font-family: 'Schibsted Grotesk Variable', sans-serif; font-weight: 800; font-size: 1.12em; letter-spacing: -0.02em; color: var(--blue); text-decoration: none; }
+.v-lexicon .t-hw:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.v-lexicon .t-pos { color: var(--dim); }
+.v-lexicon .t-n { font-weight: 700; font-variant-numeric: lining-nums; margin-right: 2px; }
+.v-lexicon .t-spec .xref { padding: 0 1px; }
+.v-lexicon .t-list { margin-top: clamp(24px, 4vh, 44px); padding-top: 14px; border-top: 1px solid var(--rule); }
+.v-lexicon .t-list ol { columns: 5; column-gap: 28px; }
+.v-lexicon .t-list li { break-inside: avoid; }
+.v-lexicon .t-list a {
+  display: inline-block;
+  min-height: 38px;
+  padding: 4px 0;
+  font-family: 'Schibsted Grotesk Variable', sans-serif;
+  font-weight: 760;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--blue);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 calc(100% - 5px) / 0 1.5px no-repeat;
+  transition: background-size 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.v-lexicon .t-list a:hover, .v-lexicon .t-list a:focus-visible { background-size: 100% 1.5px; }
+
+/* ---------- Entries ---------- */
+.v-lexicon .entry {
+  display: grid;
+  grid-template-columns: var(--m) minmax(0, 1fr);
+  padding-top: clamp(96px, 13vh, 150px);
+}
+.v-lexicon .hw-row, .v-lexicon .body { grid-column: 2; }
+.v-lexicon .hw {
+  font-family: 'Schibsted Grotesk Variable', sans-serif;
+  font-weight: 800;
+  font-size: clamp(36px, 3.4vw, 50px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--blue);
+  transform: translateX(0);
+  transition: transform 0.9s var(--spring);
+}
+.v-lexicon .hw .pos {
+  font-family: 'EB Garamond Variable', Garamond, serif;
+  font-style: italic;
+  font-weight: 420;
+  font-size: 0.5em;
+  letter-spacing: 0;
+  color: var(--dim);
+  white-space: nowrap;
+}
+/* The one moving type: the headword you are reading hangs out into the margin by its own indent. */
+.v-lexicon .entry.is-on .hw { transform: translateX(calc(-1 * var(--m))); }
+.v-lexicon .usage { margin-top: 12px; font-style: italic; font-size: 21px; color: var(--dim); }
+
+.v-lexicon .senses { margin-top: 30px; }
+.v-lexicon .sense { display: grid; grid-template-columns: var(--sn) minmax(0, 1fr); margin-top: 16px; }
+.v-lexicon .sense:first-child { margin-top: 0; }
+.v-lexicon .sn { position: relative; font-weight: 640; font-variant-numeric: lining-nums; }
+.v-lexicon .pen { position: absolute; left: -15px; top: -7px; width: 44px; height: 34px; overflow: visible; pointer-events: none; }
+.v-lexicon .pen path { fill: none; stroke: var(--blue); stroke-width: 1.7; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+.v-lexicon .sense[data-arrived] > .sn .pen path { animation: lx-draw 0.9s cubic-bezier(0.3, 0.7, 0.2, 1) 0.55s forwards; }
+@keyframes lx-draw { from { stroke-dashoffset: 1; opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
+.v-lexicon .st { max-width: 36em; }
+.v-lexicon .st > p + p { margin-top: 8px; }
+.v-lexicon .meta { color: var(--dim); }
+
+.v-lexicon .see { margin-top: 26px; color: var(--dim); }
+.v-lexicon .see i { margin-right: 2px; }
+.v-lexicon .xref {
+  display: inline-block;
+  padding: 9px 1px;
+  color: var(--blue);
+  text-transform: uppercase;
+  font-size: 0.8em;
+  letter-spacing: 0.085em;
+  font-weight: 600;
+  font-style: normal;
+  font-variant-numeric: lining-nums;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--blue) 30%, transparent);
+  transition: text-decoration-color 0.25s;
+}
+.v-lexicon .xref:hover, .v-lexicon .xref:focus-visible { text-decoration-color: var(--blue); }
+
+.v-lexicon .out {
+  color: var(--blue);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, var(--blue) 35%, transparent);
+  transition: text-decoration-color 0.25s;
+}
+.v-lexicon .out:hover, .v-lexicon .out:focus-visible { text-decoration-color: var(--blue); }
+.v-lexicon .plain { text-decoration: none; transition: color 0.2s; }
+.v-lexicon .plain:hover, .v-lexicon .plain:focus-visible { color: var(--blue); }
+.v-lexicon .arr { display: inline-block; width: 0.62em; height: 0.62em; margin-left: 4px; vertical-align: 0.05em; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-lexicon a:hover > .arr { transform: translate(2px, -2px); }
+
+/* champion: the loudest entry in the book */
+.v-lexicon .is-big .hw { font-size: clamp(68px, 9.4vw, 140px); letter-spacing: -0.04em; }
+.v-lexicon .is-big .hw .pos { font-size: 0.24em; }
+.v-lexicon .champ { margin-top: 40px; }
+.v-lexicon .champ .sense { --sn: 3.4rem; margin-top: 36px; }
+.v-lexicon .champ .sn { font-size: 30px; line-height: 1.6; }
+.v-lexicon .champ .pen { left: -9px; top: 2px; }
+.v-lexicon .c-event { font-size: clamp(36px, 4.4vw, 62px); line-height: 1.04; font-weight: 500; letter-spacing: -0.018em; }
+.v-lexicon .c-where { margin-top: 12px; font-size: 23px; color: var(--dim); }
+.v-lexicon .champ .st { max-width: none; }
+
+/* build: eight senses, each with its plate */
+.v-lexicon .plates .sense { margin-top: 96px; }
+.v-lexicon .plates .sense:first-child { margin-top: 0; }
+.v-lexicon .plates .sn { font-size: 26px; line-height: 1.25; }
+.v-lexicon .plates .pen { top: -3px; }
+.v-lexicon .w-name { font-size: 30px; line-height: 1.2; font-weight: 600; letter-spacing: -0.01em; }
+.v-lexicon .w-kind { font-weight: 420; font-size: 0.68em; color: var(--dim); margin-left: 6px; letter-spacing: 0; }
+.v-lexicon .w-line { margin-top: 8px; }
+.v-lexicon .w-meta { display: flex; flex-wrap: wrap; gap: 4px 24px; align-items: baseline; margin-top: 10px; color: var(--dim); }
+.v-lexicon .w-meta .out { padding: 8px 0; }
+.v-lexicon .plates .st { max-width: none; }
+.v-lexicon .plates .st > p { max-width: 36em; }
+.v-lexicon .plate {
+  margin-top: 30px;
+  margin-left: calc(-1 * (var(--m) + var(--sn)));
+  width: calc(100% + var(--m) + var(--sn));
+}
+.v-lexicon .plate-f {
+  display: block;
+  background: #fff;
+  padding: 10px;
+  border: 1px solid var(--rule);
+  box-shadow: 0 1px 2px rgba(19, 19, 19, 0.05), 0 22px 44px -30px rgba(19, 19, 40, 0.35);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.v-lexicon a.plate-f:hover, .v-lexicon a.plate-f:focus-visible { transform: translateY(-6px) rotate(-0.25deg); box-shadow: 0 2px 3px rgba(19, 19, 19, 0.05), 0 40px 60px -34px rgba(19, 19, 40, 0.45); }
+.v-lexicon .plate img { display: block; width: 100%; height: auto; }
+.v-lexicon .plate figcaption { margin-top: 12px; font-size: 17px; color: var(--dim); }
+.v-lexicon .plate figcaption .sc { color: var(--ink); margin-right: 8px; }
+
+.v-lexicon .certs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  margin-top: 48px;
+  margin-left: calc(-1 * var(--m));
+}
+.v-lexicon .certs .plate { margin: 0; width: auto; }
+
+.v-lexicon .honours .sense, .v-lexicon .short .sense { margin-top: 8px; }
+.v-lexicon .honours .sc, .v-lexicon .courses .sc { color: var(--dim); margin-left: 6px; }
+.v-lexicon .contact .sense { margin-top: 4px; }
+.v-lexicon .contact .out { display: inline-block; padding: 8px 0; }
+.v-lexicon .lab { display: inline-block; min-width: 8.6em; color: var(--dim); }
+.v-lexicon .val { display: inline-block; padding: 8px 0; }
+
+.v-lexicon .n-event { font-size: 30px; line-height: 1.15; font-weight: 500; }
+.v-lexicon .nexts .sense { margin-top: 22px; }
+.v-lexicon .nexts .sc { margin-top: 6px; color: var(--dim); }
+
+/* note: today is sense 1 */
+.v-lexicon .today .sn { font-size: 26px; line-height: 1.4; }
+.v-lexicon .n-date { color: var(--dim); }
+.v-lexicon .today .n-body { font-size: clamp(25px, 2.5vw, 33px); line-height: 1.3; letter-spacing: -0.006em; margin-top: 10px; max-width: 24em; }
+.v-lexicon .today .n-wait { color: var(--dim); font-style: italic; }
+.v-lexicon .fold { margin-top: 18px; }
+.v-lexicon .notes .fold:nth-child(2) { margin-top: 36px; }
+.v-lexicon .fold .sn { padding-top: 8px; }
+.v-lexicon .fold-b {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 20px;
+  gap: 16px;
+  align-items: baseline;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.v-lexicon .fold-b .sc { color: var(--dim); white-space: nowrap; }
+.v-lexicon .fold-t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-style: italic; }
+.v-lexicon .fold-i { width: 14px; height: 14px; align-self: center; transition: transform 0.4s var(--spring); }
+.v-lexicon .fold-b:hover .fold-t { color: var(--blue); }
+.v-lexicon .is-open .fold-i { transform: rotate(180deg); }
+.v-lexicon .is-open .fold-t { white-space: normal; font-style: normal; display: none; }
+.v-lexicon .fold-p { display: none; }
+.v-lexicon .is-open .fold-p { display: grid; grid-template-rows: 1fr; animation: lx-unfold 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-lexicon .fold-p > div { overflow: hidden; padding-top: 12px; }
+@keyframes lx-unfold { from { grid-template-rows: 0fr; } to { grid-template-rows: 1fr; } }
+
+.v-lexicon .shelves { display: flex; flex-wrap: wrap; gap: 4px 20px; color: var(--dim); }
+
+.v-lexicon .paper .st, .v-lexicon .p-title { max-width: 36em; }
+.v-lexicon .p-title { font-size: clamp(24px, 2.3vw, 31px); line-height: 1.22; font-weight: 500; letter-spacing: -0.01em; }
+.v-lexicon .p-title.w { font-size: 25px; }
+.v-lexicon .paper .meta { margin-top: 12px; }
+.v-lexicon .p-abs { margin-top: 18px !important; }
+.v-lexicon .kw { margin-top: 14px; }
+.v-lexicon .p-links { display: flex; flex-wrap: wrap; gap: 0 28px; margin-top: 8px; }
+.v-lexicon .p-links .out { display: inline-block; padding: 9px 0; }
+
+.v-lexicon .repo { font-weight: 620; }
+.v-lexicon .repos .sense { margin-top: 12px; }
+.v-lexicon .live .sense { margin-top: 14px; }
+.v-lexicon .sk-line { font-size: 24px; line-height: 1.35; }
+
+/* ---------- End matter ---------- */
+.v-lexicon .end { padding: clamp(140px, 22vh, 240px) 0 72px var(--m); }
+.v-lexicon .epi { padding-top: 40px; border-top: 1px solid var(--ink); }
+.v-lexicon .epi p { font-size: clamp(30px, 3.5vw, 50px); line-height: 1.14; font-weight: 450; letter-spacing: -0.015em; max-width: 15em; }
+.v-lexicon .epi footer { margin-top: 22px; color: var(--dim); }
+.v-lexicon .end-nav { display: flex; flex-wrap: wrap; gap: 0 36px; margin-top: 64px; }
+.v-lexicon .colophon { padding: 32px 0 120px; color: var(--dim); font-size: 17px; }
+.v-lexicon .colophon p { padding: 18px 0 0 var(--m); border-top: 1px solid var(--rule); }
+
+/* ---------- Fore-edge: guide words and thumb index ---------- */
+.v-lexicon .rail {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 26px;
+  z-index: 20;
+  pointer-events: none;
+}
+.v-lexicon .rail > * { pointer-events: auto; }
+.v-lexicon .guide { display: flex; flex-direction: column; align-items: flex-end; padding-right: 22px; font-size: 17px; line-height: 1.35; font-style: italic; color: var(--ink); text-align: right; }
+.v-lexicon .guide span + span { color: var(--dim); }
+.v-lexicon .guide span:first-child { color: var(--blue); font-style: normal; font-weight: 600; }
+.v-lexicon .thumbs { display: flex; flex-direction: column; gap: 2px; }
+.v-lexicon .tab { position: relative; display: flex; justify-content: flex-end; height: 44px; padding-right: 6px; }
+.v-lexicon .tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100px;
+  border-radius: 7px 0 0 7px;
+  background: var(--ink);
+  transform: translateX(0);
+  transition: transform 0.7s var(--spring), background-color 0.3s;
+}
+.v-lexicon .tab.is-here::before { background: var(--blue); transform: translateX(-16px); }
+.v-lexicon .th {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-family: 'Schibsted Grotesk Variable', sans-serif;
+  font-weight: 760;
+  font-size: 17px;
+  color: var(--paper);
+  text-decoration: none;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+.v-lexicon a.th:hover { background: rgba(248, 246, 240, 0.16); }
+.v-lexicon a.th:focus-visible { outline: 2px solid var(--paper); outline-offset: -5px; }
+.v-lexicon .th.is-empty { color: #a29e93; font-weight: 500; }
+
+.v-lexicon .head, .v-lexicon .sheet { display: none; }
+
+/* ---------- Phone ---------- */
+@media (max-width: 820px) {
+  .v-lexicon { font-size: 17px; --m: 22px; --sn: 2.1rem; }
+  .v-lexicon .rail { display: none; }
+  .v-lexicon .book, .v-lexicon .colophon { width: auto; margin: 0 16px; }
+  .v-lexicon .head {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 52px;
+    padding: 0 4px 0 16px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    z-index: 30;
+  }
+  .v-lexicon .head-g { flex: 1; display: flex; justify-content: space-between; gap: 12px; font-size: 16px; font-style: italic; min-width: 0; }
+  .v-lexicon .head-g span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .v-lexicon .head-g span:first-child { color: var(--blue); font-style: normal; font-weight: 600; }
+  .v-lexicon .head-b {
+    width: 44px;
+    height: 44px;
+    margin-left: 10px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 7px 0 0 7px;
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .v-lexicon .head-b svg { width: 22px; height: 22px; }
+  .v-lexicon .sheet {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: var(--paper);
+    overflow-y: auto;
+    padding: 64px 16px 32px;
+    animation: lx-sheet 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes lx-sheet { from { transform: translateX(40%); opacity: 0; } to { transform: none; opacity: 1; } }
+  .v-lexicon .sheet-x { position: absolute; top: 4px; right: 4px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: none; color: var(--ink); cursor: pointer; }
+  .v-lexicon .sheet-x svg { width: 22px; height: 22px; }
+  .v-lexicon .sheet-l { display: grid; grid-template-columns: 1fr 1fr; column-gap: 12px; border-top: 1px solid var(--ink); }
+  .v-lexicon .sl { display: flex; align-items: baseline; gap: 12px; min-height: 48px; padding: 10px 0 0; border-bottom: 1px solid var(--rule); text-decoration: none; }
+  .v-lexicon .sl b { font-family: 'Schibsted Grotesk Variable', sans-serif; font-weight: 800; font-size: 22px; color: var(--blue); width: 1.1em; }
+  .v-lexicon .sl span { font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .v-lexicon .sl.is-empty b { color: #77736a; font-weight: 500; }
+  .v-lexicon .sl.is-here { background: color-mix(in srgb, var(--blue) 8%, transparent); }
+
+  .v-lexicon .title { padding: 96px 0 56px; min-height: 100svh; }
+  .v-lexicon .t-name { font-size: clamp(56px, 17vw, 84px); }
+  .v-lexicon .t-line { font-size: 21px; }
+  .v-lexicon .t-list ol { columns: 2; column-gap: 16px; }
+  .v-lexicon .t-list a { font-size: 18px; min-height: 40px; }
+
+  .v-lexicon .entry { padding-top: 88px; }
+  .v-lexicon .hw { font-size: 36px; }
+  .v-lexicon .is-big .hw { font-size: clamp(52px, 15.5vw, 72px); white-space: nowrap; }
+  .v-lexicon .is-big .hw .pos { font-size: 0.3em; }
+  .v-lexicon .c-event { font-size: 32px; }
+  .v-lexicon .c-where { font-size: 19px; }
+  .v-lexicon .champ .sense { --sn: 2.6rem; }
+  .v-lexicon .champ .sn { font-size: 24px; }
+  .v-lexicon .w-name { font-size: 25px; }
+  .v-lexicon .plates .sn { font-size: 22px; }
+  .v-lexicon .plates .sense { margin-top: 64px; }
+  .v-lexicon .plate { margin-left: calc(-1 * var(--sn)); width: calc(100% + var(--sn)); }
+  .v-lexicon .plate-f { padding: 6px; }
+  .v-lexicon .certs { grid-template-columns: 1fr 1fr; gap: 14px; margin-left: 0; }
+  .v-lexicon .certs figcaption { font-size: 16px; }
+  .v-lexicon .lab { min-width: 0; margin-right: 8px; }
+  .v-lexicon .today .n-body { font-size: 23px; }
+  .v-lexicon .n-event { font-size: 25px; }
+  .v-lexicon .sk-line { font-size: 21px; }
+  .v-lexicon .end { padding-left: 0; }
+  .v-lexicon .epi p { font-size: 30px; }
+  .v-lexicon .colophon p { padding-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-lexicon *, .v-lexicon *::before { transition: none !important; animation: none !important; }
+  .v-lexicon .hw { transform: translateX(calc(-1 * var(--m))); }
+  .v-lexicon .sense[data-arrived] > .sn .pen path { stroke-dashoffset: 0; opacity: 1; }
+}

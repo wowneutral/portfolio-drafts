@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'lexicon', n: 33, name: 'The lexicon', color: '#f8f6f0', ink: '#131313', kind: 'Idea interface',
+  text: 'His page as a small dictionary of his own words: champion, MITEZ, Skeptical, Wessobrunn, each an entry with numbered senses; the thumb index jumps by letter, blue cross-references lead from entry to entry, and the headword you are reading slides out into the margin.',
+};
+export default meta;
