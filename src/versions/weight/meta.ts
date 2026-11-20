@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'weight', n: 12, name: 'The weight', color: '#f2f0ea', ink: '#0c0c0c', kind: 'Live data',
+  text: 'His name fills the screen in a variable typeface whose weight comes from his recent GitHub commits and whose width comes from how recently he wrote a note; drag it to watch the last thirty days, and every section below is set by the same rule.',
+};
+export default meta;
