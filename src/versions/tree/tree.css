@@ -1,0 +1,257 @@
+html[data-v="tree"] { background: #eef0f2; }
+
+.v-tree {
+  --paper: #eef0f2;
+  --ink: #11141a;
+  --mute: #4a505c;
+  --hair: #11141a;
+  --red: #c43d22;
+  --serif: 'Newsreader Variable', Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+.v-tree ::selection { background: var(--red); color: var(--paper); }
+.v-tree a { color: inherit; text-decoration: none; }
+.v-tree :focus-visible { outline: 2px solid var(--red); outline-offset: 4px; border-radius: 1px; }
+.v-tree p, .v-tree h1, .v-tree h2, .v-tree h3, .v-tree ul, .v-tree ol, .v-tree figure, .v-tree blockquote { margin: 0; }
+.v-tree ul, .v-tree ol { list-style: none; padding: 0; }
+.v-tree button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.v-tree .lab { font-family: var(--mono); font-size: 14px; letter-spacing: 0.02em; color: var(--mute); line-height: 1.4; }
+
+/* ---------- opening ---------- */
+.v-tree .hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 8vh 24px 6vh; }
+.v-tree .name {
+  font-weight: 450; font-size: clamp(2.4rem, 5.6vw, 5.2rem); letter-spacing: 0.16em; text-transform: uppercase;
+  line-height: 1; text-align: center; margin-bottom: clamp(18px, 3vh, 34px); padding-left: 0.16em;
+  font-variation-settings: 'opsz' 72;
+}
+.v-tree .tr-wrap { width: min(1320px, 100%); }
+.v-tree .tr-svg { display: block; overflow: visible; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.v-tree .tr-edge { stroke: var(--hair); stroke-width: 1.1; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.9s cubic-bezier(0.2, 0.7, 0.1, 1), stroke 0.35s; }
+.v-tree .is-drawn .tr-edge { stroke-dashoffset: 0; }
+.v-tree .tr-edge.is-lit { stroke: var(--red); stroke-width: 1.7; }
+.v-tree .tr-node { opacity: 0; transition: opacity 0.7s ease-out; cursor: grab; touch-action: none; outline: none; }
+.v-tree .is-drawn .tr-node { opacity: 1; }
+.v-tree .tr-leaf { opacity: 1; transition: none; }
+.v-tree .tr-punct { font-family: var(--serif); fill: var(--ink); }
+.v-tree .tr-node:active { cursor: grabbing; }
+.v-tree .tr-hit { fill: transparent; stroke: none; rx: 4; }
+.v-tree .tr-label text { font-family: var(--mono); font-size: 14px; fill: var(--mute); transition: fill 0.35s; }
+.v-tree .tr-label.is-lit text { fill: var(--red); }
+.v-tree .tr-leaf text { font-family: var(--serif); fill: var(--ink); transition: fill 0.35s; font-variation-settings: 'opsz' 36; }
+.v-tree .tr-leaf.is-lit text { fill: var(--red); }
+.v-tree .tr-leaf:focus-visible .tr-hit { stroke: var(--red); stroke-width: 1.5; }
+.v-tree .hint { margin-top: clamp(14px, 3vh, 30px); font-style: italic; color: var(--mute); font-size: 18px; text-align: center; }
+
+/* ---------- sections ---------- */
+.v-tree .sec { width: min(1180px, 100%); margin: 0 auto; padding: clamp(110px, 18vh, 200px) 32px 0; }
+.v-tree .col { max-width: 36em; margin-left: auto; margin-right: auto; }
+.v-tree .big { font-size: clamp(1.45rem, 2.4vw, 2rem); line-height: 1.35; }
+.v-tree .ink-link { font-family: var(--serif); font-size: 20px; border-bottom: 1px solid var(--ink); padding-bottom: 2px; transition: color 0.25s, border-color 0.25s; display: inline-block; min-height: 44px; line-height: 44px; }
+.v-tree .ink-link:hover { color: var(--red); border-color: var(--red); }
+
+/* the bough: the five conjuncts, this section's branch lit */
+.v-tree .bough { text-align: center; margin-bottom: clamp(36px, 6vh, 64px); }
+.v-tree .bough-root { font-family: var(--mono); font-size: 14px; color: var(--mute); }
+.v-tree .bough-lines { display: block; width: 100%; height: 40px; margin-top: 6px; }
+.v-tree .bough-drop { display: block; width: 100%; height: 64px; }
+.v-tree .bough line, .v-tree .fan-lines line { stroke: var(--hair); stroke-width: 1; opacity: 0.55; }
+.v-tree .bough line.is-lit, .v-tree .fan-lines line.is-lit { stroke: var(--red); stroke-width: 1.6; opacity: 1; }
+.v-tree .fan-lines line.is-dashed { stroke-dasharray: 5 6; opacity: 0.9; }
+.v-tree .bough-kids { display: grid; grid-template-columns: repeat(var(--n), 1fr); font-size: 16px; line-height: 1.3; padding-top: 8px; }
+.v-tree .bough-kids li { padding: 0 6px; color: var(--mute); }
+.v-tree .bough-kids a { transition: color 0.25s; }
+.v-tree .bough-kids a:hover { color: var(--ink); }
+.v-tree .bough-kids li.is-lit { color: var(--red); }
+.v-tree .bough-kids li.is-extra span { font-family: var(--mono); font-size: 14px; }
+.v-tree .bough-title { font-weight: 400; font-size: clamp(2.6rem, 6.4vw, 5.6rem); line-height: 1; letter-spacing: -0.02em; padding-top: 14px; font-variation-settings: 'opsz' 72; text-wrap: balance; }
+.v-tree .bough-lines, .v-tree .bough-drop { clip-path: inset(0 0 100% 0); transition: clip-path 1s cubic-bezier(0.2, 0.7, 0.1, 1); }
+.v-tree .bough-drop { transition-delay: 0.35s; }
+.v-tree .bough.is-in .bough-lines, .v-tree .bough.is-in .bough-drop { clip-path: inset(0 0 0 0); }
+
+/* a fan: one node, its leaves */
+.v-tree .fan { margin: 0 auto; }
+.v-tree .fan + .fan, .v-tree .fan + p, .v-tree p + .fan { margin-top: clamp(48px, 8vh, 90px); }
+.v-tree .fan-node { text-align: center; }
+.v-tree .fan-lines { display: block; width: 100%; margin-top: 6px; clip-path: inset(0 0 100% 0); transition: clip-path 1s cubic-bezier(0.2, 0.7, 0.1, 1); }
+.v-tree .fan.is-in .fan-lines { clip-path: inset(0 0 0 0); }
+.v-tree .fan-kids { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); text-align: center; }
+.v-tree .fan-kids > li { padding: 14px 12px 0; min-width: 0; }
+.v-tree .leafbtn { font-family: var(--serif); font-size: 20px; line-height: 1.25; min-height: 44px; padding: 8px 4px; display: inline-flex; align-items: center; justify-content: center; text-align: center; transition: color 0.25s; border-bottom: 1px solid transparent; }
+.v-tree .leafbtn:hover { color: var(--red); }
+.v-tree li.is-lit > .leafbtn { color: var(--red); border-bottom-color: var(--red); }
+
+/* debate */
+.v-tree .sub { text-align: center; font-style: italic; color: var(--mute); font-size: clamp(1.2rem, 2vw, 1.6rem); margin: calc(-1 * clamp(20px, 4vh, 44px)) 0 clamp(8px, 2vh, 20px); }
+.v-tree .win-title { font-size: clamp(3rem, 7vw, 6rem); line-height: 0.95; font-style: italic; font-weight: 400; letter-spacing: -0.025em; font-variation-settings: 'opsz' 72; }
+.v-tree .win-event { font-size: clamp(1.3rem, 2.2vw, 1.8rem); margin-top: 16px; line-height: 1.2; }
+.v-tree .win-where { color: var(--mute); margin-top: 6px; }
+.v-tree .debate-body { max-width: 34em; margin-left: auto; margin-right: auto; text-align: center; }
+.v-tree .next-where { font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.15; color: var(--mute); border-bottom: 1px dashed var(--mute); display: inline-block; padding-bottom: 4px; }
+.v-tree .next-event { margin-top: 8px; color: var(--mute); }
+
+/* skeptical */
+.v-tree .team { text-align: center; margin-bottom: clamp(28px, 4vh, 44px); }
+.v-tree .team-name { font-size: clamp(2.2rem, 4.4vw, 3.6rem); line-height: 1; font-style: italic; letter-spacing: -0.01em; }
+.v-tree .team-role { color: var(--red); margin-top: 10px; font-size: 20px; }
+.v-tree .fan-team .fan-kids > li { text-align: left; padding: 18px clamp(16px, 3vw, 44px) 0; }
+.v-tree .team-leaf .lab { display: block; text-align: center; margin-bottom: 10px; }
+.v-tree .team-go { text-align: center; margin-top: 40px; }
+
+/* about, mitez */
+.v-tree .about p + p { margin-top: 1.1em; }
+.v-tree .about p { font-size: 20px; }
+.v-tree .about .aside { font-style: italic; color: var(--mute); font-size: 19px; }
+.v-tree .mitez { text-align: center; }
+.v-tree .mitez .big + p { margin-top: 26px; }
+
+/* today */
+.v-tree .today-note { max-width: 24em; margin: 0 auto; text-align: center; font-size: clamp(1.6rem, 3vw, 2.5rem); line-height: 1.3; font-variation-settings: 'opsz' 48; text-wrap: pretty; }
+.v-tree .today-note p + p { margin-top: 0.7em; }
+.v-tree .today-note .is-wait { min-height: 3.9em; }
+.v-tree .today-earlier { margin-top: clamp(56px, 9vh, 100px); }
+.v-tree .today-earlier .fan { max-width: 640px; }
+.v-tree .today-open { max-width: 34em; margin: 26px auto 0; min-height: 1px; text-align: center; }
+.v-tree .today-open-in p + p { margin-top: 10px; }
+.v-tree .today-open-in .lab { margin-bottom: 8px; }
+
+/* research */
+.v-tree .fan-papers { max-width: 760px; }
+.v-tree .leafbtn.is-paper { font-style: italic; }
+.v-tree .paper { margin-top: clamp(60px, 10vh, 110px); text-align: center; }
+.v-tree .paper-title { font-weight: 400; font-size: clamp(1.9rem, 3.8vw, 3.2rem); line-height: 1.12; letter-spacing: -0.01em; max-width: 22em; margin: 14px auto 0; text-wrap: balance; font-variation-settings: 'opsz' 60; }
+.v-tree .paper-epi { margin: 36px auto 0; max-width: 30em; font-style: italic; color: var(--mute); }
+.v-tree .paper-epi cite { display: block; font-style: normal; font-family: var(--mono); font-size: 14px; margin-top: 6px; }
+.v-tree .paper-abs { max-width: 34em; margin: 36px auto 0; text-align: left; font-size: 20px; }
+.v-tree .paper .fan { margin-top: clamp(48px, 8vh, 84px); }
+.v-tree .ladder-who { font-size: 22px; line-height: 1.2; }
+.v-tree .ladder-when { color: var(--red); margin-top: 4px; }
+.v-tree .ladder-where { color: var(--mute); font-size: 17px; line-height: 1.4; margin-top: 4px; }
+.v-tree .kw { font-style: italic; font-size: 19px; line-height: 1.3; display: inline-block; }
+.v-tree .fan-links { max-width: 760px; }
+.v-tree .doi { margin-top: 18px; }
+.v-tree .wess { margin-top: clamp(80px, 12vh, 130px); text-align: center; }
+.v-tree .wess-title { font-weight: 400; font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.2; margin: 10px 0 16px; font-style: italic; }
+
+/* work */
+.v-tree .fan-work .fan-kids > li { padding: 10px 2px 0; }
+.v-tree .fan-work .leafbtn { font-size: 19px; }
+.v-tree .work-open { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 60px); margin-top: clamp(40px, 6vh, 64px); align-items: start; }
+.v-tree .work-img { border: 1px solid rgba(17, 20, 26, 0.18); background: #fff; animation: tr-rise 0.6s cubic-bezier(0.2, 0.7, 0.1, 1); }
+.v-tree .work-img img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+.v-tree .work-name { font-weight: 400; font-size: clamp(2rem, 3.4vw, 3rem); line-height: 1.05; margin: 8px 0 16px; }
+.v-tree .work-stack { color: var(--mute); margin-top: 14px; font-style: italic; }
+.v-tree .work-text .ink-link, .v-tree .work-none { margin-top: 14px; }
+.v-tree .work-none { color: var(--mute); }
+@keyframes tr-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* github */
+.v-tree .repo { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.v-tree .repo-name { font-size: 21px; line-height: 1.2; border-bottom: 1px solid transparent; min-height: 44px; display: inline-flex; align-items: center; transition: color 0.25s, border-color 0.25s; overflow-wrap: anywhere; }
+.v-tree .repo-name:hover { color: var(--red); border-color: var(--red); }
+.v-tree .repo-desc { font-size: 17px; line-height: 1.4; color: var(--mute); margin-top: 6px; }
+.v-tree .ticks { display: flex; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.v-tree .tick { display: flex; width: 16px; height: 44px; justify-content: center; align-items: flex-start; }
+.v-tree .tick span { width: 1.5px; height: 22px; background: var(--ink); transform-origin: top; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s; }
+.v-tree .tick:hover span, .v-tree .tick:focus-visible span, .v-tree .tick.is-on span { background: var(--red); transform: scaleY(1.55); }
+.v-tree .readout { text-align: center; min-height: 3.2em; margin-top: 20px; }
+.v-tree .readout .lab { margin-left: 10px; }
+.v-tree .commits { margin-top: 30px; }
+.v-tree .commits li a { display: flex; justify-content: space-between; gap: 20px; padding: 10px 0; border-top: 1px solid rgba(17, 20, 26, 0.16); min-height: 44px; align-items: baseline; transition: color 0.2s; }
+.v-tree .commits li a:hover { color: var(--red); }
+.v-tree .c-msg { min-width: 0; overflow-wrap: anywhere; }
+.v-tree .commits .lab { flex-shrink: 0; }
+.v-tree .gh-foot { text-align: center; margin-top: 44px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+/* now */
+.v-tree .now-leaf { text-align: left; }
+.v-tree .now-t { font-size: 23px; line-height: 1.2; margin-bottom: 10px; text-align: center; }
+.v-tree .shelves { margin-top: 12px; display: flex; flex-direction: column; gap: 2px; }
+.v-tree .shelves li { font-style: italic; color: var(--red); }
+
+/* record */
+.v-tree .stat-n { font-size: clamp(3rem, 6vw, 5rem); line-height: 1; font-variation-settings: 'opsz' 72; }
+.v-tree .stat-l { color: var(--mute); margin-top: 8px; }
+.v-tree .honors { margin: clamp(60px, 9vh, 100px) auto 0; max-width: 980px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 56px; }
+.v-tree .honors li { position: relative; border-left: 1px solid rgba(17, 20, 26, 0.55); padding: 10px 0 12px 30px; display: flex; flex-direction: column; }
+.v-tree .honors li::before { content: ''; position: absolute; left: 0; top: 1.25em; width: 20px; height: 1px; background: var(--ink); opacity: 0.55; }
+.v-tree .honors li:nth-child(-n + 2)::before { background: var(--red); opacity: 1; height: 1.6px; }
+.v-tree .h-what { line-height: 1.35; }
+.v-tree .fan-awards { max-width: 700px; }
+.v-tree .award { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.v-tree .award img { width: min(240px, 100%); height: auto; border: 1px solid rgba(17, 20, 26, 0.2); background: #fff; transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.1, 1), box-shadow 0.5s; margin-bottom: 8px; }
+.v-tree .award:hover img { transform: translateY(-6px) rotate(-0.6deg); box-shadow: 0 18px 30px -18px rgba(17, 20, 26, 0.45); }
+.v-tree .award-site { font-size: 20px; }
+
+/* off the record */
+.v-tree .off-leaf { text-align: left; }
+.v-tree .off-leaf .lab { display: block; text-align: center; margin-bottom: 12px; }
+.v-tree .off-leaf li { font-size: 17px; line-height: 1.4; }
+.v-tree .off-leaf li + li { margin-top: 10px; }
+
+/* the end */
+.v-tree .sec-end { padding-bottom: 0; }
+.v-tree .end-line { text-align: center; font-size: clamp(2rem, 4.4vw, 3.8rem); line-height: 1.2; max-width: 18em; margin: 0 auto; text-wrap: balance; font-variation-settings: 'opsz' 60; }
+.v-tree .end-line a { color: var(--red); border-bottom: 1px solid rgba(196, 61, 34, 0.35); transition: border-color 0.25s, color 0.25s; }
+.v-tree .end-line a:hover { color: var(--ink); border-color: var(--ink); }
+.v-tree .fan-links-end { margin-top: clamp(50px, 8vh, 90px); }
+.v-tree .links li { display: flex; flex-direction: column; align-items: center; padding: 6px 0; }
+.v-tree .links a, .v-tree .l-val { font-size: 19px; min-height: 44px; display: inline-flex; align-items: center; overflow-wrap: anywhere; transition: color 0.2s; }
+.v-tree .links a:hover { color: var(--red); }
+.v-tree .foot { text-align: center; padding: clamp(90px, 14vh, 160px) 0 120px; color: var(--mute); display: flex; flex-direction: column; gap: 6px; }
+
+/* ---------- phone: the tree stands up ---------- */
+@media (max-width: 719px) {
+  .v-tree { font-size: 17px; }
+  .v-tree .hero { padding: 72px 16px 40px; align-items: stretch; min-height: auto; }
+  .v-tree .name { text-align: left; font-size: 2.3rem; letter-spacing: 0.1em; padding-left: 0; line-height: 1.1; margin-bottom: 26px; }
+  .v-tree .hint { text-align: left; }
+  .v-tree .sec { padding: 96px 16px 0; }
+  .v-tree .bough { text-align: left; margin-bottom: 36px; }
+  .v-tree .bough-lines, .v-tree .bough-drop { display: none; }
+  .v-tree .bough-kids { display: block; margin-left: 6px; border-left: 1.6px solid var(--red); padding: 18px 0 0; }
+  .v-tree .bough-kids li { display: none; }
+  .v-tree .bough-kids li.is-lit { display: block; position: relative; padding: 0 0 0 26px; }
+  .v-tree .bough-kids li.is-lit::before { content: ''; position: absolute; left: 0; top: 0.7em; width: 18px; height: 1.6px; background: var(--red); }
+  .v-tree .bough-title { font-size: 2.7rem; padding-top: 18px; }
+  .v-tree .fan-node { text-align: left; }
+  .v-tree .fan-lines { display: none; }
+  .v-tree .fan-kids { display: block; text-align: left; margin-left: 6px; margin-top: 10px; }
+  .v-tree .fan-kids > li, .v-tree .fan-team .fan-kids > li, .v-tree .fan-work .fan-kids > li { position: relative; padding: 12px 0 12px 30px; border-left: 1px solid rgba(17, 20, 26, 0.55); }
+  .v-tree .fan-kids > li:last-child { border-left-color: transparent; }
+  .v-tree .fan-kids > li:last-child::after { content: ''; position: absolute; left: -1px; top: 0; height: calc(12px + 0.8em); width: 1px; background: rgba(17, 20, 26, 0.55); }
+  .v-tree .fan-kids > li::before { content: ''; position: absolute; left: 0; top: calc(12px + 0.8em); width: 20px; height: 1px; background: rgba(17, 20, 26, 0.55); }
+  .v-tree .fan-kids > li.is-lit::before { background: var(--red); height: 1.6px; }
+  .v-tree .fan-kids > li.is-dashed::before { background: none; border-top: 1px dashed var(--mute); }
+  .v-tree .fan-work .fan-kids > li, .v-tree .fan-papers .fan-kids > li, .v-tree .fan-links .fan-kids > li, .v-tree .today-earlier .fan-kids > li { padding-top: 0; padding-bottom: 0; }
+  .v-tree .fan-work .fan-kids > li::before, .v-tree .fan-papers .fan-kids > li::before, .v-tree .fan-links .fan-kids > li::before, .v-tree .today-earlier .fan-kids > li::before { top: 22px; }
+  .v-tree .fan-work .fan-kids > li:last-child::after, .v-tree .fan-papers .fan-kids > li:last-child::after, .v-tree .fan-links .fan-kids > li:last-child::after, .v-tree .today-earlier .fan-kids > li:last-child::after { height: 22px; }
+  .v-tree .leafbtn { justify-content: flex-start; text-align: left; }
+  .v-tree .team, .v-tree .team-go, .v-tree .mitez, .v-tree .paper, .v-tree .wess, .v-tree .debate-body, .v-tree .today-note, .v-tree .today-open, .v-tree .now-t, .v-tree .gh-foot, .v-tree .readout, .v-tree .end-line, .v-tree .foot { text-align: left; }
+  .v-tree .gh-foot, .v-tree .repo, .v-tree .award, .v-tree .links li { align-items: flex-start; }
+  .v-tree .team-leaf .lab, .v-tree .off-leaf .lab { text-align: left; }
+  .v-tree .ticks { justify-content: flex-start; }
+  .v-tree .today-note { font-size: 1.55rem; }
+  .v-tree .sub { text-align: left; margin-top: -18px; }
+  .v-tree .win-title { font-size: 3.4rem; }
+  .v-tree .work-open { grid-template-columns: 1fr; }
+  .v-tree .honors { grid-template-columns: 1fr; }
+  .v-tree .commits li a { flex-direction: column; gap: 2px; }
+  .v-tree .paper-abs, .v-tree .about p { font-size: 18px; }
+  .v-tree .end-line { font-size: 2rem; }
+  .v-tree .foot { padding-bottom: 110px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-tree *, .v-tree *::before, .v-tree *::after { transition: none !important; animation: none !important; }
+  .v-tree .fan-lines, .v-tree .bough-lines, .v-tree .bough-drop { clip-path: none; }
+  .v-tree .tr-node { opacity: 1; }
+  .v-tree .tr-edge { stroke-dashoffset: 0; }
+}

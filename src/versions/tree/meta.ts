@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'tree', n: 15, name: 'The tree', color: '#eef0f2', ink: '#11141a', kind: 'Idea interface',
+  text: 'His one line is drawn as a sentence diagram you can pull on, and every branch you press opens one part of his life.',
+};
+export default meta;
