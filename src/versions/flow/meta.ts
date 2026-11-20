@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'flow', n: 4, name: 'The flow', color: '#f7f6f1', ink: '#131313', kind: 'Debate native',
+  text: 'His life laid out as a debate flow: the sheet slides sideways as you scroll, blue arrows carry each claim into the next column, the two titles are circled where the round was decided, and tapping any claim retraces its thread.',
+};
+export default meta;
