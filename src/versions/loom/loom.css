@@ -1,0 +1,187 @@
+html[data-v="loom"] { background: #f1ece2; }
+html[data-v="loom"] ::selection { background: #2e3f8f; color: #f1ece2; }
+
+.v-loom {
+  --linen: #f1ece2; --ink: #1a1714; --dim: #574e45; --indigo: #2e3f8f; --rule: rgba(26, 23, 20, 0.16);
+  --band: clamp(320px, 39vw, 620px);
+  --gut: clamp(40px, 6vw, 112px);
+  --serif: 'Newsreader Variable', Georgia, serif;
+  --cond: 'Big Shoulders Display Variable', 'Arial Narrow', sans-serif;
+  background: var(--linen); color: var(--ink);
+  font-family: var(--serif); font-size: 19px; line-height: 1.55; font-optical-sizing: auto;
+  min-height: 100vh; overflow-x: clip;
+}
+.v-loom :focus-visible { outline: 2px solid var(--indigo); outline-offset: 3px; }
+.v-loom a { color: inherit; }
+.v-loom p { margin: 0; }
+.v-loom ul, .v-loom ol { list-style: none; margin: 0; padding: 0; }
+
+/* One row per section: a stretch of cloth, then the copy beside it on its own calm linen. */
+.v-loom .lm-row {
+  display: grid; grid-template-columns: var(--band) minmax(0, 1fr); column-gap: var(--gut);
+  padding-left: clamp(16px, 4vw, 72px); padding-right: clamp(16px, 4vw, 72px);
+}
+.v-loom .lm-band { position: relative; min-height: 100%; }
+.v-loom .lm-warp { position: absolute; left: 0; top: 0; width: 100%; display: block; }
+.v-loom .lm-cloth { position: absolute; inset: 0; clip-path: inset(0 0 100% 0); }
+.v-loom .lm-reed {
+  position: absolute; left: -10px; right: -10px; top: -5px; height: 9px; opacity: 0; pointer-events: none;
+  background: #2a231d; border-radius: 2px; box-shadow: 0 6px 10px -4px rgba(26, 23, 20, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.16);
+}
+.v-loom .lm-cloth canvas { display: block; width: 100%; height: 100%; }
+.v-loom .lm-copy { padding: 44px 0 clamp(96px, 11vw, 168px); max-width: 690px; min-width: 0; }
+.v-loom .lm-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; font-size: 1px; line-height: 1px; margin: 0; }
+
+/* The opening */
+.v-loom .lm-open { min-height: 100svh; }
+.v-loom .lm-open .lm-copy { display: flex; flex-direction: column; justify-content: center; padding-bottom: 72px; }
+.v-loom .lm-line {
+  font-size: clamp(36px, 4.1vw, 66px); line-height: 1.06; letter-spacing: -0.02em; font-weight: 380;
+  text-wrap: balance; max-width: 15ch;
+}
+.v-loom .lm-short {
+  margin-top: 28px; font-family: var(--cond); font-weight: 700; font-size: 22px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--indigo);
+}
+.v-loom .lm-frame { margin-top: 40px; max-width: 34ch; color: var(--dim); font-size: 19px; }
+.v-loom .lm-today-link { margin-top: 22px; }
+.v-loom .lm-today-link a, .v-loom .lm-a {
+  display: inline-flex; align-items: center; min-height: 44px; font-family: var(--cond); font-weight: 700; font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase;
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; text-decoration-color: var(--indigo);
+}
+.v-loom .lm-today-link a:hover, .v-loom .lm-a:hover { color: var(--indigo); text-decoration-thickness: 4px; }
+
+/* Shared text */
+.v-loom .lm-body { margin-top: 18px; max-width: 62ch; }
+.v-loom .lm-body:first-of-type { margin-top: 0; }
+.v-loom .lm-lead { font-size: clamp(21px, 1.8vw, 25px); line-height: 1.45; max-width: 40ch; }
+.v-loom .lm-aside { margin-top: 32px; padding-top: 22px; border-top: 1px solid var(--rule); font-style: italic; color: var(--dim); max-width: 56ch; }
+.v-loom .lm-dim { color: var(--dim); }
+.v-loom .lm-strong { font-weight: 600; }
+.v-loom .lm-meta, .v-loom .lm-stack, .v-loom .lm-h4, .v-loom .lm-role {
+  font-family: var(--cond); font-weight: 700; font-size: 18px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim);
+}
+.v-loom .lm-h3 { font-size: clamp(28px, 2.4vw, 36px); line-height: 1.1; font-weight: 500; letter-spacing: -0.01em; margin: 0 0 10px; }
+.v-loom .lm-h4 { margin: 56px 0 14px; }
+.v-loom .lm-role { color: var(--indigo); margin-bottom: 14px; }
+
+/* Debate: the two titles beside the indigo band */
+.v-loom .lm-wins { display: grid; gap: 52px; padding: 28px 0 40px; }
+.v-loom .lm-champ {
+  font-family: var(--cond); font-weight: 800; text-transform: uppercase; color: var(--indigo);
+  font-size: clamp(64px, 8.4vw, 136px); line-height: 0.86; letter-spacing: 0.01em;
+}
+.v-loom .lm-where { margin-top: 14px; font-size: clamp(30px, 2.8vw, 42px); line-height: 1.1; font-weight: 500; }
+.v-loom .lm-event { margin-top: 6px; color: var(--dim); }
+.v-loom .lm-team { margin-top: 72px; }
+.v-loom .lm-team .lm-dim { margin-top: 14px; }
+.v-loom .lm-next { margin-top: 64px; }
+.v-loom .lm-pairs li, .v-loom .lm-ladders li, .v-loom .lm-honors li {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6px 24px; padding: 14px 0; border-top: 1px solid var(--rule);
+}
+
+/* Research */
+.v-loom .lm-paper { font-size: clamp(32px, 3.2vw, 50px); line-height: 1.08; font-weight: 450; letter-spacing: -0.015em; text-wrap: balance; margin: 0 0 16px; }
+.v-loom .lm-paper + .lm-meta { margin-bottom: 26px; }
+.v-loom .lm-quote { margin: 56px 0 40px; padding: 0; }
+.v-loom .lm-quote p { font-style: italic; font-size: clamp(24px, 2.2vw, 32px); line-height: 1.3; max-width: 30ch; }
+.v-loom .lm-quote footer { margin-top: 12px; color: var(--dim); }
+.v-loom .lm-ladders li { grid-template-columns: 1.1fr 0.7fr 1.6fr; }
+.v-loom .lm-keys { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 36px; font-family: var(--cond); font-weight: 700; font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; }
+.v-loom .lm-links { display: flex; flex-wrap: wrap; gap: 4px 30px; margin-top: 22px; }
+.v-loom .lm-wess { margin-top: 80px; }
+
+/* Work */
+.v-loom .lm-work { padding-top: 0; margin-bottom: 104px; }
+.v-loom .lm-work:last-child { margin-bottom: 0; }
+.v-loom .lm-shot { margin: 0; aspect-ratio: 16 / 10; overflow: hidden; background: #e4ddcf; box-shadow: 0 18px 40px -22px rgba(26, 23, 20, 0.45); }
+.v-loom .lm-shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-loom .lm-work:hover .lm-shot img { transform: scale(1.025); }
+.v-loom .lm-wtext { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 24px; }
+.v-loom .lm-wtext .lm-h3 { margin-bottom: 4px; }
+.v-loom .lm-wtext .lm-body { margin-top: 12px; }
+.v-loom .lm-wtext .lm-stack { margin-top: 10px; font-size: 16px; }
+
+/* Record */
+.v-loom .lm-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-bottom: 48px; }
+.v-loom .lm-stats li { display: grid; gap: 4px; }
+.v-loom .lm-num { font-family: var(--cond); font-weight: 800; font-size: clamp(56px, 5.4vw, 88px); line-height: 0.9; color: var(--indigo); }
+.v-loom .lm-honors li { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+.v-loom .lm-awards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; margin-top: 72px; }
+.v-loom .lm-award { display: grid; gap: 4px; text-decoration: none; }
+.v-loom .lm-award img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; margin-bottom: 12px; box-shadow: 0 16px 34px -20px rgba(26, 23, 20, 0.5); transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-loom .lm-award:hover img { transform: translateY(-4px); }
+.v-loom .lm-award:hover .lm-strong { color: var(--indigo); text-decoration: underline; text-underline-offset: 4px; }
+
+/* Now */
+.v-loom .lm-now { margin-top: 64px; }
+.v-loom .lm-shelves { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.v-loom .lm-shelves li { padding: 8px 14px; border: 1px solid var(--ink); font-family: var(--cond); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 17px; }
+
+/* Off the record */
+.v-loom .lm-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 44px; }
+.v-loom .lm-cols .lm-h4 { margin-top: 0; }
+.v-loom .lm-cols > div { margin-bottom: 44px; }
+.v-loom .lm-plain li { padding: 8px 0; border-top: 1px solid var(--rule); font-size: 18px; }
+
+/* GitHub */
+.v-loom .lm-commits, .v-loom .lm-repos { margin-top: 28px; }
+.v-loom .lm-commits li, .v-loom .lm-repos li { display: grid; gap: 2px; padding: 14px 12px; margin: 0 -12px; border-top: 1px solid var(--rule); transition: background-color 0.25s, color 0.25s; }
+.v-loom .lm-repos { margin-top: 0; }
+.v-loom .lm-msg { font-weight: 600; text-decoration: none; }
+.v-loom .lm-msg:hover { text-decoration: underline; text-underline-offset: 4px; }
+.v-loom li.is-on { background: #e6e3ea; color: var(--indigo); }
+.v-loom li.is-on .lm-dim { color: #3a4170; }
+.v-loom .lm-repos + p { margin-top: 24px; }
+
+/* The picks: the band itself is the control */
+.v-loom .lm-pick { position: absolute; left: 0; width: 100%; padding: 0; border: 0; background: transparent; cursor: crosshair; }
+.v-loom .lm-pick:hover, .v-loom .lm-pick[aria-pressed="true"], .v-loom .lm-pick:focus-visible { outline: 3px solid var(--indigo); outline-offset: -3px; box-shadow: inset 0 0 0 5px rgba(241, 236, 226, 0.85); }
+.v-loom .lm-pick[aria-pressed="true"]::after, .v-loom .lm-pick:focus-visible::after {
+  content: ''; position: absolute; right: calc(-1 * var(--gut) + 8px); top: 50%; width: calc(var(--gut) - 14px); height: 3px; background: var(--indigo); transform: translateY(-50%);
+}
+
+/* Today */
+.v-loom .lm-todayrow .lm-copy { padding-top: 196px; }
+.v-loom .lm-note { padding: 6px 0 12px; }
+.v-loom .lm-date { font-family: var(--cond); font-weight: 800; text-transform: uppercase; font-size: clamp(40px, 4.4vw, 68px); line-height: 0.95; color: var(--indigo); margin: 0 0 22px; letter-spacing: 0.01em; }
+.v-loom .lm-notebody { font-size: clamp(23px, 2.1vw, 30px); line-height: 1.4; max-width: 32ch; }
+.v-loom .lm-notebody + .lm-notebody { margin-top: 16px; }
+.v-loom .lm-notes li { border-top: 1px solid var(--rule); }
+.v-loom .lm-noteb { display: grid; gap: 2px; width: 100%; text-align: left; padding: 14px 12px; margin: 0 -12px; min-height: 56px; background: transparent; border: 0; color: inherit; font: inherit; cursor: pointer; }
+.v-loom .lm-noteb .lm-dim { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.v-loom .lm-noteb:hover .lm-strong { color: var(--indigo); }
+.v-loom .lm-noteb.is-on { background: #e6e3ea; color: var(--indigo); }
+
+/* Contact and the selvage */
+.v-loom .lm-contact li { display: grid; grid-template-columns: 11rem minmax(0, 1fr); align-items: center; gap: 0 20px; border-top: 1px solid var(--rule); min-height: 60px; }
+.v-loom .lm-contact .lm-a { font-family: var(--serif); text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 22px; overflow-wrap: anywhere; }
+.v-loom .lm-foot { margin-top: 96px; padding-bottom: 96px; }
+.v-loom .lm-foot p + p { margin-top: 10px; color: var(--dim); }
+
+@media (max-width: 760px) {
+  .v-loom { --band: 56px; --gut: 18px; font-size: 17px; }
+  .v-loom .lm-row { padding-left: 10px; padding-right: 16px; }
+  .v-loom .lm-copy { padding: 22px 0 88px; }
+  .v-loom .lm-h { position: static; width: auto; height: auto; overflow: visible; clip-path: none; white-space: normal; font-family: var(--cond); font-weight: 800; text-transform: uppercase; font-size: 30px; letter-spacing: 0.04em; line-height: 1; margin: 0 0 22px; }
+  .v-loom .lm-open .lm-copy { justify-content: flex-start; padding-top: 40px; }
+  .v-loom .lm-h1 { font-size: 76px; line-height: 0.84; letter-spacing: 0.01em; margin-bottom: 28px; max-width: 4ch; }
+  .v-loom .lm-line { font-size: 34px; }
+  .v-loom .lm-frame, .v-loom .lm-plain li { font-size: 16px; }
+  .v-loom .lm-lead { font-size: 20px; }
+  .v-loom .lm-champ { font-size: 58px; }
+  .v-loom .lm-pairs li, .v-loom .lm-honors li, .v-loom .lm-ladders li { grid-template-columns: minmax(0, 1fr); }
+  .v-loom .lm-stats { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .v-loom .lm-cols { grid-template-columns: minmax(0, 1fr); }
+  .v-loom .lm-awards { gap: 14px; }
+  .v-loom .lm-contact li { grid-template-columns: minmax(0, 1fr); padding: 10px 0; }
+  .v-loom .lm-contact .lm-a { font-size: 18px; }
+  .v-loom .lm-work { margin-bottom: 72px; }
+  .v-loom .lm-todayrow .lm-copy { padding-top: 22px; }
+  .v-loom .lm-pick[aria-pressed="true"]::after, .v-loom .lm-pick:focus-visible::after { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-loom .lm-cloth { clip-path: none; }
+  .v-loom .lm-reed { display: none; }
+  .v-loom *, .v-loom *::after { transition: none !important; }
+}

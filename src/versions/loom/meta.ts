@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'loom', n: 18, name: 'The loom', color: '#f1ece2', ink: '#1a1714', kind: 'Live data',
+  text: 'His GitHub weaves a band of cloth down the page, one thread for each commit, with every heading woven into it, so the pattern changes each day he ships.',
+};
+export default meta;
