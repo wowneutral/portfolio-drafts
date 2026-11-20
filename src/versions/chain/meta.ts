@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'chain', n: 5, name: 'The chain', color: '#d7d2c7', ink: '#121110', kind: '3D playground',
+  text: 'His story stands as a line of heavy ivory dominoes on a paper sweep: push the small orange one, then scroll, and each thing he did knocks over the next, through the two championships to today’s note.',
+};
+export default meta;
