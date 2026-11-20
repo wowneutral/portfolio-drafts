@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'cross', n: 9, name: 'The cross', color: '#0d0d0c', ink: '#efebe2', kind: 'Debate native',
+  text: 'Cross-examination: one big question at a time in black and white, built by your scroll, and his own words answer it.',
+};
+export default meta;
