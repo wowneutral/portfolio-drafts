@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'crumple', n: 28, name: 'The crumple', color: '#dcdedd', ink: '#121314', kind: '3D playground',
+  text: 'Every part of his page arrives as a crumpled ball of paper on a grey floor: pull one open and it flattens, creases and all, into that part of his life, while the two championships and today’s note land already flat.',
+};
+export default meta;
