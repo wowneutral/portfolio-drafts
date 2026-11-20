@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'cave', n: 30, name: 'The cave', color: '#151412', ink: '#ede7db', kind: '3D playground',
+  text: 'A heap of plain shapes sits in front of a pale wall: drag the light around until their shadows line up, and the shadow spells the next part of his page.',
+};
+export default meta;
