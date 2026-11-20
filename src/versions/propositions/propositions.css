@@ -1,0 +1,178 @@
+/* Draft 7: the propositions. White paper, black type, one red: the number you are on. */
+html[data-v="propositions"] { background: #fafaf8; scrollbar-color: #bdb8ae #fafaf8; }
+
+.v-propositions {
+  --paper: #fafaf8; --ink: #0f0f0f; --mute: #5b5852; --rule: #dcd9d2; --red: #9a2318;
+  --serif: 'EB Garamond Variable', 'EB Garamond', Garamond, Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --nw: 5rem; --step: 2rem; --gut: clamp(16px, 4vw, 64px);
+  --out: cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--paper); color: var(--ink);
+  font: 400 1.1875rem/1.55 var(--serif);
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-synthesis: none; font-kerning: normal; text-rendering: optimizeLegibility;
+  min-height: 100vh; overflow-x: clip;
+}
+.v-propositions ::selection { background: var(--red); color: var(--paper); }
+.v-propositions :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 1px; }
+.v-propositions p, .v-propositions ul, .v-propositions ol, .v-propositions blockquote, .v-propositions figure, .v-propositions h1, .v-propositions h2 { margin: 0; }
+.v-propositions ul, .v-propositions ol { list-style: none; padding: 0; }
+.v-propositions a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; text-decoration-color: rgba(154, 35, 24, 0.45); transition: color 0.2s, text-decoration-color 0.2s; }
+.v-propositions a:hover { color: var(--red); text-decoration-color: var(--red); }
+.v-propositions .mute { color: var(--mute); }
+.v-propositions .em { font-style: italic; }
+
+/* ---------- page: a wide margin for the counter, one column of remarks ---------- */
+.v-propositions .page { display: grid; grid-template-columns: 15rem minmax(0, 52rem); column-gap: clamp(2rem, 4vw, 5rem); justify-content: center; padding: 0 var(--gut); }
+.v-propositions .ctr { position: sticky; top: 29vh; align-self: start; height: 0; text-align: right; opacity: 0; transition: opacity 0.5s var(--out); }
+.v-propositions .ctr.on { opacity: 1; }
+.v-propositions .ctr-n { display: block; padding-top: 1rem; font: 500 clamp(4rem, 5.6vw, 6rem)/1 var(--mono); letter-spacing: -0.04em; color: var(--red); white-space: nowrap; transition: transform 0.55s var(--out); }
+.v-propositions .ctr-c { display: inline-block; animation: p-roll 0.55s var(--out) both; }
+@keyframes p-roll { from { opacity: 0; transform: translateY(0.4em); } }
+
+.v-propositions .doc { position: relative; padding: clamp(4.5rem, 13vh, 9rem) 0 2rem; }
+.v-propositions .hair { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.v-propositions .hair path { fill: none; stroke: var(--red); stroke-width: 1; stroke-dasharray: 1; vector-effect: non-scaling-stroke; }
+
+/* ---------- a remark: number in the margin, text beside it ---------- */
+.v-propositions .rm-row { display: grid; grid-template-columns: var(--nw) minmax(0, 1fr); align-items: baseline; }
+.v-propositions .rm.can > .rm-row { cursor: pointer; }
+.v-propositions .rm-n {
+  position: relative; justify-self: start; padding: 0; border: 0; background: none; cursor: pointer;
+  font: 400 0.9375rem/1 var(--mono); font-variant-numeric: normal; letter-spacing: 0; color: var(--mute);
+  text-decoration: none; transition: color 0.2s;
+}
+.v-propositions .rm-n::after { content: ''; position: absolute; left: -12px; right: -12px; top: 50%; height: 44px; min-width: 44px; transform: translateY(-50%); }
+.v-propositions .rm.can > .rm-row > .rm-n { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.35em; text-decoration-color: var(--rule); }
+.v-propositions .rm.can.is-open > .rm-row > .rm-n { text-decoration-color: transparent; }
+.v-propositions .rm-n:hover, .v-propositions .rm-n.is-on, .v-propositions .rm-n.is-pt, .v-propositions .rm-n.is-anc,
+.v-propositions .rm.can > .rm-row:hover > .rm-n { color: var(--red) !important; }
+.v-propositions .rm-t { min-width: 0; transition: transform 0.45s var(--out); }
+.v-propositions .rm-s { margin-top: 0.35rem; }
+.v-propositions .rm-s > * + * { margin-top: 0.45rem; }
+
+/* indent and size step down per decimal */
+.v-propositions .d1 > .fold, .v-propositions .d2 > .fold { padding-left: var(--step); }
+.v-propositions .rm-b { padding-left: calc(var(--nw) - var(--step)); }
+.v-propositions .d0 > .fold { padding: 2.25rem 0 3.5rem; }
+.v-propositions .d1 > .fold { padding-top: 1.1rem; }
+.v-propositions .d2 > .fold { padding-top: 0.8rem; }
+.v-propositions .d1 + .d1 { margin-top: 1.75rem; }
+.v-propositions .d2 + .d2 { margin-top: 1.05rem; }
+.v-propositions .d3 + .d3 { margin-top: 0.7rem; }
+.v-propositions .d1 > .rm-row .rm-t { font-size: 1.4375rem; line-height: 1.45; }
+.v-propositions .d2 > .rm-row .rm-t { font-size: 1.25rem; line-height: 1.55; }
+.v-propositions .d3 > .rm-row .rm-t { font-size: 1.125rem; line-height: 1.6; }
+.v-propositions .rm-t p, .v-propositions .rm-t li { max-width: 38em; text-wrap: pretty; }
+
+/* ---------- the seven ---------- */
+.v-propositions .top-wrap + .top-wrap { margin-top: 1.05rem; }
+.v-propositions .d0 > .rm-row > .rm-n { font-size: 1.0625rem; font-weight: 500; }
+.v-propositions .top { font: 430 clamp(2.05rem, 0.9rem + 3.2vw, 4.1rem)/1.06 var(--serif); letter-spacing: -0.018em; text-wrap: balance; }
+.v-propositions .top-d { font-style: italic; font-size: 0.56em; color: var(--mute); letter-spacing: 0; }
+.v-propositions .line { margin-top: 0.55rem; font-size: 1.3125rem; line-height: 1.4; color: var(--mute); max-width: 32em; }
+.v-propositions .d0.can:not(.is-open) > .rm-row:hover .rm-t { transform: translateX(0.35rem); }
+.v-propositions .hint { margin: 3.25rem 0 0 var(--nw); font-style: italic; font-size: 1.0625rem; color: var(--mute); }
+
+/* ---------- kinds of remark ---------- */
+.v-propositions .lead { font-style: italic; }
+.v-propositions .lead.big { font-style: normal; font-size: 2.1rem; line-height: 1.15; letter-spacing: -0.01em; }
+.v-propositions .lead.big .mute { font-style: italic; font-size: 0.62em; letter-spacing: 0; }
+.v-propositions .meta { font-size: 1.0625rem; color: var(--mute); }
+.v-propositions .desc { color: var(--ink); }
+
+.v-propositions .win > .rm-row { align-items: first baseline; }
+.v-propositions .win-t { font: 450 clamp(3.4rem, 1.8rem + 4.8vw, 5.75rem)/0.95 var(--serif); letter-spacing: -0.03em; }
+.v-propositions .win-e { font-size: clamp(1.25rem, 1rem + 0.7vw, 1.625rem); line-height: 1.35; margin-top: 0.5rem; }
+.v-propositions .win + .win { margin-top: 2.5rem; }
+.v-propositions .win + .d1:not(.win) { margin-top: 3rem; }
+
+.v-propositions .honors { columns: 2; column-gap: 2.5rem; font-size: 1.0625rem; line-height: 1.45; margin-top: 0.9rem; }
+.v-propositions .honors li { break-inside: avoid; padding-bottom: 0.7rem; }
+.v-propositions .honors li .mute { display: block; font-style: italic; }
+.v-propositions .certs { display: grid; grid-template-columns: repeat(2, minmax(0, 13rem)); gap: 1.75rem; margin-top: 0.9rem; }
+.v-propositions .cert { display: grid; gap: 0.2rem; text-decoration: none; }
+.v-propositions .cert img { width: 100%; height: auto; display: block; margin-bottom: 0.6rem; background: #eeece6; box-shadow: 0 1px 2px rgba(15, 15, 15, 0.08), 0 18px 36px -18px rgba(15, 15, 15, 0.35); transition: transform 0.5s var(--out), box-shadow 0.5s var(--out); }
+.v-propositions .cert:hover img, .v-propositions .cert:focus-visible img { transform: translateY(-4px) rotate(-0.6deg); box-shadow: 0 1px 2px rgba(15, 15, 15, 0.08), 0 26px 44px -18px rgba(15, 15, 15, 0.4); }
+.v-propositions .cert-t { font-style: italic; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; text-decoration-color: rgba(154, 35, 24, 0.45); }
+.v-propositions .cert .mute { font-size: 1.0625rem; }
+.v-propositions .fig { font-variant-numeric: lining-nums; }
+
+.v-propositions .title { font-size: clamp(1.6rem, 1.2rem + 1vw, 2.05rem); line-height: 1.2; letter-spacing: -0.01em; text-wrap: balance; max-width: 26em; }
+.v-propositions .title.sm { font-size: 1.5rem; }
+.v-propositions .epi p { font-style: italic; font-size: 1.5rem; line-height: 1.35; }
+.v-propositions .epi cite { display: block; margin-top: 0.4rem; font-style: normal; font-size: 1.0625rem; color: var(--mute); }
+.v-propositions .kw { display: flex; flex-wrap: wrap; gap: 0.15rem 0; font-style: italic; }
+.v-propositions .kw li:not(:last-child)::after { content: ','; margin-right: 0.4em; }
+.v-propositions .ladders li + li { margin-top: 0.35rem; }
+.v-propositions .ladders .mute { display: block; font-size: 1.0625rem; }
+.v-propositions .where { display: flex; flex-wrap: wrap; gap: 0.4rem 1.75rem; }
+.v-propositions .where a, .v-propositions .w-go a { display: inline-flex; align-items: center; min-height: 44px; }
+.v-propositions .shelves { display: flex; flex-wrap: wrap; gap: 0 1.25rem; font-style: italic; color: var(--mute); }
+.v-propositions .plain li + li { margin-top: 0.3rem; }
+
+/* work: the name is the remark, the screenshot unfolds under it at full width */
+.v-propositions .work > .fold { padding-left: 0; }
+.v-propositions .work .rm-b { padding: 0.4rem 0 1.25rem; }
+.v-propositions .work .rm-b > p { padding-left: var(--nw); }
+.v-propositions .work + .work { margin-top: 0.85rem; }
+.v-propositions .w-h { line-height: 1.2; }
+.v-propositions .w-name { font-size: clamp(1.6rem, 1.2rem + 1vw, 2.05rem); letter-spacing: -0.012em; }
+.v-propositions .w-kind { font-style: italic; color: var(--mute); font-size: 1.125rem; margin-left: 0.35rem; }
+.v-propositions .shot { margin: 0.6rem 0 1.4rem; background: #eeece6; box-shadow: 0 0 0 1px rgba(15, 15, 15, 0.07), 0 30px 60px -36px rgba(15, 15, 15, 0.45); overflow: hidden; }
+.v-propositions .shot img { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 700; object-fit: cover; object-position: top; }
+.v-propositions .w-line { font-size: 1.3125rem; line-height: 1.45; max-width: 34em; }
+.v-propositions .work .meta { margin-top: 0.4rem; }
+.v-propositions .w-go { margin-top: 0.15rem; }
+
+.v-propositions .repo { font-style: italic; font-size: 1.25rem; }
+.v-propositions .date { font-style: italic; font-size: 1.5rem; }
+.v-propositions .note-now .note-p { font-size: 1.5rem; line-height: 1.45; max-width: 30em; }
+.v-propositions .lk { display: grid; grid-template-columns: 10rem minmax(0, 1fr); align-items: baseline; gap: 0 1rem; }
+.v-propositions .lk-l { font-style: italic; color: var(--mute); font-size: 1.0625rem; }
+.v-propositions .lk a, .v-propositions .lk > span:last-child { font-size: 1.5rem; overflow-wrap: anywhere; }
+
+/* ---------- the end: the footer alone, in a lot of white ---------- */
+.v-propositions .foot { padding: 16vh var(--gut) 7.5rem; text-align: center; font-style: italic; color: var(--mute); font-size: 1.0625rem; }
+.v-propositions .foot.end { padding-top: 62vh; }
+
+/* ---------- the opening: numbers first, then each line is written in ---------- */
+.v-propositions .top-wrap > .rm > .rm-row > .rm-n { animation: p-num 0.7s var(--out) both; animation-delay: calc(var(--i) * 70ms + 120ms); }
+.v-propositions .top-wrap > .rm > .rm-row > .rm-t { animation: p-write 1.2s var(--out) both; animation-delay: calc(var(--i) * 95ms + 420ms); }
+.v-propositions .hint { animation: p-num 0.9s var(--out) 1.5s both; }
+@keyframes p-num { from { opacity: 0; transform: translateY(-0.5em); } }
+@keyframes p-write { from { clip-path: inset(-20% 100% -20% 0); opacity: 0.2; } to { clip-path: inset(-20% -4% -20% 0); opacity: 1; } }
+
+@media (max-width: 1000px) {
+  .v-propositions .page { grid-template-columns: minmax(0, 52rem); }
+  .v-propositions .ctr { display: none; }
+}
+@media (max-width: 600px) {
+  .v-propositions { --nw: 2.4rem; --step: 0.85rem; font-size: 1.0625rem; }
+  .v-propositions .page { padding: 0 16px; }
+  .v-propositions .doc { padding-top: 4.5rem; }
+  .v-propositions .rm:not(.d0) > .rm-row { display: block; }
+  .v-propositions .rm:not(.d0) > .rm-row > .rm-n { display: inline-block; margin-bottom: 0.35rem; font-size: 0.875rem; }
+  .v-propositions .rm-b, .v-propositions .work .rm-b > p { padding-left: 0; }
+  .v-propositions .top { font-size: 1.875rem; line-height: 1.12; }
+  .v-propositions .line { font-size: 1.125rem; }
+  .v-propositions .d1 > .rm-row .rm-t { font-size: 1.1875rem; }
+  .v-propositions .d2 > .rm-row .rm-t { font-size: 1.0625rem; }
+  .v-propositions .d3 > .rm-row .rm-t { font-size: 1rem; }
+  .v-propositions .win-t { font-size: 3.5rem; line-height: 1.02; }
+  .v-propositions .win > .rm-row > .rm-n { margin-bottom: 0.8rem; }
+  .v-propositions .lead.big { font-size: 1.75rem; }
+  .v-propositions .title { font-size: 1.5rem; }
+  .v-propositions .title.sm, .v-propositions .epi p, .v-propositions .date, .v-propositions .note-now .note-p { font-size: 1.25rem; }
+  .v-propositions .w-line { font-size: 1.125rem; }
+  .v-propositions .w-name { font-size: 1.6rem; }
+  .v-propositions .honors { columns: 1; }
+  .v-propositions .certs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .v-propositions .lk { grid-template-columns: minmax(0, 1fr); }
+  .v-propositions .lk a, .v-propositions .lk > span:last-child { font-size: 1.25rem; }
+  .v-propositions .hint { margin-left: var(--nw); }
+  .v-propositions .d1 + .d1 { margin-top: 1.4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-propositions *, .v-propositions *::before, .v-propositions *::after { animation: none !important; transition: none !important; }
+}
