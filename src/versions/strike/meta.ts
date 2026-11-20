@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'strike', n: 19, name: 'The strike', color: '#f5f3ee', ink: '#121212', kind: 'Idea interface',
+  text: 'Every heading on the page is crossed out with a red line and still reads; pull a line and it twangs back. Only his name and his two championships are left unstruck.',
+};
+export default meta;
