@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'fork', n: 34, name: 'The fork', color: '#e2e5e7', ink: '#101315', kind: '3D playground',
+  text: 'Polished steel tuning forks stand in pairs on a pale grey sweep, one pair per section: tap a fork or its base and the prongs ring, and with sound on each pair hums a vowel, while scrolling walks the lens along the row.',
+};
+export default meta;
