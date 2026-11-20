@@ -1,0 +1,34 @@
+/* The host-element rules the ThreeUI scene components expect.
+   Taken from the upstream Community stylesheet (src/shaders/community.css),
+   reduced to the selectors this project actually mounts. The scene renders
+   into an iframe pinned to this box, so the box must establish a position
+   context and have a real height — a `threeui-background` in an auto-height
+   parent collapses to nothing and the scene never appears. */
+
+.threeui-background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #030304;
+}
+
+.threeui-background > canvas,
+.threeui-background > iframe {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Sylva paints its own ground colour behind the canvas. Matching it here
+   means the half-second before the iframe's first frame is the scene's own
+   forest green rather than a black flash against it. */
+.sylva-living-world-scene {
+  background: #4a4d44;
+}

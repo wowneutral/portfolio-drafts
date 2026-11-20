@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sound tester — Armaan Seth portfolio</title>
+<style>
+  :root{
+    --ground:#24261f; --panel:#2b2e26; --ink:#f0f2ea; --soft:rgba(240,242,234,.74);
+    --faint:rgba(240,242,234,.44); --rule:rgba(240,242,234,.14); --accent:#c3d2a8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font:400 16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;padding:3rem clamp(1rem,5vw,4rem) 6rem}
+  h1{font-size:clamp(1.6rem,3.4vw,2.4rem);font-weight:600;margin:0 0 .5rem}
+  .lede{color:var(--soft);max-width:60ch;margin:0 0 .4rem;font-weight:300}
+  .note{color:var(--faint);font-size:.85rem;max-width:70ch;margin:0 0 2.5rem;font-weight:300}
+  h2{font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--faint);
+    font-weight:400;margin:3rem 0 1.2rem;display:flex;align-items:center;gap:.9rem}
+  h2::before{content:"";width:2.2rem;height:1px;background:var(--accent);opacity:.7}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));gap:1rem}
+  .card{border:1px solid var(--rule);border-radius:16px;padding:1.3rem 1.3rem 1.1rem;
+    background:linear-gradient(rgba(240,242,234,.035),rgba(240,242,234,.012));
+    transition:border-color .2s ease,transform .2s ease;cursor:pointer;user-select:none}
+  .card:hover{border-color:rgba(195,210,168,.55);transform:translateY(-3px)}
+  .card.picked{border-color:var(--accent);box-shadow:inset 0 0 0 1px rgba(195,210,168,.4)}
+  .num{font-size:.7rem;letter-spacing:.2em;color:var(--accent);font-variant-numeric:tabular-nums}
+  .name{font-size:1.05rem;font-weight:500;margin:.5rem 0 .3rem}
+  .desc{font-size:.85rem;font-weight:300;color:var(--soft);line-height:1.55;margin:0 0 1rem}
+  .row{display:flex;gap:.5rem;align-items:center}
+  button{font:inherit;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
+    padding:.6em 1.1em;border-radius:999px;border:1px solid var(--rule);background:transparent;
+    color:var(--soft);cursor:pointer;transition:.18s ease}
+  button:hover{border-color:var(--accent);color:#fff}
+  button.solid{background:#e9ecdf;color:#23261f;border-color:transparent}
+  .bar{position:sticky;top:0;z-index:5;background:var(--ground);padding:1rem 0;margin:0 0 1rem;
+    border-bottom:1px solid var(--rule);display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
+  .bar label{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+  input[type=range]{width:11rem;accent-color:var(--accent)}
+  .pick{font-size:.8rem;color:var(--accent)}
+  code{background:rgba(240,242,234,.08);padding:.15em .45em;border-radius:5px;font-size:.85em}
+</style>
+</head>
+<body>
+<h1>Sound tester</h1>
+<p class="lede">Eight hover sounds and eight click sounds. Hover a card to hear its hover sound; press <em>Click</em> to hear its click sound.</p>
+<p class="note">Everything is synthesised live in your browser, exactly as the site does it, so what you hear here is what you would get. Pick one from each list and tell me the numbers. Volume matches the site's default; the slider is only for auditioning.</p>
+
+<div class="bar">
+  <label for="vol">Volume</label><input id="vol" type="range" min="0" max="100" value="55">
+  <span class="pick" id="pick">Hover: — · Click: —</span>
+  <button id="mute">Suspend audio</button>
+</div>
+
+<h2>Hover sounds</h2>
+<div class="grid" id="hovers"></div>
+
+<h2>Click sounds</h2>
+<div class="grid" id="clicks"></div>
+
+<script>
+let ctx=null, bus=null;
+function ac(){
+  if(!ctx){ ctx=new (window.AudioContext||window.webkitAudioContext)();
+    bus=ctx.createGain(); bus.gain.value=0.55; bus.connect(ctx.destination); }
+  if(ctx.state==="suspended") ctx.resume();
+  return ctx;
+}
+const now=()=>ac().currentTime;
+
+/* ── building blocks ─────────────────────────────────────────────────── */
+function env(g,t,peak,attack,decay,curve){
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.linearRampToValueAtTime(peak,t+attack);
+  if(curve==="lin") g.gain.linearRampToValueAtTime(0.0001,t+attack+decay);
+  else g.gain.exponentialRampToValueAtTime(0.0001,t+attack+decay);
+}
+function tone(o){ // {f,f2,type,peak,attack,decay,lp,hp,q,detune}
+  const c=ac(),t=now();
+  const osc=c.createOscillator(); osc.type=o.type||"sine";
+  osc.frequency.setValueAtTime(o.f,t);
+  if(o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2,t+(o.sweep||o.decay));
+  const g=c.createGain(); env(g,t,o.peak,o.attack||0.005,o.decay,o.curve);
+  let node=osc.connect(g);
+  if(o.lp){const f=c.createBiquadFilter();f.type="lowpass";f.frequency.value=o.lp;f.Q.value=o.q||1;node=g.connect(f);node.connect(bus);}
+  else g.connect(bus);
+  osc.start(t); osc.stop(t+(o.attack||0.005)+o.decay+0.1);
+}
+function noiseBurst(o){ // {dur,peak,type,freq,q,attack,decay}
+  const c=ac(),t=now();
+  const n=Math.floor(c.sampleRate*(o.dur||0.3));
+  const buf=c.createBuffer(1,n,c.sampleRate); const d=buf.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=(Math.random()*2-1);
+  const src=c.createBufferSource(); src.buffer=buf;
+  const f=c.createBiquadFilter(); f.type=o.type||"bandpass";
+  f.frequency.value=o.freq||1200; f.Q.value=o.q||1;
+  const g=c.createGain(); env(g,t,o.peak,o.attack||0.004,o.decay,o.curve);
+  src.connect(f).connect(g).connect(bus); src.start(t); src.stop(t+(o.dur||0.3));
+}
+/* plucked string: noise burst through a short feedback delay */
+function pluck(freq,peak,decay){
+  const c=ac(),t=now();
+  const n=Math.floor(c.sampleRate*0.02);
+  const buf=c.createBuffer(1,n,c.sampleRate); const d=buf.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  const src=c.createBufferSource(); src.buffer=buf;
+  const dl=c.createDelay(); dl.delayTime.value=1/freq;
+  const fb=c.createGain(); fb.gain.value=Math.min(0.97,0.9+decay*0.02);
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=2600;
+  const out=c.createGain(); env(out,t,peak,0.004,decay);
+  src.connect(dl); dl.connect(lp); lp.connect(fb); fb.connect(dl);
+  dl.connect(out).connect(bus);
+  src.start(t); src.stop(t+0.03);
+}
+
+/* ── the candidates ──────────────────────────────────────────────────── */
+const HOVERS=[
+ {name:"Sine tick",desc:"What the site has now. A clean high sine, very short. Neutral and a bit synthetic.",
+  play:()=>tone({f:880,f2:634,peak:.05,decay:.1,lp:2600})},
+ {name:"Wood tap",desc:"A short knock on a dry branch. Bandpassed noise with a fast decay. Sits with the forest.",
+  play:()=>noiseBurst({freq:900,q:6,peak:.09,decay:.055,dur:.12})},
+ {name:"Leaf brush",desc:"Air moving through leaves. Almost not a sound. The quietest option here.",
+  play:()=>noiseBurst({type:"highpass",freq:3800,q:.7,peak:.035,decay:.09,attack:.012,dur:.18})},
+ {name:"Glass tap",desc:"A fingernail on a glass rim. Bright and precise, more studio than forest.",
+  play:()=>{tone({f:2100,peak:.035,decay:.09,lp:6000});setTimeout(()=>tone({f:3150,peak:.014,decay:.07,lp:7000}),4)}},
+ {name:"Water drop",desc:"A drop into still water: a fast downward pitch bend. Playful.",
+  play:()=>tone({f:1500,f2:520,sweep:.09,peak:.06,decay:.12,lp:3000})},
+ {name:"Muted marimba",desc:"A soft mallet on wood. Warm, rounded, musical without being a note.",
+  play:()=>{tone({f:660,peak:.06,decay:.16,lp:1800});setTimeout(()=>tone({f:1320,peak:.018,decay:.1,lp:2600}),3)}},
+ {name:"Transient only",desc:"No pitch at all — one low filtered tick. Reads as texture, never as a note.",
+  play:()=>noiseBurst({type:"lowpass",freq:1100,q:.8,peak:.075,decay:.03,dur:.06})},
+ {name:"Breath",desc:"A short intake of air, high and soft. Organic, disappears under music.",
+  play:()=>noiseBurst({type:"bandpass",freq:2400,q:.5,peak:.045,decay:.13,attack:.03,dur:.24})},
+];
+const CLICKS=[
+ {name:"Two-note sine",desc:"What the site has now. A note and a fifth above it. Reads as a little chime.",
+  play:()=>{tone({f:523.25,f2:377,peak:.16,decay:.24,lp:2600});setTimeout(()=>tone({f:784,f2:564,peak:.09,decay:.2,lp:2600}),55)}},
+ {name:"Wood knock",desc:"The hover's wood tap, deeper and with more body. Matches hover #2.",
+  play:()=>{noiseBurst({freq:420,q:5,peak:.16,decay:.09,dur:.2});tone({f:210,peak:.07,decay:.13,lp:900})}},
+ {name:"Soft pluck",desc:"A real plucked string, damped fast. Musical, matches the piano score.",
+  play:()=>pluck(392,.13,.28)},
+ {name:"Low pop",desc:"A rounded low sine with a quick downward bend. Confident, no melody.",
+  play:()=>tone({f:340,f2:120,sweep:.07,peak:.17,decay:.16,lp:1200})},
+ {name:"Glass ping",desc:"Bright and clean, with a long tail. Matches hover #4.",
+  play:()=>{tone({f:1568,peak:.09,decay:.5,lp:6000});setTimeout(()=>tone({f:2350,peak:.03,decay:.35,lp:7000}),5)}},
+ {name:"Leaf rustle",desc:"A handful of leaves compressed. Entirely textural, no pitch.",
+  play:()=>noiseBurst({type:"bandpass",freq:1900,q:.6,peak:.12,decay:.17,attack:.006,dur:.3})},
+ {name:"Thud + air",desc:"A soft low body with a breath of air over it. Weighty but quiet.",
+  play:()=>{tone({f:150,f2:78,sweep:.12,peak:.19,decay:.2,lp:600});noiseBurst({type:"highpass",freq:3200,q:.6,peak:.03,decay:.11,dur:.2})}},
+ {name:"Chord bloom",desc:"Three notes at once, opening quickly. The most 'designed' option.",
+  play:()=>{[392,587.33,784].forEach((f,i)=>setTimeout(()=>tone({f,peak:.08-i*.02,decay:.42,lp:3000,attack:.012}),i*18))}},
+];
+
+let pickH=null,pickC=null;
+function render(list,el,kind){
+  list.forEach((s,i)=>{
+    const n=String(i+1).padStart(2,"0");
+    const d=document.createElement("div");
+    d.className="card";
+    d.innerHTML=`<span class="num">${kind==="h"?"H":"C"}${n}</span>
+      <div class="name">${s.name}</div><p class="desc">${s.desc}</p>
+      <div class="row"><button class="play">Play</button><button class="choose solid">Choose</button></div>`;
+    if(kind==="h") d.addEventListener("pointerenter",()=>s.play());
+    d.querySelector(".play").addEventListener("click",e=>{e.stopPropagation();s.play()});
+    d.querySelector(".choose").addEventListener("click",e=>{
+      e.stopPropagation();
+      el.querySelectorAll(".card").forEach(c=>c.classList.remove("picked"));
+      d.classList.add("picked");
+      if(kind==="h") pickH=`H${n} ${s.name}`; else pickC=`C${n} ${s.name}`;
+      document.getElementById("pick").textContent=`Hover: ${pickH||"—"} · Click: ${pickC||"—"}`;
+    });
+    if(kind==="c") d.addEventListener("click",()=>s.play());
+    el.appendChild(d);
+  });
+}
+render(HOVERS,document.getElementById("hovers"),"h");
+render(CLICKS,document.getElementById("clicks"),"c");
+document.getElementById("vol").addEventListener("input",e=>{ac();bus.gain.value=e.target.value/100});
+document.getElementById("mute").addEventListener("click",()=>{ if(ctx&&ctx.state==="running"){ctx.suspend();} else ac(); });
+</script>
+</body>
+</html>

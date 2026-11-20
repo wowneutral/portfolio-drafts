@@ -1,0 +1,8 @@
+node_modules
+dist
+test-shots
+*.tsbuildinfo
+og/node_modules
+og/dist
+og/.wrangler
+.DS_Store

@@ -1,0 +1,125 @@
+/* Shorter than before: five beats, not eight. The old version was a reading
+   assignment inside a scroll animation. */
+.skeptic {
+  position: relative;
+  z-index: 1;
+  height: 560vh;
+  background: var(--ground);
+}
+
+.skeptic-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-content: center;
+  justify-items: center;
+  overflow: hidden;
+  padding: clamp(4.5rem, 12vh, 7rem) clamp(1.4rem, 6vw, 6rem) clamp(3rem, 8vh, 5rem);
+}
+
+.skeptic-label { position: absolute; top: clamp(2rem, 6vh, 4rem); left: clamp(1.4rem, 6vw, 6rem); }
+
+/* the apple and the words occupy exactly the same square */
+.sk-visual {
+  position: relative;
+  width: min(46vh, 100%);
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+
+.skeptic-canvas {
+  position: absolute;
+  /* Wider than the visual box so the mist has somewhere to go. */
+  inset: -60%;
+  width: 220%;
+  height: 220%;
+  pointer-events: none;
+}
+
+.sk-words {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sk-word {
+  --gone: 0;
+  display: block;
+  font-size: clamp(1.15rem, 2.6vw, 2rem);
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* Each letter leaves on its own schedule, left to right. --i is the letter's
+   index and --n the word length, so the stagger needs no hard-coded delays. */
+.sk-word > span {
+  display: inline-block;
+  --t: clamp(0, calc((var(--gone) - var(--i) / var(--n) * 0.55) / 0.45), 1);
+  opacity: calc(1 - var(--t));
+  transform: translateY(calc(var(--t) * -1.6em)) scale(calc(1 - var(--t) * 0.35));
+  filter: blur(calc(var(--t) * 5px));
+}
+
+/* ── caption: one beat at a time, all stacked in one place ─────────────── */
+.sk-caption {
+  position: relative;
+  width: min(46rem, 100%);
+  min-height: 8.5rem;
+  text-align: center;
+}
+
+.sk-cap {
+  position: absolute;
+  inset: 0 0 auto 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sk-cap q {
+  quotes: none;
+  display: block;
+  margin-bottom: 0.7rem;
+  font-size: clamp(1.25rem, 2.6vw, 2rem);
+  font-weight: 550;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.sk-cap span {
+  display: block;
+  font-size: clamp(0.92rem, 1.25vw, 1.05rem);
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.sk-cap-final q { color: var(--ink); }
+.sk-cap-final i { font-style: normal; color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-word > span { opacity: 1; transform: none; filter: none; }
+}
+
+@media (max-width: 860px) {
+  .skeptic { height: 620vh; }
+  /* Smaller on a phone: at 78vw the apple owned the screen and the caption
+     had nowhere to sit. The caption is the argument; the apple illustrates
+     it. */
+  .sk-visual { width: min(30vh, 56vw); }
+  .sk-caption { min-height: 13rem; }
+  .skeptic-sticky {
+    grid-template-rows: 1fr auto;
+    padding-bottom: clamp(4rem, 12vh, 7rem);
+  }
+  .sk-word { font-size: clamp(1rem, 5vw, 1.4rem); }
+}

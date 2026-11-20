@@ -1,0 +1,23 @@
+.pi { --bg: #ecebe5; --fg: #141412; --mute: #5f5e58; --rule: #cfcdc4; --pad: clamp(20px, 4vw, 64px); --serif: "Newsreader Variable", "Newsreader", Georgia, serif;
+  min-height: 100vh; background: var(--bg); color: var(--fg); font: 400 clamp(1rem, 0.96rem + 0.2vw, 1.125rem)/1.5 "Instrument Sans Variable", "Helvetica Neue", Arial, sans-serif; }
+.pi ::selection { background: var(--fg); color: var(--bg); }
+.pi :focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
+.pi header { padding: clamp(3rem, 12vh, 8rem) var(--pad) clamp(2rem, 6vh, 4rem); max-width: 76rem; }
+.pi-mark { font: 500 0.8rem/1 "Instrument Sans Variable", sans-serif; letter-spacing: 0.14em; text-transform: uppercase; }
+.pi h1 { font: 400 clamp(2.9rem, 1rem + 6.6vw, 7.6rem)/0.98 var(--serif); letter-spacing: -0.035em; margin-top: 1.6rem; max-width: 12ch; }
+.pi h1 + p { margin-top: 1.6rem; max-width: 52ch; color: var(--mute); }
+.pi ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(2.4rem, 5vw, 4.4rem) clamp(1.2rem, 3vw, 2.8rem); padding: 0 var(--pad); }
+.pi li a { display: grid; gap: 0.9rem; }
+.pi-thumb { display: block; aspect-ratio: 16 / 10; overflow: hidden; outline: 1px solid var(--rule); outline-offset: -1px; }
+.pi-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.pi li a:hover .pi-thumb img, .pi li a:focus-visible .pi-thumb img { transform: scale(1.035); }
+.pi-cap { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 0.9rem; border-top: 1px solid var(--fg); padding-top: 0.7rem; }
+.pi-n { font: 400 0.95rem/1 var(--serif); font-variant-numeric: lining-nums tabular-nums; color: var(--mute); }
+.pi-name { font: 400 clamp(1.6rem, 1.2rem + 1.2vw, 2.4rem)/1.05 var(--serif); letter-spacing: -0.02em; }
+.pi-kind { font-size: 0.85rem; color: var(--mute); text-align: right; }
+.pi-text { color: var(--mute); max-width: 56ch; }
+.pi li a:hover .pi-name, .pi li a:focus-visible .pi-name { font-style: italic; }
+.pi footer { padding: clamp(4rem, 10vh, 7rem) var(--pad) 6rem; color: var(--mute); max-width: 60rem; font-size: 0.95rem; }
+.pi code { font: inherit; color: var(--fg); }
+@media (max-width: 760px) { .pi ol { grid-template-columns: 1fr; } .pi-cap { grid-template-columns: auto 1fr; } .pi-kind { grid-column: 2; text-align: left; } }
+@media (prefers-reduced-motion: reduce) { .pi-thumb img { transition: none; } }

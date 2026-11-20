@@ -1,0 +1,23 @@
+# Cloudflare Pages configuration.
+#
+# `npx wrangler pages dev dist` runs the site WITH the /api/poll function, so
+# the poll can be exercised locally exactly as it behaves deployed. Plain
+# `npm run dev` serves the Vite app only: the poll then finds no endpoint and
+# says so rather than inventing numbers.
+
+name = "armaanseth"
+pages_build_output_dir = "dist"
+
+# Cloudflare rejected the Functions bundle without this: the Pages runtime
+# wrapper around a Function expects the Node built-ins to be resolvable.
+# It adds nothing to the bundle and changes nothing about how the poll works.
+compatibility_date = "2025-05-05"
+compatibility_flags = ["nodejs_compat"]
+
+# Makes poll votes durable. Everything above this line is a top-level key and
+# has to STAY above it: anything written after a [[table]] header belongs to
+# that table, so a compatibility flag placed down here would silently become
+# a key of kv_namespaces and stop applying.
+[[kv_namespaces]]
+binding = "POLL"
+id = "d12f50c746684eb28c237c81d2bf9bc6"

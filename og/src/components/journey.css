@@ -1,0 +1,1267 @@
+/* ── the scene, fixed behind everything ─────────────────────────────────── */
+.journey-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #4a4d44;
+}
+
+/* The parent element is inert too: every pointer event belongs to the page,
+   and the bridge forwards what the scene needs. */
+.journey-scene,
+.journey-scene iframe {
+  pointer-events: none;
+}
+
+/* The scroll track is the only thing with height; it exists to give the
+   scrollbar something to measure. */
+.journey-track {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── the hero ───────────────────────────────────────────────────────────── */
+.journey-hero {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  pointer-events: none;
+  padding: 0 6vw;
+}
+
+.journey-hero h1 {
+  margin: 0;
+  font-size: clamp(2.6rem, 8.5vw, 7rem);
+  font-weight: 650;
+  letter-spacing: 0.045em;
+  line-height: 1.04;
+  color: #f4f6f0;
+  /* No text-shadow here: the rise animation clips each line in an
+     overflow:hidden row, and a 60px shadow clipped to a row paints a visible
+     rectangle behind each word. The fog is soft enough on its own. */
+}
+
+.journey-hero p {
+  margin: 1.1em 0 0;
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  font-weight: 300;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(244, 246, 240, 0.62);
+}
+
+/* ── scroll cue ─────────────────────────────────────────────────────────── */
+.journey-cue {
+  position: fixed;
+  left: 50%;
+  bottom: 4.5vh;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.journey-cue span {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(244, 246, 240, 0.45);
+}
+
+.journey-cue i {
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(rgba(244, 246, 240, 0.55), transparent);
+  animation: cue-drip 2.2s ease-in-out infinite;
+}
+
+@keyframes cue-drip {
+  0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  35% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-cue i { animation: none; }
+}
+
+/* ── chapters ───────────────────────────────────────────────────────────── */
+.journey-chapter {
+  position: fixed;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(0);
+  max-width: min(30rem, 84vw);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* No card, no panel. The text stands in the fog; the shadow is what keeps
+     it legible over a bright limb. */
+  text-shadow: 0 1px 34px rgba(20, 24, 16, 0.7), 0 1px 8px rgba(20, 24, 16, 0.45);
+}
+
+.journey-chapter.side-left  { left: clamp(1.4rem, 8vw, 9rem); margin-top: -9rem; }
+.journey-chapter.side-right { right: clamp(1.4rem, 8vw, 9rem); margin-top: -9rem; text-align: right; }
+.journey-chapter.side-center {
+  left: 50%;
+  --cx: -50%;
+  margin-top: -9rem;
+  text-align: center;
+}
+
+.ch-label {
+  margin: 0 0 0.9rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(244, 246, 240, 0.5);
+}
+
+.journey-chapter h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.9rem, 4.2vw, 3.1rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #f4f6f0;
+}
+
+.journey-chapter p {
+  margin: 0 0 0.9em;
+  font-size: clamp(0.95rem, 1.25vw, 1.06rem);
+  font-weight: 300;
+  line-height: 1.65;
+  color: rgba(244, 246, 240, 0.86);
+}
+
+.journey-chapter em {
+  font-style: italic;
+  color: #fff;
+}
+
+.journey-chapter a {
+  color: #d9e4c8;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(217, 228, 200, 0.35);
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.journey-chapter a:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.ch-list {
+  list-style: none;
+  margin: 0 0 0.9em;
+  padding: 0;
+}
+
+.ch-list li {
+  margin: 0 0 0.55em;
+  font-size: clamp(0.95rem, 1.25vw, 1.06rem);
+  font-weight: 300;
+  line-height: 1.55;
+  color: rgba(244, 246, 240, 0.86);
+}
+
+.ch-links a { margin-right: 1.4em; }
+.side-right .ch-links a { margin-right: 0; margin-left: 1.4em; }
+
+.ch-links-stack {
+  display: grid;
+  gap: 0.7em;
+  justify-items: center;
+}
+.ch-links-stack a { margin: 0; font-size: 1.1rem; }
+
+/* On phones the alternating sides collapse to one calm column low on the
+   screen, clear of the arch. */
+@media (max-width: 720px) {
+  .journey-chapter.side-left,
+  .journey-chapter.side-right {
+    left: 50%;
+    right: auto;
+    --cx: -50%;
+    text-align: left;
+    top: auto;
+    bottom: 9vh;
+    margin-top: 0;
+    max-width: 86vw;
+  }
+  .journey-chapter.side-center { top: auto; bottom: 12vh; margin-top: 0; }
+  .side-right .ch-links a { margin-left: 0; margin-right: 1.4em; }
+}
+
+/* ── legibility scrim ───────────────────────────────────────────────────
+   The text stands in the fog with no card — but a bright moss limb behind a
+   thin light glyph erases it. A soft radial pool of the scene's own shadow
+   colour sits behind each chapter, invisible as a shape, decisive for
+   contrast. */
+.journey-chapter::before {
+  content: "";
+  position: absolute;
+  inset: -3.5rem -4.5rem;
+  z-index: -1;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(28, 31, 23, 0.58),
+    rgba(28, 31, 23, 0.30) 48%,
+    rgba(28, 31, 23, 0) 74%
+  );
+  pointer-events: none;
+}
+
+/* ── hero entrance ──────────────────────────────────────────────────────
+   The two name lines rise out of clipped rows when the door opens — the
+   scroll loop writes opacity/transform on the WRAPPER, these animate the
+   inner spans, so the two never fight over the same property. */
+.hero-line {
+  display: block;
+  overflow: hidden;
+}
+
+.hero-line > span {
+  display: block;
+  transform: translateY(112%);
+}
+
+/* Held back until the curtain is most of the way gone, so the name rises
+   into a scene the visitor can already see rather than behind a panel. */
+.journey-hero.entered .hero-line > span {
+  animation: hero-rise 1.25s cubic-bezier(0.16, 0.7, 0.16, 1) 0.55s forwards;
+}
+
+.journey-hero.entered .hero-line:nth-child(2) > span {
+  animation-delay: 0.69s;
+}
+
+.journey-hero p {
+  opacity: 0;
+}
+
+.journey-hero.entered p {
+  animation: hero-fade 1s ease 1.35s forwards;
+}
+
+@keyframes hero-rise {
+  to { transform: translateY(0); }
+}
+
+@keyframes hero-fade {
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-line > span { transform: none; animation: none !important; }
+  .journey-hero p { opacity: 1; animation: none !important; }
+}
+
+/* ═══ ACT II ════════════════════════════════════════════════════════════ */
+.act2 {
+  position: relative;
+  z-index: 3;
+  --ink: #f0f2ea;
+  --ink-soft: rgba(240, 242, 234, 0.74);
+  --ink-faint: rgba(240, 242, 234, 0.44);
+  --rule: rgba(240, 242, 234, 0.13);
+  --ground: #24261f;
+  --accent: #c3d2a8;
+}
+
+.act2-fog {
+  height: 46vh;
+  background: linear-gradient(to bottom, rgba(36, 38, 31, 0), var(--ground));
+  pointer-events: none;
+}
+
+.act2-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(240, 242, 234, 0.04) 0,
+    rgba(240, 242, 234, 0.04) 1px,
+    transparent 1px,
+    transparent calc(100% / 12)
+  );
+  mask-image: linear-gradient(to bottom, transparent 0, #000 48vh);
+}
+
+.act2-section {
+  position: relative;
+  overflow: hidden;
+  background: var(--ground);
+  padding: clamp(5rem, 12vh, 9rem) clamp(1.4rem, 6vw, 6rem);
+}
+
+.act2-section::before {
+  content: attr(data-num);
+  position: absolute;
+  top: 0.5rem;
+  right: -1rem;
+  font-size: clamp(8rem, 22vw, 18rem);
+  font-weight: 700;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(240, 242, 234, 0.055);
+  pointer-events: none;
+  user-select: none;
+}
+
+.act2-wrap {
+  position: relative;
+  max-width: 68rem;
+  margin: 0 auto;
+}
+
+/* section label — a rule and a word, the spine of the whole record */
+.sec-label {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 0 1.4rem;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.sec-label::before {
+  content: "";
+  width: 2.2rem;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.7;
+  flex: none;
+}
+
+.act2-h {
+  margin: 0 0 2.8rem;
+  max-width: 22ch;
+  font-size: clamp(1.75rem, 3.5vw, 2.9rem);
+  font-weight: 550;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.act2-cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 2.4rem;
+}
+
+.act2-cols p {
+  margin: 0;
+  font-size: clamp(0.97rem, 1.15vw, 1.06rem);
+  font-weight: 300;
+  line-height: 1.78;
+  color: var(--ink-soft);
+}
+
+/* reveals */
+.act2 [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s cubic-bezier(0.16, 0.7, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 0.7, 0.3, 1);
+}
+
+.act2 [data-reveal].in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .act2 [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+/* ── summary figures ──────────────────────────────────────────────────── */
+.act2-stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border-block: 1px solid var(--rule);
+}
+
+.stat {
+  background: var(--ground);
+  padding: 2.8rem clamp(1.4rem, 3vw, 2.4rem) 2.4rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.stat-n {
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  font-weight: 250;
+  line-height: 1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 0.68rem;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ── the horizontal rail ──────────────────────────────────────────────── */
+.rail-outer {
+  position: relative;
+  z-index: 1;
+  background: var(--ground);
+}
+
+.rail-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 clamp(1.4rem, 6vw, 6rem);
+  margin-bottom: 2.2rem;
+}
+
+.rail-head .sec-label { margin: 0; }
+
+.rail-hint {
+  font-size: 0.66rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* The rail itself: a row wider than the screen, moved by the scroll loop. */
+.rail {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(1rem, 2vw, 1.6rem);
+  padding: 0 clamp(1.4rem, 6vw, 6rem);
+  will-change: transform;
+}
+
+.card {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(27rem, 78vw);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 2rem 1.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  background: linear-gradient(
+    to bottom,
+    rgba(240, 242, 234, 0.035),
+    rgba(240, 242, 234, 0.012)
+  );
+  transition: border-color 260ms ease, transform 260ms ease;
+}
+
+.card:hover {
+  border-color: rgba(195, 210, 168, 0.5);
+  transform: translateY(-4px);
+}
+
+.card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.6rem;
+}
+
+.card-n {
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.card-kind {
+  font-size: 0.66rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+.card-name {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 550;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.card-line {
+  margin: 0 0 2rem;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.card-foot {
+  margin-top: auto;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.card-stack {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.card-go {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 180ms ease;
+}
+
+.card-go:hover { color: #fff; }
+.card-go-muted { color: var(--ink-faint); }
+
+/* the "keep going" plate at the end of the rail */
+.rail-end {
+  flex: 0 0 auto;
+  width: min(16rem, 60vw);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.9rem;
+  color: var(--ink-faint);
+  font-size: 0.66rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.rail-end i {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(var(--accent), transparent);
+  opacity: 0.7;
+}
+
+/* progress under the rail */
+.rail-bar {
+  margin: 2.4rem clamp(1.4rem, 6vw, 6rem) 0;
+  height: 1px;
+  background: var(--rule);
+}
+
+.rail-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+/* ── results ledger ───────────────────────────────────────────────────── */
+.honors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.honors li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.35rem 2rem;
+  padding: 1.05rem 0.15rem;
+  border-top: 1px solid var(--rule);
+  transition: background 220ms ease, padding-left 220ms ease;
+}
+
+.honors li:last-child { border-bottom: 1px solid var(--rule); }
+
+.honors li:hover {
+  background: rgba(240, 242, 234, 0.03);
+  padding-left: 0.8rem;
+}
+
+.honor-what {
+  font-size: clamp(0.98rem, 1.3vw, 1.12rem);
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.honor-detail {
+  font-size: 0.7rem;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ── the two certificates under the record ─────────────────────────── */
+/* Dealt in when the record scrolls into view (see Awards.tsx), then pinned
+   at a slight angle. The entrance is an animation that only fills backwards,
+   so once it ends the card's own transform takes over and hover is free to
+   move it without inheriting any delay. */
+.awards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.6rem;
+  max-width: 34rem;
+  margin-top: 2.8rem;
+  perspective: 1100px;
+}
+
+.award {
+  --tilt: -2.5deg;
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  display: grid;
+  gap: 0.35rem;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+.award:nth-child(2) { --tilt: 2deg; }
+
+.award-card {
+  position: relative;
+  display: block;
+  margin-bottom: 0.7rem;
+  border-radius: 10px;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  opacity: 0;
+  transform: rotate(var(--tilt));
+  transform-origin: 50% 85%;
+  box-shadow: 0 22px 40px -26px rgba(0, 0, 0, 0.75);
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.45s ease, border-color 0.45s ease;
+  will-change: transform;
+}
+
+.award-card img { display: block; width: 100%; height: auto; }
+
+/* the band of light */
+.award-card::after {
+  content: "";
+  position: absolute;
+  inset: -10% -40%;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.5) 50%, transparent 62%);
+  mix-blend-mode: soft-light;
+  transform: translateX(-110%);
+  pointer-events: none;
+  transition: transform 0.25s ease-out, opacity 0.3s ease;
+}
+
+.awards.in .award-card {
+  opacity: 1;
+  animation: award-deal 1.2s cubic-bezier(0.2, 1.25, 0.35, 1) backwards;
+  animation-delay: calc(var(--i) * 170ms + 120ms);
+}
+
+.awards.in .award-card::after {
+  animation: award-sheen 1.3s cubic-bezier(0.45, 0, 0.25, 1) backwards;
+  animation-delay: calc(var(--i) * 170ms + 1.05s);
+}
+
+@keyframes award-deal {
+  from { opacity: 0; transform: translateY(90px) rotate(calc(var(--tilt) * -5)) scale(0.88); }
+  45% { opacity: 1; }
+  to { opacity: 1; transform: rotate(var(--tilt)); }
+}
+
+@keyframes award-sheen {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(110%); }
+}
+
+.award:hover .award-card,
+.award:focus-visible .award-card {
+  transform: translateY(-8px) rotateX(var(--rx)) rotateY(var(--ry)) scale(1.03);
+  border-color: var(--ink-faint);
+  box-shadow: 0 40px 70px -32px rgba(0, 0, 0, 0.9);
+  transition: transform 0.18s ease-out, box-shadow 0.45s ease, border-color 0.45s ease;
+}
+
+.award:hover .award-card::after {
+  transform: translateX(calc((var(--mx) - 50%) * 1.4));
+}
+
+.award:focus-visible .award-card { outline: 2px solid var(--ink); outline-offset: 5px; }
+
+.award-site { font-size: clamp(0.95rem, 1.2vw, 1.05rem); color: var(--ink); }
+
+.award-note {
+  font-size: 0.66rem;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .award-card,
+  .awards.in .award-card { opacity: 1; animation: none; transition: none; }
+  .award-card::after,
+  .awards.in .award-card::after { animation: none; display: none; }
+  .award:hover .award-card,
+  .award:focus-visible .award-card { transform: rotate(var(--tilt)); }
+}
+
+/* ── books ────────────────────────────────────────────────────────────── */
+.books {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 1.4rem;
+}
+/* One card on its own reads as a card, not a banner across the page. */
+.books:has(> .book:only-child) { max-width: 38rem; }
+
+.book {
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  padding: 2rem 2rem 1.6rem;
+}
+
+.book-status {
+  margin: 0 0 1.1rem;
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.book-status.is-out { color: var(--accent); }
+
+.book h3 {
+  margin: 0 0 1rem;
+  font-size: 1.22rem;
+  font-weight: 550;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.book p {
+  margin: 0 0 1.6rem;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.72;
+  color: var(--ink-soft);
+}
+
+.book-meta {
+  margin: 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.book-meta > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.book-meta dt,
+.book-meta dd {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+}
+
+.book-meta dt { color: var(--ink-faint); text-transform: uppercase; }
+.book-meta dd { color: var(--ink-soft); text-align: right; }
+.book-meta a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.book-meta a:hover { color: var(--ink); }
+
+/* ── coursework ───────────────────────────────────────────────────────── */
+.courses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.course {
+  background: var(--ground);
+  padding: 1.8rem 1.6rem;
+  display: grid;
+  gap: 0.45rem;
+  align-content: start;
+}
+
+.course-provider {
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.course-title {
+  font-size: 1.08rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.course-note {
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--ink-faint);
+}
+
+/* ── contact ──────────────────────────────────────────────────────────── */
+.act2-door { padding-bottom: 2.5rem; }
+
+.door-links {
+  display: grid;
+  gap: 1.1rem;
+  justify-items: start;
+}
+
+.door-links a {
+  font-size: clamp(1.1rem, 2.4vw, 1.8rem);
+  font-weight: 300;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(195, 210, 168, 0.32);
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.door-links a:hover {
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.act2-wordmark {
+  margin: 7rem 0 0;
+  font-size: clamp(3.4rem, 12.5vw, 11rem);
+  font-weight: 700;
+  line-height: 0.95;
+  text-align: center;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(240, 242, 234, 0.15);
+  user-select: none;
+  pointer-events: none;
+}
+
+.act2-footer {
+  max-width: 68rem;
+  margin: 3rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 2rem;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  font-weight: 300;
+  color: var(--ink-faint);
+}
+
+.act2-footer a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+@media (max-width: 720px) {
+  .rail-head { margin-bottom: 1.4rem; }
+  .card { padding: 1.6rem 1.4rem 1.3rem; }
+}
+
+/* the invitation to touch the moss */
+.journey-touch {
+  position: fixed;
+  left: 50%;
+  bottom: 12vh;
+  transform: translateX(-50%);
+  z-index: 2;
+  margin: 0;
+  opacity: 0;
+  font-size: 0.68rem;
+  font-weight: 300;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(244, 246, 240, 0.5);
+  pointer-events: none;
+  text-shadow: 0 1px 24px rgba(20, 24, 16, 0.8);
+}
+
+@media (pointer: coarse) { .journey-touch { display: none; } }
+
+/* an aside: a quieter line under a section */
+.act2-aside {
+  margin: 2.6rem 0 0;
+  padding-top: 1.3rem;
+  border-top: 1px solid var(--rule);
+  max-width: 52ch;
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--ink-faint);
+}
+
+/* ── work cards now carry a screenshot ────────────────────────────────── */
+.card { padding: 0; overflow: hidden; text-decoration: none; }
+.card-nolink { cursor: default; }
+.card-nolink:hover { transform: none; border-color: var(--rule); }
+
+.card-shot {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #1d1f19;
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+/* contain, not cover: these are whole screenshots of whole pages, and
+   cropping one is throwing away the thing the card is for. The plate behind
+   is dark so the letterboxing reads as a frame rather than a gap. */
+.card-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  opacity: 0.94;
+  transition: transform 500ms cubic-bezier(0.2, 0.7, 0.3, 1), opacity 300ms ease;
+}
+
+.card:hover .card-shot img { transform: scale(1.02); opacity: 1; }
+
+/* Shown only when the screenshot is missing, so a card is never a broken
+   image while the shots are still being collected. */
+.card-shot-fallback {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.card-shot-empty img { display: none; }
+.card-shot-empty .card-shot-fallback { display: grid; }
+
+.card-body { display: flex; flex-direction: column; flex: 1; padding: 1.5rem 1.6rem 1.3rem; }
+.card-go { text-transform: none; letter-spacing: 0.06em; font-size: 0.74rem; }
+
+/* ── the record: a much quieter hover ─────────────────────────────────── */
+.honors li { transition: color 200ms ease, border-color 200ms ease; }
+.honors li:hover { background: none; padding-left: 0.15rem; border-top-color: rgba(195, 210, 168, 0.45); }
+.honors li:hover .honor-what { color: #fff; }
+
+/* ── the bet ──────────────────────────────────────────────────────────── */
+.score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2rem, 8vw, 6rem);
+  padding: clamp(2rem, 5vh, 3.5rem) 0;
+  border-block: 1px solid var(--rule);
+}
+
+.score-side { display: grid; justify-items: center; gap: 0.6rem; }
+
+.score-who {
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.score-n {
+  font-size: clamp(3.5rem, 12vw, 8rem);
+  font-weight: 250;
+  line-height: 0.9;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.score-v {
+  font-size: 0.8rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.score-note {
+  margin: 1.6rem 0 0;
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: var(--ink-faint);
+  max-width: 46ch;
+}
+
+/* ── likes and dislikes ───────────────────────────────────────────────── */
+.likes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.4rem;
+}
+
+.likes-col { background: var(--ground); padding: 1.8rem 1.7rem; }
+
+.likes-h {
+  margin: 0 0 1.1rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.likes-col-bad .likes-h { color: rgba(226, 160, 148, 0.85); }
+
+.likes-col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+
+.likes-col li {
+  position: relative;
+  padding-left: 1.3rem;
+  font-size: 0.98rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+.likes-col li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.likes-col-bad li::before { content: "\2212"; color: rgba(226, 160, 148, 0.85); }
+
+/* ── favourites ───────────────────────────────────────────────────────── */
+.faves {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.fave {
+  background: var(--ground);
+  padding: 1.5rem 1.4rem;
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+  transition: background 220ms ease;
+}
+
+.fave:hover { background: rgba(240, 242, 234, 0.035); }
+
+.fave-k {
+  font-size: 0.62rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.fave-v { font-size: 1.15rem; font-weight: 500; color: var(--ink); }
+.fave-x { font-size: 0.82rem; font-weight: 300; color: var(--accent); }
+
+/* ── contact list ─────────────────────────────────────────────────────── */
+.links { list-style: none; margin: 0; padding: 0; }
+
+.links li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1.6rem;
+  padding: 1.1rem 0.15rem;
+  border-top: 1px solid var(--rule);
+}
+
+.links li:last-child { border-bottom: 1px solid var(--rule); }
+
+.link-k {
+  flex: 0 0 9rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.links a, .link-plain {
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  font-weight: 300;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.links a:hover { color: #fff; border-bottom-color: var(--accent); }
+.link-plain { color: var(--ink-soft); }
+
+.poll-wrap { margin-top: 1.4rem; }
+
+/* Promoted to their own layers: these four are written to every frame during
+   the flight, and without this the compositor repaints the fixed scene
+   underneath them each time. */
+.journey-chapter,
+.journey-hero { will-change: opacity, transform; }
+
+/* a live status line */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 1.4rem 0 0;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--ink-soft);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(195, 210, 168, 0.6);
+  animation: status-pulse 2.6s ease-out infinite;
+  flex: none;
+}
+
+@keyframes status-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(195, 210, 168, 0.55); }
+  70% { box-shadow: 0 0 0 9px rgba(195, 210, 168, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(195, 210, 168, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) { .status-dot { animation: none; } }
+
+/* the invitation at the end of the rail */
+.rail-end {
+  flex: 0 0 auto;
+  width: min(24rem, 80vw);
+  display: grid;
+  align-content: center;
+  gap: 0.9rem;
+  padding: 2rem;
+  border: 1px dashed var(--rule);
+  border-radius: 18px;
+}
+
+.rail-end-h {
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.rail-end p {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.rail-end-cta {
+  justify-self: start;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 0.25em;
+  transition: color 180ms ease;
+}
+
+.rail-end-cta:hover { color: #fff; }
+
+/* The veil that removes the flash between the curtain and the first frame.
+   It is the loader's colour, not the scene's, so the two panels are
+   continuous and the only visible event is one fade. */
+.journey-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: #24261f;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.journey-veil.lifted { opacity: 0; }
+
+/* ── touch ────────────────────────────────────────────────────────────────
+   A finger is not a cursor. On a coarse pointer every standalone control gets
+   a real target, and the ones that were laid out as tight text links become
+   proper buttons. Inline links inside prose are left alone: making those 44px
+   tall would blow the line spacing apart, and they are judged by line height
+   rather than box height. */
+@media (pointer: coarse) {
+  .rail-end-cta,
+  .card-go,
+  .links a,
+  .door-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .honors li { padding-block: 1.35rem; }
+  .links li { padding-block: 1.25rem; }
+
+  /* The rail cannot be dragged sideways on touch (it is driven by vertical
+     scroll), so the hint has to say what to do. */
+  .rail-hint::after { content: " (scroll down)"; }
+}

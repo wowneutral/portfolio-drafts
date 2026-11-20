@@ -1,0 +1,44 @@
+/* Same face, same file the scene uses — served from public/, cached once. */
+@font-face {
+  font-family: "Lexend";
+  src: url("/inner-green-assets/lexend-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ink: #f2f4ef;
+  --ground: #4a4d44;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: "Lexend", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The page scrolls — that scroll IS the camera. But there is nothing to see
+   on a scrollbar over a cinematic and it gives away the length of the ride. */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}

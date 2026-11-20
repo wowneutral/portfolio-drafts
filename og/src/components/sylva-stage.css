@@ -1,0 +1,32 @@
+/* A sized, overflow-controlled parent is the one thing the scene requires of
+   its host: `.threeui-background` is height:100%, so an auto-height ancestor
+   would collapse it to zero. svh rather than vh so the mobile URL bar
+   retracting does not resize the canvas and re-lay-out 190,000 blades. */
+.sylva-stage {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #4a4d44;
+}
+
+@supports not (height: 100svh) {
+  .sylva-stage {
+    height: 100vh;
+    min-height: 100vh;
+  }
+}
+
+.sylva-stage__ground {
+  position: absolute;
+  inset: 0;
+  background: #4a4d44;
+  z-index: 0;
+}
+
+.sylva-stage > .threeui-background {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}

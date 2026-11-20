@@ -1,0 +1,40 @@
+/* November 2026: Today, and Live from GitHub. Same tokens as the record. */
+.now-note { max-width: 46rem; margin: 0 0 3rem; padding: 1.6rem 0 0; border-top: 1px solid var(--rule); }
+.now-note time { display: block; margin-bottom: 0.9rem; font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
+.now-note p { margin: 0 0 0.9rem; font-size: clamp(1.1rem, 1.6vw, 1.32rem); font-weight: 300; line-height: 1.6; color: var(--ink); }
+.now-note-empty { font-weight: 300; color: var(--ink-soft); }
+.now-older { max-width: 46rem; margin: -1.6rem 0 3rem; color: var(--ink-soft); }
+.now-older summary { cursor: pointer; font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.4rem 0; }
+.now-older summary:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+.now-older ol { list-style: none; margin: 1rem 0 0; padding: 0; }
+.now-older li { display: grid; grid-template-columns: 11rem 1fr; gap: 1.2rem; padding: 0.9rem 0; border-top: 1px solid var(--rule); }
+.now-older li time { font-size: 0.85rem; color: var(--ink-soft); }
+.now-older li p { margin: 0; font-weight: 300; line-height: 1.6; }
+.now-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; }
+.now-cell { background: var(--ground); padding: 1.8rem 1.6rem; }
+.now-cell h3 { margin: 0 0 0.7rem; font-size: 0.66rem; font-weight: 400; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); }
+.now-cell p { margin: 0; font-weight: 300; line-height: 1.65; color: var(--ink); }
+.now-cell ul { list-style: none; margin: 0; padding: 0; }
+.now-cell li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.35rem 0; color: var(--ink); font-weight: 300; }
+.now-cell li span + span { color: var(--ink-soft); }
+
+.code-commits { list-style: none; margin: 0 0 2.6rem; padding: 0; max-width: 52rem; }
+.code-commits li { border-top: 1px solid var(--rule); }
+.code-commits li:last-child { border-bottom: 1px solid var(--rule); }
+.code-commits a { display: grid; grid-template-columns: 10rem 1fr auto; gap: 1.2rem; align-items: baseline; padding: 0.95rem 0.15rem; color: var(--ink); text-decoration: none; transition: background 220ms ease, padding-left 220ms ease; }
+.code-commits a:hover, .code-commits a:focus-visible { background: rgba(240, 242, 234, 0.03); padding-left: 0.8rem; }
+.code-repo { font-size: 0.78rem; letter-spacing: 0.08em; color: var(--accent); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.code-msg { font-weight: 300; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.code-commits time { font-size: 0.8rem; color: var(--ink-soft); white-space: nowrap; }
+.code-repos { list-style: none; margin: 0 0 2rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 16px; overflow: hidden; }
+.code-repos li { background: var(--ground); }
+.code-repos a { display: grid; gap: 0.5rem; padding: 1.5rem 1.6rem; height: 100%; color: var(--ink); text-decoration: none; transition: background 220ms ease; }
+.code-repos a:hover, .code-repos a:focus-visible { background: #2b2d25; }
+.code-name { font-size: 1.05rem; font-weight: 500; }
+.code-desc { font-size: 0.9rem; font-weight: 300; line-height: 1.55; color: var(--ink-soft); }
+.act2-aside a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 640px) {
+  .now-older li { grid-template-columns: 1fr; gap: 0.3rem; }
+  .code-commits a { grid-template-columns: 1fr auto; }
+  .code-repo { grid-column: 1 / -1; }
+}
