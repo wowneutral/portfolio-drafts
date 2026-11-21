@@ -1,0 +1,3 @@
+import type { Version } from '@/content';
+const meta: Version = { slug: 'loop', n: 83, name: 'The loop', color: '#1b1a18', ink: '#ece6da', kind: 'Idea interface', text: 'The page has no end: scroll past his contact details and the footer gives way to his name stretching open again, with the next tournament already waiting, while a lap mark counts the times round.' };
+export default meta;
