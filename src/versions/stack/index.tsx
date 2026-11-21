@@ -1,7 +1,7 @@
 // Draft 47, The stack. His five chapters arrive as big paper sheets that slide up over each other
 // (fancy's StackingCards, remixed in ./Stack.tsx); the numbered edges of the buried sheets stay
 // readable and take you back. After the stack, the same paper on the same dark desk.
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '@fontsource/dm-serif-display/400.css';
 import '@fontsource/dm-serif-display/400-italic.css';
 import '@fontsource-variable/hanken-grotesk/wght.css';
@@ -11,7 +11,8 @@ import { AWARDS, CHAPTERS, COURSES, DEBATE, DISLIKES, FAVOURITES, GITHUB, HONORS
 import { useVersion } from '@/lib/version';
 import { useGitHub, ago } from '@/lib/github';
 import { useNotes, formatDate } from '@/lib/notes';
-import { scrollToId, scrollToY } from '@/lib/scroll';
+import { gsap, ScrollTrigger, scrollToId, scrollToY, useGSAP } from '@/lib/scroll';
+import type { Note } from '@/lib/notes';
 import { still } from '@/lib/utils';
 import StackingCards, { StackingCardItem } from './Stack';
 
@@ -31,6 +32,24 @@ const Out = ({ href, children, className = 'st-link' }: { href: string; children
   </a>
 );
 
+// One leaf of the daily pad: the day set huge, the note beside it.
+const Leaf = ({ n, latest }: { n: Note; latest: boolean }) => (
+  <>
+    <p className="st-lday" aria-hidden="true">{formatDate(n.date, { day: 'numeric' })}</p>
+    <div className="st-lbody">
+      <p className="st-ndate"><time dateTime={n.date}>{formatDate(n.date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</time></p>
+      {n.body.map((p, i) => <p key={i} className="st-nbody">{p}</p>)}
+      {latest && <p className="st-nlatest">Latest note</p>}
+    </div>
+  </>
+);
+
+// The honours, oldest at the back of the pile; the two titles are the sheet on top.
+const PILE = HONORS.slice(2).reverse();
+const TOPS = HONORS.slice(0, 2);
+// How askew each chapter sheet lies before the stack is squared at the end: x, y, degrees.
+const ASKEW = [[-26, -44, -2.4], [30, -33, 1.8], [-16, -22, -1.3], [20, -12, 1.5], [-10, -4, -0.7]];
+
 const NAV = [
   ['about', 'About'],
   ['today', 'Today'],
@@ -45,10 +64,40 @@ export default function StackPage() {
   const gh = useGitHub();
   const { notes, loaded } = useNotes();
   const [noteAt, setNoteAt] = useState(0);
+  const [torn, setTorn] = useState<{ from: number; dir: 'off' | 'on' } | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const [pick, setPick] = useState(2);
   const job = WORK[pick];
   const note = notes[noteAt] ?? notes[0];
   const commits = gh.activity.slice(0, 6);
+  const under = Math.min(Math.max(notes.length - 1 - noteAt, 0), 5);
+  // Earlier tears the top leaf off the pad; newer lays the torn leaf back on.
+  const turn = (to: number) => {
+    if (to < 0 || to >= notes.length || to === noteAt) return;
+    setTorn(still ? null : { from: noteAt, dir: to > noteAt ? 'off' : 'on' });
+    setNoteAt(to);
+  };
+
+  // Two scrubbed moments, both made of sheets: the record pile settles as it arrives,
+  // and at the end the five chapter sheets are squared into one neat stack.
+  useGSAP(() => {
+    if (still) return;
+    const root = rootRef.current!;
+    // Loose sheets sit lower the nearer the top they are, so the gaps only ever close and nothing passes over the heading.
+    const pile = root.querySelectorAll<HTMLElement>('.st-ftab, .st-ftop');
+    const step = window.innerWidth < 720 ? 8 : 16;
+    pile.forEach((el, k) => {
+      gsap.fromTo(el, { y: Math.min(k + 1, 9) * step }, { y: 0, ease: 'none', scrollTrigger: { trigger: root.querySelector('.st-file'), start: 'top 95%', end: 'top 40%', scrub: 0.6 } });
+    });
+    const sheets = root.querySelectorAll<HTMLElement>('[data-sq]');
+    sheets.forEach((el, k) => {
+      const [x, y, r] = ASKEW[k] ?? [0, 0, 0];
+      const f = window.innerWidth < 720 ? 0.45 : 1;
+      gsap.fromTo(el, { x: x * f, y, rotate: r * f }, { x: 0, y: 0, rotate: 0, ease: 'power1.out', scrollTrigger: { trigger: root.querySelector('.st-endpile'), start: 'top 95%', end: 'top 30%', scrub: 0.8 } });
+    });
+  }, { scope: rootRef });
+  // Notes and GitHub arrive late and change the page's height: measure the scrubbed moments again.
+  useEffect(() => { if (!still) ScrollTrigger.refresh(); }, [notes.length, gh.repos.length, commits.length]);
 
   // Bring a buried sheet back: scroll to the moment it arrived on the stack.
   const goSheet = (i: number) => {
@@ -74,7 +123,7 @@ export default function StackPage() {
   const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); scrollToId(id); };
 
   return (
-    <div className="v-stack">
+    <div className="v-stack" ref={rootRef}>
       <a className="skip-x" href="#main">Skip to content</a>
 
       <header className="st-head">
@@ -244,33 +293,37 @@ export default function StackPage() {
             <p className="st-dsub">His daily note, newest on top.</p>
           </div>
           <div className="st-desk">
-            <article className="st-note" aria-live="polite">
+            <div className="st-pad">
+              {Array.from({ length: under }, (_, k) => <div key={k} className="st-pedge" style={{ ['--k' as string]: k + 1 }} aria-hidden="true" />)}
+              <div className="st-pback" aria-hidden="true" style={{ ['--k' as string]: under + 1 }} />
               {note ? (
-                <>
-                  <p className="st-ndate"><time dateTime={note.date}>{formatDate(note.date, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</time></p>
-                  {note.body.map((p, i) => <p key={i} className="st-nbody">{p}</p>)}
-                  {noteAt === 0 && <p className="st-nlatest">Latest note</p>}
-                </>
+                <article key={'n' + noteAt} className={'st-leaf' + (torn?.dir === 'on' ? ' is-landing' : '')} aria-live="polite" onAnimationEnd={() => setTorn(null)}>
+                  <Leaf n={note} latest={noteAt === 0} />
+                </article>
               ) : (
-                <>
-                  <p className="st-ndate">{loaded ? 'Right now' : 'Today'}</p>
-                  <p className="st-nbody">{NOW.status}</p>
-                </>
+                <article className="st-leaf">
+                  <div className="st-lbody">
+                    <p className="st-ndate">{loaded ? 'Right now' : 'Today'}</p>
+                    <p className="st-nbody">{NOW.status}</p>
+                  </div>
+                </article>
               )}
-            </article>
+              {torn?.dir === 'off' && notes[torn.from] && (
+                <div key={'t' + torn.from} className="st-leaf is-tearing" aria-hidden="true" onAnimationEnd={() => setTorn(null)}>
+                  <Leaf n={notes[torn.from]} latest={torn.from === 0} />
+                </div>
+              )}
+            </div>
             {notes.length > 1 && (
-              <div className="st-pile">
-                <h3 className="st-h3d">Earlier notes</h3>
-                <ul>
-                  {notes.map((n, i) => (
-                    <li key={n.date} style={{ ['--k' as string]: i }}>
-                      <button type="button" className="st-pnote" aria-pressed={i === noteAt} onClick={() => setNoteAt(i)}>
-                        <span className="st-pdate">{formatDate(n.date, { day: 'numeric', month: 'short' })}</span>
-                        <span className="st-pfirst">{n.body[0]}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              <div className="st-turns">
+                <button type="button" className="st-turn" disabled={noteAt >= notes.length - 1} onClick={() => turn(noteAt + 1)}>
+                  <span className="st-pdate">Earlier note</span>
+                  <span className="st-tday">{notes[noteAt + 1] ? formatDate(notes[noteAt + 1].date, { day: 'numeric', month: 'long' }) : 'Nothing older'}</span>
+                </button>
+                <button type="button" className="st-turn" disabled={noteAt === 0} onClick={() => turn(noteAt - 1)}>
+                  <span className="st-pdate">Newer note</span>
+                  <span className="st-tday">{notes[noteAt - 1] ? formatDate(notes[noteAt - 1].date, { day: 'numeric', month: 'long' }) : 'This is the latest'}</span>
+                </button>
               </div>
             )}
           </div>
@@ -339,9 +392,18 @@ export default function StackPage() {
         <section id="record" className="st-sec st-record" aria-labelledby="h-record">
           <h2 id="h-record" className="st-h2d">Record</h2>
           <div className="st-recgrid">
-            <ol className="st-honors">
-              {HONORS.map((h) => (
-                <li key={h.what}><span className="st-hw">{h.what}</span><span className="st-hd">{h.detail}</span></li>
+            <ol className="st-file" style={{ ['--n' as string]: PILE.length }}>
+              {PILE.map((h, k) => (
+                <li key={h.what} className="st-ftab" style={{ ['--k' as string]: k }}>
+                  <span className="st-hw">{h.what}</span><span className="st-hd">{h.detail}</span>
+                </li>
+              ))}
+              {TOPS.map((h) => (
+                <li key={h.what} className="st-ftop">
+                  <span className="st-ftw">{h.what.split(', ')[0]}</span>
+                  <span className="st-fte">{h.what.split(', ')[1]}</span>
+                  <span className="st-ftd">{h.detail}</span>
+                </li>
               ))}
             </ol>
             <div className="st-awards">
@@ -367,7 +429,7 @@ export default function StackPage() {
 
         <section className="st-sec st-off" aria-labelledby="h-off">
           <h2 id="h-off" className="st-h2d st-h2s">Off the record</h2>
-          <div className="st-off4">
+          <div className="st-off4 st-loose">
             <div><h3 className="st-h3d">Likes</h3><ul>{LIKES.map((x) => <li key={x}>{x}</li>)}</ul></div>
             <div><h3 className="st-h3d">Dislikes</h3><ul>{DISLIKES.map((x) => <li key={x}>{x}</li>)}</ul></div>
             <div><h3 className="st-h3d">Favourites</h3><ul>{FAVOURITES.map((x) => <li key={x}>{x}</li>)}</ul></div>
@@ -375,28 +437,37 @@ export default function StackPage() {
           </div>
         </section>
 
-        <section id="contact" className="st-sec st-contact" aria-labelledby="h-contact">
-          <h2 id="h-contact" className="st-h2d">Write to him</h2>
-          <ul className="st-links">
-            {LINKS.map((l) => (
-              <li key={l.label}>
-                <span className="st-ll">{l.label}</span>
-                {l.href ? <Out href={l.href} className="st-lv">{l.value}</Out> : <span className="st-lv st-lv-plain">{l.value}</span>}
-              </li>
-            ))}
-          </ul>
-          <div className="st-again">
-            <h3 className="st-h3d">Back to a chapter</h3>
-            <ul>
+        <section id="contact" className="st-sec st-end" aria-labelledby="h-contact">
+          <div className="st-endpile">
+            <ul className="st-again" aria-label="Back to a chapter">
               {ORDER.map((id, i) => (
-                <li key={id} style={{ ['--k' as string]: i }}>
+                <li key={id} style={{ ['--k' as string]: i }} data-sq>
                   <button type="button" className="st-edge" onClick={() => goSheet(i)}>
                     <span className="st-no">{String(i + 1).padStart(2, '0')}</span>
-                    <span>{ch(id).title}</span>
+                    <span className="st-elabel">{ch(id).label}</span>
+                    <span className="st-etitle">{ch(id).title}</span>
                   </button>
                 </li>
               ))}
             </ul>
+            <div className="st-last" data-sq>
+              <p className="st-ltab"><span className="st-no">06</span> <span>Contact</span></p>
+              <div className="st-lin">
+                <h2 id="h-contact" className="st-lh">Write to him</h2>
+                <ul className="st-links">
+                  {LINKS.map((l) => (
+                    <li key={l.label}>
+                      <span className="st-ll">{l.label}</span>
+                      {l.href ? <Out href={l.href} className="st-lv">{l.value}</Out> : <span className="st-lv st-lv-plain">{l.value}</span>}
+                    </li>
+                  ))}
+                </ul>
+                <div className="st-sign">
+                  <p className="st-signn">{PERSON.name}</p>
+                  <p className="st-signl">{PERSON.line}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
