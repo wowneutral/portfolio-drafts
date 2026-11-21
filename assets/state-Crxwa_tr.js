@@ -1,0 +1,1 @@
+var e={user:0,userTo:0,dragging:!1,free:!0,todayTop:.5,stripes:4,active:-1,onStripe:e=>{},pick:(e,t)=>-1};export{e as t};

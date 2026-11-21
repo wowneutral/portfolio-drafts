@@ -1,0 +1,1 @@
+var e={slug:`grey`,n:37,name:`The grey`,color:`#f6f5f1`,ink:`#111111`,kind:`Idea interface`,text:`His page darkens one step per section from white to black, and one grey full stop rides down with you, looking lighter and lighter though it never changes; drag it onto another ground or press Look again to see its own grey behind it.`};export{e as default};

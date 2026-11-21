@@ -1,0 +1,1 @@
+var e={slug:`case`,n:29,name:`The case`,color:`#f8f7f3`,ink:`#0f0f0f`,kind:`Debate native`,text:`His page is written as a Lincoln-Douglas case: a framework, four numbered contentions for what he does, and two voters at the end, which are the two titles, growing into the biggest type on the page, then a ballot you circle.`};export{e as default};

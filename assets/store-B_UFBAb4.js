@@ -1,0 +1,1 @@
+import{t as e}from"./react-ZnTNku0Q.js";var t=e(e=>({active:0,hover:null,setActive:t=>e(e=>e.active===t?e:{active:t}),setHover:t=>e({hover:t})})),n={mitez:[.5,.62],skeptical:[.73,.5],lastseen:[.46,.5],lastsearch:[.5,.42],spread:[.1,.4],rogue:[.5,.55],jarvis:[.5,.5],drafts:[.12,.5]};export{t as n,n as t};

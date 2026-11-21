@@ -1,0 +1,1 @@
+import{n as e}from"./constants-CxkTOxBK.js";var t=e({},`void main() { }`,`void main() { gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); discard;  }`);export{t};

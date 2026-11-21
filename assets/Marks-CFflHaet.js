@@ -1,0 +1,1 @@
+export{t as ASPECT,n as default,r as makeRig}from"./Marks-I4rBARwe.js";

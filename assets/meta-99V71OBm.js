@@ -1,0 +1,1 @@
+var e={slug:`resin`,n:36,name:`The resin`,color:`#ecebee`,ink:`#141317`,kind:`3D playground`,text:`His name, cast in thick clear resin, lies on a grid made from his own GitHub calendar: move the pointer to slide the light across it, and scroll to turn the camera overhead and read the name flat over the days he pushed code.`};export{e as default};

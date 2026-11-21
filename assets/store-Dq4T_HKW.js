@@ -1,0 +1,1 @@
+var e={span:1,spin:0,hover:-1,focus:-1,bring:-1,front:0,dragged:!1,onFront:null,onPick:null};export{e as t};

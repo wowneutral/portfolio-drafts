@@ -1,0 +1,1 @@
+var e=new URL(`bodoni-moda-latin-500-normal-B12im5S-.woff`,import.meta.url).href;export{e as t};

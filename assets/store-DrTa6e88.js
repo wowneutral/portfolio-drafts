@@ -1,0 +1,1 @@
+var e={lit:``,win:-1,bursts:0,nudge:0,onLit:e=>{}},t={base:.62,rIn:.9,rTop:.98,h:3.7,level:3.12};function n(e){let t=2166136261;for(let n=0;n<e.length;n++)t^=e.charCodeAt(n),t=Math.imul(t,16777619);return(t>>>0)/4294967295}function r(e){let t=n(e)*Math.PI*2,r=.18+n(e+`/r`)*.5;return{x:Math.cos(t)*r,z:Math.sin(t)*r}}export{r as i,t as n,n as r,e as t};

@@ -1,0 +1,1 @@
+var e={slug:`concordance`,n:22,name:`The concordance`,color:`#fbfaf7`,ink:`#111111`,kind:`Idea interface`,text:`His whole site treated as a corpus: press any word and every line on the page that uses it slides sideways into one column, lined up on that word in violet, and each line takes you to where it lives.`};export{e as default};
