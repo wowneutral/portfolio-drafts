@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'diary', n: 88, name: 'The diary', color: '#e2ded3', ink: '#1a1815', kind: 'Live data',
+  text: 'His daily notes as a real notebook lying open on the desk: today’s page on the right, every earlier day a page you turn by its corner, a fold-out page for the two championships, and tabs on the edge for everything else.',
+};
+export default meta;
