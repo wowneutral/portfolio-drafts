@@ -4,7 +4,7 @@
 // it sit his real things, each a Rapier body that a push knocks over and a damped spring stands back up.
 import { Suspense, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, Lightformer } from '@react-three/drei';
+import { Environment, Lightformer, useGLTF } from '@react-three/drei';
 import { Physics, useRapier } from '@react-three/rapier';
 import * as THREE from 'three';
 import { toCreasedNormals } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
@@ -14,9 +14,9 @@ import { HorizontalBlurShader } from 'three/examples/jsm/shaders/HorizontalBlurS
 import { VerticalBlurShader } from 'three/examples/jsm/shaders/VerticalBlurShader.js';
 import { gsap, scroll } from '@/lib/scroll';
 import { clamp, damp, lerp, smooth } from '@/lib/utils';
-import { DEBATE, PERSON, RESEARCH, WORK } from '@/content';
+import { PERSON, RESEARCH, WORK } from '@/content';
 import { hulls, letter, MARK_GITHUB, noiseTexture, solid } from './geo';
-import { NAME_CAP, NAME_DEPTH, PRINTS, STOPS, THINGS, TILE, stopIndex, type Plan, type Shot, type ThingId } from './plan';
+import { NAME_CAP, NAME_DEPTH, PAD_H, PRINTS, SIZES, STOPS, THINGS, TILE, stopIndex, type Plan, type Shot, type ThingId } from './plan';
 import { stage } from './stage';
 import * as T from './textures';
 
@@ -32,7 +32,7 @@ type Body = ReturnType<World['createRigidBody']>;
 type Collider = ReturnType<World['createCollider']>;
 type Desc = ReturnType<RAPIER['ColliderDesc']['cuboid']>;
 type Kind = 'name' | 'thing' | 'print' | 'tile' | 'apple';
-type Mode = 'away' | 'drop' | 'home' | 'loose' | 'rise' | 'fall';
+type Mode = 'away' | 'drop' | 'home' | 'loose' | 'rise' | 'fall' | 'down';
 type Pose = { p: THREE.Vector3; q: THREE.Quaternion };
 type Actor = {
   kind: Kind; ch: string; i: number; id?: ThingId; key?: string; obj: THREE.Object3D; body: Body; kin: boolean; cols: Collider[];
@@ -42,6 +42,8 @@ type Actor = {
   looseT: number; restT: number; pushedAt: number; swipedAt: number; hov: number; poke: number;
   pp: THREE.Vector3; pq: THREE.Quaternion; cp: THREE.Vector3; cq: THREE.Quaternion;
   hinge?: { obj: THREE.Object3D; axis: 'x' | 'z'; sign: number; rest: number };
+  /** The armillary sphere's turning part; the watch's second hand. */
+  spin?: THREE.Object3D; hand?: THREE.Object3D;
   seen: boolean;
 };
 
@@ -86,7 +88,8 @@ function makeMaterials() {
   const night = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
   night.mapping = THREE.EquirectangularReflectionMapping; night.needsUpdate = true;
   const paper = new THREE.MeshStandardMaterial({ color: '#efeadd', roughness: 1, bumpMap: tooth, bumpScale: 0.35, envMap: night, envMapIntensity: 0 });
-  return { ink, red, anod, brass, sheet, white, enamel, kraft, paper, textures: [peel, tooth, brush, night] as THREE.Texture[] };
+  const felt = new THREE.MeshStandardMaterial({ color: '#2a2622', roughness: 1, bumpMap: tooth, bumpScale: 0.6, envMap: night, envMapIntensity: 0 });
+  return { ink, red, anod, brass, sheet, white, enamel, kraft, paper, felt, textures: [peel, tooth, brush, night] as THREE.Texture[] };
 }
 type Mats = ReturnType<typeof makeMaterials>;
 
@@ -116,8 +119,42 @@ function Sweep({ zf, material }: { zf: number; material: THREE.Material }) {
 
 /* ───────── his things ───────── */
 
-type Built = { obj: THREE.Group; cols: Desc[]; half: THREE.Vector3; hinge?: Actor['hinge']; density?: number };
-type Kit = { R: RAPIER; M: Mats; own: (d: { dispose: () => void }) => void; low: boolean; wake: () => void };
+type Built = { obj: THREE.Group; cols: Desc[]; half: THREE.Vector3; hinge?: Actor['hinge']; density?: number; friction?: number; spin?: THREE.Object3D; hand?: THREE.Object3D };
+type Kit = { R: RAPIER; M: Mats; own: (d: { dispose: () => void }) => void; low: boolean; wake: () => void; models: Record<ModelId, THREE.Object3D> };
+
+/* ───────── the scanned and modelled things (glTF, meshopt + webp, credited in the colophon) ───────── */
+
+export const MODELS = { apple: 'apple', plato: 'plato', armillary: 'armillary', watch: 'watch', tea: 'teacup' } as const;
+type ModelId = keyof typeof MODELS;
+const modelUrl = (id: ModelId) => `${BASE}playground/${MODELS[id]}.glb`;
+const MODEL_URLS = (Object.keys(MODELS) as ModelId[]).map(modelUrl);
+
+/** One of his models, scaled to a height, centred on its own box, casting shadows. Glass that would need a
+ * transmission pass is swapped for a thin clear coat, so the scene never renders twice a frame. */
+function model(k: Kit, id: ModelId, height: number): { obj: THREE.Group; inner: THREE.Group; half: THREE.Vector3 } {
+  const inner = new THREE.Group();
+  inner.add(k.models[id].clone(true));
+  inner.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh) return;
+    m.castShadow = m.receiveShadow = true;
+    const fix = (mat: THREE.Material) => {
+      const ph = mat as THREE.MeshPhysicalMaterial;
+      if (ph.transmission > 0) { const g = new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.04, transparent: true, opacity: 0.16, clearcoat: 1, depthWrite: false }); k.own(g); return g; }
+      (mat as THREE.MeshStandardMaterial).envMapIntensity = 1;
+      return mat;
+    };
+    m.material = Array.isArray(m.material) ? m.material.map(fix) : fix(m.material);
+  });
+  const box = new THREE.Box3().setFromObject(inner), size = box.getSize(v3());
+  inner.scale.setScalar(height / size.y);
+  inner.updateMatrixWorld(true);
+  box.setFromObject(inner);
+  const c = box.getCenter(v3());
+  inner.position.sub(c);
+  const g = new THREE.Group(); g.add(inner);
+  return { obj: g, inner, half: box.getSize(v3()).multiplyScalar(0.5) };
+}
 
 const shadowed = (m: THREE.Mesh) => { m.castShadow = m.receiveShadow = true; return m; };
 const cub = (k: Kit, hx: number, hy: number, hz: number, x = 0, y = 0, z = 0, q?: THREE.Quaternion) => {
@@ -174,14 +211,14 @@ function buildThing(id: ThingId, k: Kit): Built {
   const { M } = k;
   switch (id) {
     case 'github': {
-      const s = 1.12, h = 0.98;
+      const s = SIZES.github[0], h = SIZES.github[1];
       const g = new THREE.Group();
       const geo = new RoundedBoxGeometry(s, h, s, 5, 0.09);
       g.add(shadowed(new THREE.Mesh(geo, M.anod)));
       // The mark, inlaid on the top in raised white.
       const shapes = new SVGLoader().parse(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="${MARK_GITHUB}"/></svg>`).paths.flatMap((p) => SVGLoader.createShapes(p));
       const mg = new THREE.ExtrudeGeometry(shapes, { depth: 0.6, bevelEnabled: true, bevelThickness: 0.12, bevelSize: 0.08, bevelSegments: 2, curveSegments: 10 });
-      const sc = 0.66 / 16;
+      const sc = (s * 0.6) / 16;
       mg.translate(-8, -8, 0); mg.scale(sc, -sc, -sc * 0.5); mg.rotateX(Math.PI / 2); mg.rotateY(Math.PI);
       const mark = shadowed(new THREE.Mesh(mg, M.white)); mark.position.y = h / 2 - 0.006; g.add(mark);
       const face = new THREE.Mesh(new THREE.PlaneGeometry(s * 0.86, s * 0.86), new THREE.MeshStandardMaterial({ transparent: true, roughness: 0.55, metalness: 0.3, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }));
@@ -190,12 +227,34 @@ function buildThing(id: ThingId, k: Kit): Built {
       return { obj: g, half: v3(s / 2, h / 2, s / 2), cols: [cub(k, s / 2, h / 2, s / 2)], density: 1.4 };
     }
     case 'mitez': {
-      const face = new THREE.MeshStandardMaterial({ map: image(k, WORK[0].img, 1.92, { x: 0.02, y: 0, w: 0.6, h: 0.55 }), roughness: 0.5 });
-      k.own(face);
-      return leaning(k, 1.42, 0.74, face, false, WORK[0].name);
+      // Its screenshot is only the white click-to-enter page: the card carries its placard type instead.
+      const w = WORK[0], t = T.mitezFace({ name: w.name, kind: w.kind, host: w.href.replace(/^https:\/\//, '') });
+      const face = new THREE.MeshStandardMaterial({ map: t, roughness: 0.55 });
+      k.own(t); k.own(face);
+      const [cw] = SIZES.mitez;
+      return leaning(k, cw - 0.08, (cw - 0.08) / 1.6, face, false);
+    }
+    case 'plato': {
+      const m = model(k, 'plato', SIZES.plato[1]);
+      return { obj: m.obj, half: m.half, cols: [cub(k, m.half.x * 0.9, m.half.y, m.half.z * 0.9)], density: 2.2 };
+    }
+    case 'armillary': {
+      const m = model(k, 'armillary', SIZES.armillary[1]);
+      return { obj: m.obj, half: m.half, cols: [cub(k, m.half.x * 0.8, m.half.y, m.half.z * 0.85)], density: 1.2, spin: m.inner };
+    }
+    case 'watch': {
+      // Standing on the curl of its strap, face to the room. Its second hand keeps the six-minute AC clock.
+      const m = model(k, 'watch', SIZES.watch[1]);
+      const hand = m.inner.getObjectByName('Hand_Seconds') ?? m.inner.getObjectByName('Hand Seconds') ?? undefined;
+      return { obj: m.obj, half: m.half, cols: [cub(k, m.half.x, m.half.y, m.half.z)], density: 1.4, friction: 0.22, hand };
+    }
+    case 'tea': {
+      const m = model(k, 'tea', SIZES.tea[1]);
+      const d = k.R.ColliderDesc.cylinder(m.half.y, Math.min(m.half.x, m.half.z)) as unknown as Desc;
+      return { obj: m.obj, half: m.half, cols: [d], density: 0.9, friction: 0.35 };
     }
     case 'paper': {
-      const w = 0.76, h = 0.15, d = 1.06;
+      const [w, h, d] = SIZES.paper;
       const g = new THREE.Group();
       const ed = T.edges(); ed.repeat.set(1, 0.6); k.own(ed);
       const side = new THREE.MeshStandardMaterial({ map: ed, roughness: 0.95 }); k.own(side);
@@ -211,7 +270,7 @@ function buildThing(id: ThingId, k: Kit): Built {
       return { obj: g, half: v3(w / 2, h / 2, d / 2), cols: [cub(k, w / 2, h / 2, d / 2)], hinge: { obj: hinge, axis: 'z', sign: 1, rest: 0 }, density: 0.8 };
     }
     case 'notepad': {
-      const w = 0.86, h = 0.1, d = 1.14;
+      const [w, h, d] = SIZES.notepad;
       const g = new THREE.Group();
       const ed = T.edges(); ed.repeat.set(1, 0.4); k.own(ed);
       const side = new THREE.MeshStandardMaterial({ map: ed, roughness: 0.95 }); k.own(side);
@@ -226,38 +285,6 @@ function buildThing(id: ThingId, k: Kit): Built {
       [geo, bg, sg].forEach(k.own);
       return { obj: g, half: v3(w / 2 + 0.015, h / 2 + 0.01, d / 2), cols: [cub(k, w / 2 + 0.015, h / 2 + 0.01, d / 2)], hinge: { obj: hinge, axis: 'x', sign: -1, rest: 0 }, density: 0.8 };
     }
-    case 'envelope': {
-      const w = 1.1, h = 0.035, d = 0.7;
-      const g = new THREE.Group();
-      const ft = T.envelope({ name: PERSON.name, to: 'founder@mitez.org' }), bt = T.flap(); k.own(ft); k.own(bt);
-      const front = new THREE.MeshStandardMaterial({ map: ft, roughness: 0.9 }), back = new THREE.MeshStandardMaterial({ map: bt, roughness: 0.9 }), edge = new THREE.MeshStandardMaterial({ color: '#e8dcbc', roughness: 0.9 });
-      [front, back, edge].forEach(k.own);
-      const geo = new RoundedBoxGeometry(w, h, d, 2, 0.008);
-      // RoundedBox has no face groups: one cream body, the printed face on top.
-      g.add(shadowed(new THREE.Mesh(geo, edge)));
-      const fg = new THREE.PlaneGeometry(w - 0.02, d - 0.02); fg.rotateX(-Math.PI / 2);
-      const f = new THREE.Mesh(fg, front); f.position.y = h / 2 + 0.001; f.receiveShadow = true; g.add(f);
-      const bg2 = fg.clone(); bg2.rotateX(Math.PI);
-      const b = new THREE.Mesh(bg2, back); b.position.y = -h / 2 - 0.001; g.add(b);
-      [geo, fg, bg2].forEach(k.own);
-      return { obj: g, half: v3(w / 2, h / 2, d / 2), cols: [cub(k, w / 2, h / 2, d / 2)], density: 0.6 };
-    }
-    case 'plaque0': case 'plaque1': {
-      const win = DEBATE.wins[id === 'plaque0' ? 0 : 1];
-      const pw = 0.72, ph = 0.4, pd = 0.5, bw = 0.64, bh = 0.64, bt = 0.05, lean = 0.12;
-      const H = ph + bh * Math.cos(lean), y0 = -H / 2;
-      const g = new THREE.Group();
-      const pg = new RoundedBoxGeometry(pw, ph, pd, 3, 0.03);
-      const plinth = shadowed(new THREE.Mesh(pg, M.ink)); plinth.position.y = y0 + ph / 2; g.add(plinth);
-      const tx = T.plaque(win); k.own(tx);
-      const fm = M.brass.clone(); fm.map = tx; fm.bumpMap = null; k.own(fm);
-      const plate = new THREE.Group(); plate.position.set(0, y0 + ph - 0.01, 0.06); plate.rotation.x = -lean; g.add(plate);
-      const bgeo = new THREE.BoxGeometry(bw, bh, bt);
-      const brass = shadowed(new THREE.Mesh(bgeo, [M.brass, M.brass, M.brass, M.brass, fm, M.brass])); brass.position.y = bh / 2; plate.add(brass);
-      [pg, bgeo].forEach(k.own);
-      const bq = qx(-lean), mid = v3(0, bh / 2, 0).applyQuaternion(bq).add(plate.position);
-      return { obj: g, half: v3(pw / 2, H / 2, pd / 2), cols: [cub(k, pw / 2, ph / 2, pd / 2, 0, y0 + ph / 2, 0), cub(k, bw / 2, bh / 2, bt / 2, mid.x, mid.y, mid.z, bq)], density: 1.6 };
-    }
     case 'skeptical': default: {
       const o = letter('?', 1.5, k.low ? 4 : 7);
       const geo = toCreasedNormals(solid(o, 0.5, 0.034, k.low ? 2 : 4), 0.7); k.own(geo);
@@ -268,37 +295,6 @@ function buildThing(id: ThingId, k: Kit): Built {
       return { obj: g, half: v3(o.w / 2, o.h / 2, 0.25), cols, density: 1 };
     }
   }
-}
-
-/** A real-looking apple, turned on a lathe: red into yellow, a dimple, a stem. */
-function buildApple(k: Kit) {
-  const r = 0.21;
-  const pts = [[0, 0.07], [0.14, 0.035], [0.32, 0.0], [0.52, 0.045], [0.7, 0.17], [0.82, 0.35], [0.86, 0.53], [0.82, 0.71], [0.7, 0.86], [0.52, 0.96], [0.32, 0.985], [0.17, 0.95], [0.07, 0.87], [0, 0.83]].map(([x, y]) => new THREE.Vector2(x, y));
-  const curve = new THREE.SplineCurve(pts);
-  const prof = curve.getPoints(48).map((p) => new THREE.Vector2(Math.max(0, p.x) * r * 1.16, p.y * r * 2));
-  prof[0].x = 0; prof[prof.length - 1].x = 0;
-  const geo = new THREE.LatheGeometry(prof, 64);
-  geo.translate(0, -r, 0);
-  const pos = geo.attributes.position, col = new Float32Array(pos.count * 3);
-  const red = new THREE.Color('#a8121a'), deep = new THREE.Color('#6e0b12'), gold = new THREE.Color('#d9a23c'), c = new THREE.Color();
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i), a = Math.atan2(z, x), h = (y + r) / (2 * r);
-    const blush = smooth(clamp(0.5 + 0.5 * Math.cos(a - 0.6) * 1.4 - 0.2));
-    const streak = 0.5 + 0.5 * Math.sin(a * 23 + Math.sin(a * 7) * 2);
-    c.copy(gold).lerp(red, clamp(blush * 0.85 + streak * 0.25 * blush + h * 0.1));
-    c.lerp(deep, clamp((1 - h) * 0.35 * blush));
-    if (h > 0.86) c.lerp(new THREE.Color('#7a6a2a'), clamp((h - 0.86) * 4) * 0.5);
-    col.set([c.r, c.g, c.b], i * 3);
-  }
-  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  geo.computeVertexNormals();
-  const skin = new THREE.MeshPhysicalMaterial({ vertexColors: true, roughness: 0.38, clearcoat: 0.7, clearcoatRoughness: 0.25, sheen: 0.2, envMapIntensity: 0.9 });
-  const sg = new THREE.TubeGeometry(new THREE.CatmullRomCurve3([v3(0, r * 0.62, 0), v3(0.005, r * 0.95, 0), v3(0.03, r * 1.22, 0.01)]), 8, 0.012, 6);
-  const stem = new THREE.MeshStandardMaterial({ color: '#4a3520', roughness: 0.8 });
-  const g = new THREE.Group();
-  g.add(shadowed(new THREE.Mesh(geo, skin)), shadowed(new THREE.Mesh(sg, stem)));
-  [geo, skin, sg, stem].forEach(k.own);
-  return { obj: g, r };
 }
 
 /* ───────── the set ───────── */
@@ -312,11 +308,14 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
   const disposables = useRef<{ dispose: () => void }[]>([]).current;
   const sim = useRef({
     now: 0, acc: 0, started: false, opening: true, quiet: 0, printV: -1, frame: 0, shadowHold: 0, appleSeen: false, printsMade: false,
+    spinA: null as Actor | null, spinV: 0, tick: -1,
     jobs: [] as { at: number; run: () => void }[],
     ptr: { x: -1, y: -1, t: 0, vx: 0, vy: 0, down: false, travel: 0, downAt: 0, moved: false, touch: false, run: 0 },
   }).current;
   const room = useRef<Body | null>(null);
-  const kit: Kit = useMemo(() => ({ R, M, low, own: (d) => disposables.push(d), wake: () => { stage.wake = Math.max(stage.wake, 6); stage.dirty = Math.max(stage.dirty, 2); invalidate(); } }), [R, M, low, disposables, invalidate]);
+  const gltfs = useGLTF(MODEL_URLS, false) as unknown as { scene: THREE.Group }[];
+  const models = useMemo(() => Object.fromEntries((Object.keys(MODELS) as ModelId[]).map((id, i) => [id, gltfs[i].scene])) as unknown as Record<ModelId, THREE.Object3D>, [gltfs]);
+  const kit: Kit = useMemo(() => ({ R, M, low, models, own: (d) => disposables.push(d), wake: () => { stage.wake = Math.max(stage.wake, 6); stage.dirty = Math.max(stage.dirty, 2); invalidate(); } }), [R, M, low, models, disposables, invalidate]);
 
   const makeActor = (kind: Kind, i: number, obj: THREE.Object3D, cols: Desc[], half: THREE.Vector3, home: Pose, density = 1, ch = ''): Actor => {
     obj.visible = false;
@@ -348,8 +347,11 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
     });
     const things = THINGS.map((id, i) => {
       const b = buildThing(id, kit), s = plan.spots[id];
-      const a = makeActor('thing', i, b.obj, b.cols, b.half, { p: v3(s.x, b.half.y, s.z), q: qy(s.ry) }, b.density ?? 1);
-      a.id = id; a.key = id; a.hinge = b.hinge; a.drop = 3.2;
+      const a = makeActor('thing', i, b.obj, b.cols, b.half, { p: v3(s.x, b.half.y + (s.y ?? 0), s.z), q: qy(s.ry) }, b.density ?? 1);
+      a.id = id; a.key = id; a.hinge = b.hinge; a.spin = b.spin; a.hand = b.hand; a.drop = 3.2;
+      if (b.friction != null) for (const c of a.cols) c.setFriction(b.friction);
+      // The tea slides, never tips.
+      if (id === 'tea') a.body.setEnabledRotations(false, true, false, true);
       return a;
     });
     const prints = PRINTS.map((slug, i) => {
@@ -370,15 +372,21 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       a.drop = 4; a.thud = 0.004; a.rock = 0.05;
       return a;
     });
-    // The apple: one body, reused for every fall.
-    const ap = buildApple(kit);
+    // The apple (Poly Haven's food_apple_01): one body, reused for every fall.
+    const ap = model(kit, 'apple', 0.36), r = Math.max(ap.half.x, ap.half.y, ap.half.z) * 0.96;
     const sk = plan.spots.skeptical;
-    const apple = makeActor('apple', 0, ap.obj, [R.ColliderDesc.ball(ap.r) as unknown as Desc], v3(ap.r, ap.r, ap.r), { p: v3(sk.x - 0.9, ap.r, sk.z + 0.9), q: new THREE.Quaternion() }, 0.9);
+    const apple = makeActor('apple', 0, ap.obj, [R.ColliderDesc.ball(r) as unknown as Desc], v3(r, r, r), { p: v3(sk.x - 0.9, r, sk.z + 0.9), q: new THREE.Quaternion() }, 0.9);
     for (const c of apple.cols) { c.setRestitution(0.32); c.setFriction(0.9); }
     const rb = world.createRigidBody(R.RigidBodyDesc.fixed());
     const wall = (hx: number, hy: number, hz: number, x: number, y: number, z: number) => world.createCollider(R.ColliderDesc.cuboid(hx, hy, hz).setTranslation(x, y, z).setFriction(0.78).setRestitution(0.04), rb);
     const cx = (plan.x0 + plan.x1) / 2, cz = (plan.z0 + plan.z1) / 2, hx = (plan.x1 - plan.x0) / 2 + 4, hz = (plan.z1 - plan.z0) / 2 + 3;
     wall(120, 5, 120, 0, -5, 0); wall(1, 20, hz + 2, cx - hx, 20, cz); wall(1, 20, hz + 2, cx + hx, 20, cz); wall(hx + 2, 20, 1, cx, 20, cz + hz); wall(hx + 2, 20, 1, cx, 20, cz - hz);
+    // The felt pad under the paper things: dark, so their white faces part from the white sweep.
+    const pg = new RoundedBoxGeometry(plan.pad.w, PAD_H, plan.pad.d, 2, 0.012); disposables.push(pg);
+    const pad = new THREE.Mesh(pg, M.felt); pad.receiveShadow = true;
+    pad.position.set(plan.pad.x, PAD_H / 2, plan.pad.z); pad.rotation.y = plan.pad.ry; root.add(pad);
+    const pq = qy(plan.pad.ry);
+    world.createCollider(R.ColliderDesc.cuboid(plan.pad.w / 2, PAD_H / 2, plan.pad.d / 2).setTranslation(plan.pad.x, PAD_H / 2, plan.pad.z).setRotation({ x: pq.x, y: pq.y, z: pq.z, w: pq.w }).setFriction(0.9), rb);
     room.current = rb;
     return { name, things, prints, tiles, tileMesh, apple, bounds: { cx, cz, hx, hz } };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -391,9 +399,9 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
 
   useEffect(() => {
     if (import.meta.env.DEV) (window as unknown as { __pg: unknown }).__pg = { stage, sim, actors };
-    stage.wake = Math.max(stage.wake, 60); stage.dirty = 4;
+    stage.wake = Math.max(stage.wake, 60); stage.dirty = 4; stage.ready = true;
     world.timestep = STEP; world.gravity = { x: 0, y: -GRAV, z: 0 };
-    return () => { disposables.forEach((d) => d.dispose()); topGeo.dispose(); tileTops.forEach((m) => { (m.material as THREE.MeshStandardMaterial).map?.dispose(); (m.material as THREE.Material).dispose(); }); };
+    return () => { stage.ready = false; disposables.forEach((d) => d.dispose()); topGeo.dispose(); tileTops.forEach((m) => { (m.material as THREE.MeshStandardMaterial).map?.dispose(); (m.material as THREE.Material).dispose(); }); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [world]);
 
@@ -412,7 +420,7 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       a.mode = 'home'; setDyn(a);
       a.body.setTranslation(a.home.p, false); a.body.setRotation(a.home.q, false);
       a.body.setLinvel({ x: 0, y: 0, z: 0 }, false); a.body.setAngvel({ x: 0, y: 0, z: 0 }, false);
-      a.body.sleep();
+      a.body.sleep(); stage.dirty = Math.max(stage.dirty, 2);
     };
     const startDrop = (a: Actor) => {
       a.mode = 'drop'; a.t = 0; a.landed = false;
@@ -490,7 +498,10 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       if (p.x >= 0 && now - p.t < 120) { p.vx = lerp(p.vx, ((e.clientX - p.x) / dt) * 1000, 0.5); p.vy = lerp(p.vy, ((e.clientY - p.y) / dt) * 1000, 0.5); } else { p.vx = p.vy = 0; }
       const step = Math.hypot(e.clientX - p.x, e.clientY - p.y);
       if (p.down) p.travel += step;
+      const dx = e.clientX - p.x;
       p.x = e.clientX; p.y = e.clientY; p.t = now; p.moved = true; p.touch = e.pointerType === 'touch';
+      // Drag on the armillary sphere turns it on its stand.
+      if (p.down && sim.spinA?.spin) { const da = dx * 0.011; sim.spinA.spin.rotation.y += da; sim.spinV = lerp(sim.spinV, (da / dt) * 1000, 0.5); stage.wake = Math.max(stage.wake, 6); return; }
       const speed = Math.hypot(p.vx, p.vy);
       p.run += step;
       if (speed < 650 || p.run < 14 || sim.opening || p.touch || blocked(e)) return;
@@ -504,10 +515,17 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       hit.point.y = Math.max(hit.point.y, hit.a.cp.y + hit.a.half.y * 0.45);
       api.shove(hit.a, hit.point, dir.clone(), clamp(speed / 900, 1, 1.6) * (hit.a.kind === 'name' ? 1.7 : 1.4));
     };
-    const down = (e: PointerEvent) => { if (e.button !== 0 || blocked(e)) return; p.down = true; p.travel = 0; p.downAt = e.timeStamp; p.x = e.clientX; p.y = e.clientY; p.t = performance.now(); p.touch = e.pointerType === 'touch'; p.vx = p.vy = 0; };
+    const down = (e: PointerEvent) => {
+      if (e.button !== 0 || blocked(e)) return;
+      p.down = true; p.travel = 0; p.downAt = e.timeStamp; p.x = e.clientX; p.y = e.clientY; p.t = performance.now(); p.touch = e.pointerType === 'touch'; p.vx = p.vy = 0;
+      const hit = sim.opening ? null : cast(e.clientX, e.clientY);
+      sim.spinA = hit?.a.spin ? hit.a : null;
+      if (sim.spinA) sim.spinV = 0;
+    };
     const up = (e: PointerEvent) => {
       if (!p.down) return; p.down = false;
       stage.dragged = p.travel > 10;
+      if (sim.spinA) { sim.spinA = null; return; }
       if (p.travel > 10 || e.timeStamp - p.downAt > 900 || blocked(e) || sim.opening) return;
       if ((e.target as Element | null)?.closest?.('[data-thing]')) return; // the link opens it
       const hit = cast(e.clientX, e.clientY);
@@ -517,7 +535,7 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       if (dir.lengthSq() < 0.05) return;
       api.shove(hit.a, hit.point, dir.normalize(), 2.3);
     };
-    const cancel = () => { p.down = false; };
+    const cancel = () => { p.down = false; sim.spinA = null; };
     window.addEventListener('pointermove', move, { passive: true });
     window.addEventListener('pointerdown', down, { passive: true });
     window.addEventListener('pointerup', up, { passive: true });
@@ -590,6 +608,8 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
           if (sp > 11) a.body.setLinvel({ x: (lv.x / sp) * 11, y: (lv.y / sp) * 11, z: (lv.z / sp) * 11 }, true);
           const t = a.body.translation();
           const lost = t.y < -2 || Math.abs(t.x - bounds.cx) > bounds.hx - 0.3 || Math.abs(t.z - bounds.cz) > bounds.hz - 0.3;
+          // Everything gets back up. Plato stays down.
+          if (a.id === 'plato' && !lost) { if (a.restT > 0.45 && a.looseT > 1.2) a.mode = 'down'; break; }
           if (lost || (sim.now - a.pushedAt > 0.8 && ((a.restT > 0.45 && a.looseT > 1.2) || a.looseT > 4))) api.startRise(a);
           break;
         }
@@ -655,11 +675,20 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       el.style.visibility = show || el === document.activeElement ? 'visible' : 'hidden';
       if (show) { el.style.transform = `translate(${x0.toFixed(1)}px, ${y0.toFixed(1)}px)`; el.style.width = `${w.toFixed(1)}px`; el.style.height = `${h.toFixed(1)}px`; }
       if (stage.hover === a.key && stage.tag) {
-        stage.tag.style.transform = `translate(${((x0 + x1) / 2).toFixed(1)}px, ${(y0 - 10).toFixed(1)}px) translate(-50%, -100%)`;
+        // The caption: on the opening desk it takes the hint's place under the photograph, so it never
+        // sits on the name; on a close-up it stands above the thing, kept inside the screen.
+        const root = stage.tag.closest('.v-playground'), hint = root?.querySelector<HTMLElement>('.hint');
+        const hr = stage.f < 0.4 && hint ? hint.getBoundingClientRect() : null;
+        const tw = stage.tag.offsetWidth / 2 + 16;
+        const tx = hr && hr.bottom > 0 ? hr.left + hr.width / 2 : clamp((x0 + x1) / 2, tw, r.width - tw);
+        // Under the photograph the caption hangs from the hint's line; on a close-up it stands on the thing.
+        const ty = hr && hr.bottom > 0 ? hr.top - 2 : Math.max(stage.tag.offsetHeight + 12, y0 - 10);
+        stage.tag.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) translate(-50%, ${hr && hr.bottom > 0 ? '0' : '-100%'})`;
         stage.tag.dataset.on = show ? '1' : '';
+        root?.classList.toggle('is-tagging', show && !!hr && hr.bottom > 0);
       }
     }
-    if (!stage.hover && stage.tag) stage.tag.dataset.on = '';
+    if (!stage.hover && stage.tag) { stage.tag.dataset.on = ''; stage.tag.closest('.v-playground')?.classList.remove('is-tagging'); }
   };
 
   /* ── the frame ── */
@@ -678,7 +707,7 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       things.forEach((a, i) => { a.body.setEnabled(true); a.wait = 0.75 + i * 0.07; a.rock = (i % 2 ? 1 : -1) * 0.03; a.thud = 0.008; api.startDrop(a); });
       tiles.forEach((a, i) => { if (i < tileChars.length) { a.body.setEnabled(true); a.wait = 1.3 + i * 0.06; api.startDrop(a); } });
     }
-    if (sim.opening && sim.started && word.every((a) => a.mode === 'home') && things.every((a) => a.mode === 'home')) { sim.opening = false; stage.opened = true; stage.onOpened?.(); }
+    if (sim.opening && sim.started && word.every((a) => a.mode === 'home') && things.every((a) => a.mode === 'home')) { sim.opening = false; stage.opened = true; stage.dirty = 4; stage.wake = Math.max(stage.wake, 8); stage.onOpened?.(); }
 
     // The gallery behind the name is set up as the camera comes round to it.
     // They are packed away again once the camera has gone back to the front, so the last look at the desk is clean.
@@ -694,15 +723,22 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       if (c.type === 'key') {
         let n = 0;
         for (const a of word) if (a.ch === c.ch) sim.jobs.push({ at: sim.now + 0.09 * n++, run: () => api.topple(a, (a.i % 3) - 1 ? 0.25 : -0.25, -1, 2.2) });
-      } else if (c.id === 'skeptical') api.dropApple();
-      else { const a = linked.find((x) => x.key === c.id); if (a) a.poke = sim.now; }
+      } else if (c.type === 'spin') { sim.spinV += c.d * 2.6; }
+      else if (c.id === 'skeptical') api.dropApple();
+      else {
+        const a = linked.find((x) => x.key === c.id);
+        if (!a) continue;
+        if (a.id === 'plato') { if (a.mode === 'down') api.startRise(a); else api.topple(a, -0.5, -1, 2.6); }
+        else if (a.id === 'tea') { if (a.mode === 'home' || a.mode === 'rise') { api.read(a, a.from); api.shove(a, a.from.p.clone(), v3(1, 0, -0.35).normalize(), 3.2); } }
+        else a.poke = sim.now;
+      }
     }
 
     const p = sim.ptr;
     if (p.moved && p.x >= 0 && !sim.opening) { p.moved = false; const h = !p.touch ? cast(p.x, p.y) : null; stage.over = !!h && h.a.kind === 'name'; }
 
     let busy = sim.jobs.length > 0;
-    if (!busy) for (const a of actors) { if (a.mode === 'drop' || a.mode === 'loose' || a.mode === 'rise' || a.mode === 'fall' || (a.mode === 'home' && !a.body.isSleeping())) { busy = true; break; } }
+    if (!busy) for (const a of actors) { if (a.mode === 'drop' || a.mode === 'loose' || a.mode === 'rise' || a.mode === 'fall' || ((a.mode === 'home' || a.mode === 'down') && !a.body.isSleeping())) { busy = true; break; } }
     sim.quiet = busy ? 0 : sim.quiet + 1;
     if (sim.quiet < 6 || stage.shake > 0.0005) { stage.wake = Math.max(stage.wake, 6); if (sim.shadowHold <= 0) stage.dirty = 3; }
     if (sim.shadowHold > 0) { sim.shadowHold -= dt; stage.wake = Math.max(stage.wake, 3); if (sim.shadowHold <= 0) stage.dirty = 3; else stage.dirty = 0; }
@@ -735,6 +771,18 @@ function TheSet({ plan, M, low }: { plan: Plan; M: Mats; low: boolean }) {
       }
     }
     if (hovering) { stage.wake = Math.max(stage.wake, 3); stage.dirty = Math.max(stage.dirty, 1); }
+    // The armillary sphere coasts to a stop after a drag.
+    if (!sim.spinA && Math.abs(sim.spinV) > 0.002) {
+      const sp = things.find((a) => a.spin)?.spin;
+      if (sp) sp.rotation.y += sim.spinV * dt;
+      sim.spinV *= Math.exp(-2.2 * dt); stage.wake = Math.max(stage.wake, 3); stage.dirty = Math.max(stage.dirty, 1);
+    }
+    // The watch keeps the AC clock: its second hand ticks once a second while the six minutes run.
+    const hand = things.find((a) => a.hand)?.hand;
+    if (hand) {
+      const sec = stage.clock ? Math.floor((performance.now() - stage.clock) / 1000) : 0;
+      if (sec !== sim.tick) { sim.tick = sec; hand.rotation.y = (sec % 60) * (Math.PI / 30); }
+    }
     // Commit tiles: instance matrices from their bodies.
     let n = 0; const counts = new Map<string, number>();
     tiles.forEach((a, i) => {
@@ -912,7 +960,7 @@ function Pump() {
 
 export default function Stage({ plan }: { plan: Plan }) {
   const M = useMemo(makeMaterials, []);
-  useEffect(() => () => { [M.ink, M.red, M.anod, M.brass, M.sheet, M.white, M.enamel, M.kraft, M.paper].forEach((m) => m.dispose()); M.textures.forEach((t) => t.dispose()); }, [M]);
+  useEffect(() => () => { [M.ink, M.red, M.anod, M.brass, M.sheet, M.white, M.enamel, M.kraft, M.paper, M.felt].forEach((m) => m.dispose()); M.textures.forEach((t) => t.dispose()); }, [M]);
   const low = plan.phone;
   const cx = (plan.x0 + plan.x1) / 2, cz = (plan.z0 + plan.z1) / 2;
   return (

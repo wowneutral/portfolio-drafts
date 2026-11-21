@@ -1,11 +1,10 @@
 // The desk drawn flat, for no WebGL and reduced motion, and as the loader before the scene is ready.
 // After the FlatWord pattern in src/versions/letters/index.tsx (draft 2).
-import { DEBATE, GITHUB, LINKS, RESEARCH, WORK } from '@/content';
+import { GITHUB, RESEARCH, WORK } from '@/content';
 import GLYPHS from './glyphs.json';
 import { MARK_GITHUB } from './geo';
 import { NAME } from './plan';
 
-const BASE = import.meta.env.BASE_URL;
 const g = (ch: string) => GLYPHS.glyphs.find((x) => x.ch === ch)!;
 export const glyphPath = (ch: string) => g(ch);
 
@@ -19,8 +18,11 @@ export function objects(o: { day: string; ghN: string; ghLabel: string }): Obj[]
     {
       id: 'mitez', w: 700, href: WORK[0].href, ext: true, label: 'MITEZ, mitez.org, opens in a new tab',
       draw: (<>
-        <rect x="10" y="-400" width="680" height="350" fill="#f4f1ea" stroke="#14110d" strokeWidth="6" />
-        <image href={BASE + WORK[0].img} x="22" y="-388" width="656" height="326" preserveAspectRatio="xMidYMax slice" />
+        <rect x="10" y="-460" width="680" height="410" fill="#f2f1ee" stroke="#14110d" strokeWidth="6" />
+        <text x="350" y="-215" textAnchor="middle" className="fd-mitez">MITEZ</text>
+        <rect x="64" y="-170" width="572" height="4" fill="#14110d" />
+        <text x="64" y="-104" className="fd-small">{WORK[0].kind.toUpperCase()}</text>
+        <text x="636" y="-104" textAnchor="end" className="fd-host">mitez.org</text>
         <rect x="0" y="-50" width="700" height="50" rx="10" fill="#14110d" />
       </>),
     },
@@ -54,21 +56,15 @@ export function objects(o: { day: string; ghN: string; ghLabel: string }): Obj[]
       </>),
     },
     {
-      id: 'envelope', w: 560, href: LINKS[0].href, label: 'Email, founder@mitez.org',
+      id: 'watch', w: 360, href: '#debate', label: 'The watch: the six-minute AC clock, in Debate below',
       draw: (<>
-        <rect x="0" y="-340" width="560" height="340" fill="#efe5cc" stroke="#8a7650" strokeWidth="4" />
-        <path d="M0 -340 L280 -150 L560 -340 M0 0 L230 -170 M560 0 L330 -170" fill="none" stroke="#8a7650" strokeWidth="4" />
+        <rect x="120" y="-470" width="120" height="470" rx="40" fill="#2c2a26" />
+        <circle cx="180" cy="-250" r="170" fill="#b89a5a" />
+        <circle cx="180" cy="-250" r="142" fill="#f3efe4" stroke="#14110d" strokeWidth="5" />
+        <text x="180" y="-210" textAnchor="middle" className="fd-date">6:00</text>
+        <rect x="177" y="-372" width="6" height="122" fill="#c8321e" />
       </>),
     },
-    ...DEBATE.wins.map((w, i) => ({
-      id: 'plaque' + i, w: 300, href: '#debate', label: `Champion, ${w.event}, ${w.where}, read Debate below`,
-      draw: (<>
-        <rect x="0" y="-200" width="300" height="200" rx="14" fill="#14110d" />
-        <rect x="22" y="-480" width="256" height="290" fill="#c79f55" stroke="#8b6a32" strokeWidth="6" />
-        <text x="150" y="-370" textAnchor="middle" className="fd-plaque">CHAMPION</text>
-        <text x="150" y="-290" textAnchor="middle" className="fd-small fd-brass">{w.where.toUpperCase()}</text>
-      </>),
-    })),
     {
       id: 'skeptical', w: q.advance * qs + 40, href: '#skeptical', label: 'Skeptical, the question mark',
       draw: <path d={q.d} fill="#c8321e" transform={`translate(${20 - q.x * qs} 0) scale(${qs})`} />,

@@ -28,11 +28,14 @@ html[data-v="playground"] { background: #e7e2d6; }
 .v-playground .thing:focus-visible { outline: 3px solid var(--red); outline-offset: 6px; }
 .v-playground:not(.is-live) .thing { visibility: hidden !important; }
 .v-playground .tag {
-  position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; white-space: nowrap;
-  font: 600 0.95rem/1 var(--serif); color: var(--paper); background: var(--ink); padding: 9px 12px 10px;
-  opacity: 0; transition: opacity 0.18s ease;
+  position: absolute; left: 0; top: 0; z-index: 2; pointer-events: none; display: grid; justify-items: center; gap: 4px; text-align: center;
+  width: max-content; max-width: 22rem; color: var(--ink); opacity: 0; transition: opacity 0.18s ease;
 }
+.v-playground .tag b { font: 400 1.05rem/1.1 var(--anton); letter-spacing: 0.08em; text-transform: uppercase; }
+.v-playground .tag span { font: italic 500 1rem/1.25 var(--serif); color: var(--soft); }
 .v-playground .tag[data-on="1"] { opacity: 1; }
+.v-playground .hint { transition: opacity 0.18s ease; }
+.v-playground.is-tagging .hint { opacity: 0; }
 .v-playground main, .v-playground footer { position: relative; z-index: 1; }
 /* The words take the pointer only where they are; everywhere else it reaches the desk. */
 .v-playground:not(.is-flat) main, .v-playground:not(.is-flat) footer { pointer-events: none; }
@@ -57,7 +60,8 @@ html[data-v="playground"] { background: #e7e2d6; }
 .v-playground .fd-brass { fill: #3d2c12; }
 .v-playground .fd-date { font: 400 110px var(--anton); fill: var(--ink); }
 .v-playground .fd-serif { font: italic 500 62px var(--serif); fill: var(--ink); }
-.v-playground .fd-plaque { font: 400 66px var(--anton); fill: #3d2c12; }
+.v-playground .fd-mitez { font: 400 210px var(--anton); letter-spacing: 0.08em; fill: var(--ink); }
+.v-playground .fd-host { font: 600 40px var(--serif); fill: var(--ink); }
 .v-playground .fd-obj { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
 .v-playground a.fd-obj:hover, .v-playground a.fd-obj:focus-visible { transform: translateY(-24px); }
 .v-playground a.fd-obj:focus-visible { outline: none; }
@@ -99,6 +103,12 @@ html[data-v="playground"] { background: #e7e2d6; }
 .v-playground .next ul { display: grid; gap: 6px; }
 .v-playground .next li { display: flex; flex-wrap: wrap; column-gap: 14px; align-items: baseline; }
 .v-playground .next li b { font: 400 1.6rem/1.1 var(--anton); text-transform: uppercase; letter-spacing: 0.01em; }
+
+/* The AC clock the watch keeps. */
+.v-playground .clock { display: grid; grid-template-columns: auto 1fr; align-items: end; column-gap: 22px; row-gap: 14px; padding: 4px 0 18px; border-bottom: 2px solid var(--ink); }
+.v-playground .clock .label { grid-column: 1 / -1; }
+.v-playground .clockface { font: 400 clamp(3.4rem, 5.4vw, 5.6rem)/1.06 var(--anton); font-variant-numeric: tabular-nums; }
+.v-playground .clock .drop { align-self: end; margin-bottom: 4px; }
 
 /* Skeptical, and the apple. */
 .v-playground .tname { font: 400 clamp(3.4rem, 6vw, 6.4rem)/0.9 var(--anton); text-transform: uppercase; }
@@ -230,7 +240,6 @@ html[data-v="playground"] { background: #e7e2d6; }
   .v-playground .end { min-height: 0; padding: 0 16px 7rem; }
   .v-playground .foot { margin: 0; padding: 20px 0 0; }
   .v-playground .colo { padding-left: 0; }
-  .v-playground .tag { font-size: 0.875rem; }
 }
 
 /* ───────── No WebGL, or reduced motion: the desk drawn flat and the whole page, still. ───────── */

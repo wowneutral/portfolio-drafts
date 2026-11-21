@@ -1,6 +1,6 @@
 // Base: src/versions/letters/stage.ts (draft 2). What the page and the scene tell each other. Plain mutable state read every frame.
 
-export type Cmd = { type: 'key'; ch: string } | { type: 'poke'; id: string };
+export type Cmd = { type: 'key'; ch: string } | { type: 'poke'; id: string } | { type: 'spin'; d: number };
 
 /** What the page knows that the objects print on themselves. */
 export type Print = {
@@ -14,6 +14,10 @@ export type Print = {
 
 export const stage = {
   go: false,
+  /** The scene has its models and is ready to drop everything in. */
+  ready: false,
+  /** The six-minute AC clock on the watch: when it started (performance.now), or 0. */
+  clock: 0,
   opened: false,
   onOpened: null as null | (() => void),
   raw: 0,

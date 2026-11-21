@@ -30,21 +30,27 @@ function hasWebGL() {
   try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; }
 }
 
-/** The links laid over each thing in the scene: what it is, where it goes. */
-const THING_LINKS: { id: string; href?: string; tag: string; label: string; ext?: boolean }[] = [
-  { id: 'mitez', href: WORK[0].href, ext: true, tag: 'MITEZ, mitez.org, opens in a new tab', label: 'MITEZ, mitez.org, opens in a new tab' },
-  { id: 'github', href: GITHUB.href, ext: true, tag: 'GitHub, github.com/wowneutral, opens in a new tab', label: 'GitHub, github.com/wowneutral, opens in a new tab' },
-  { id: 'notepad', href: '#today', tag: 'Today’s note, read it in Today', label: 'Today’s note: go to Today' },
-  { id: 'paper', href: '#research', tag: 'The paper, read it in Research', label: 'The paper, Not in Mauthner’s Sense: go to Research' },
-  { id: 'envelope', href: LINKS[0].href, tag: 'Email, founder@mitez.org', label: 'Email Armaan at founder@mitez.org' },
-  { id: 'plaque0', href: '#debate', tag: `Champion, ${DEBATE.wins[0].where}, see Debate`, label: `Champion, ${DEBATE.wins[0].event}, ${DEBATE.wins[0].where}: go to Debate` },
-  { id: 'plaque1', href: '#debate', tag: `Champion, ${DEBATE.wins[1].where}, see Debate`, label: `Champion, ${DEBATE.wins[1].event}, ${DEBATE.wins[1].where}: go to Debate` },
-  { id: 'skeptical', tag: 'Skeptical, drop an apple', label: 'The Skeptical question mark: drop an apple' },
+/** The links and buttons laid over each thing in the scene: its caption (name, then what it does) and what a screen reader hears. */
+type ThingLink = { id: string; href?: string; ext?: boolean; name: string; does: string; label: string; spin?: boolean };
+const THING_LINKS: ThingLink[] = [
+  { id: 'plato', name: DISLIKES[1], does: 'Knock him over. He stays down.', label: `Plato. ${DISLIKES[1].replace(/^Plato\. /, '')}. Knock him over` },
+  { id: 'github', href: GITHUB.href, ext: true, name: 'GitHub', does: 'github.com/wowneutral, opens in a new tab', label: 'GitHub, github.com/wowneutral, opens in a new tab' },
+  { id: 'watch', href: '#debate', name: 'The AC clock', does: 'Six minutes. Starts in Debate.', label: 'The watch: start the six-minute AC clock in Debate' },
+  { id: 'mitez', href: WORK[0].href, ext: true, name: 'MITEZ', does: 'mitez.org, opens in a new tab', label: 'MITEZ, mitez.org, opens in a new tab' },
+  { id: 'armillary', href: '#now', name: NOW.club.title, does: 'Drag to turn it. Click to read Now.', label: `The armillary sphere: ${NOW.club.title}. Arrow keys turn it; go to Now`, spin: true },
+  { id: 'skeptical', name: 'Skeptical', does: 'Drop an apple.', label: 'The Skeptical question mark: drop an apple' },
+  { id: 'notepad', href: '#today', name: 'Today’s note', does: 'Read it in Today.', label: 'Today’s note: go to Today' },
+  { id: 'paper', href: '#research', name: RESEARCH[0].short.replace(/[“”]/g, ''), does: 'Read it in Research.', label: 'The paper, Not in Mauthner’s Sense: go to Research' },
+  { id: 'tea', name: FAVOURITES[3], does: 'Push it. It slides.', label: `${FAVOURITES[3]}: push the cup` },
   // The framed prints behind the name.
-  ...WORK.filter((w) => (PRINTS as readonly string[]).includes(w.slug)).map((w) => w.href
-    ? { id: 'print:' + w.slug, href: w.href, ext: true, tag: `${w.name}, ${w.href.replace(/^https:\/\//, '').replace(/\/$/, '')}, opens in a new tab`, label: `${w.name}, opens in a new tab` }
-    : { id: 'print:' + w.slug, href: '#work', tag: `${w.name}, read about it in Work`, label: `${w.name}: go to Work` }),
+  ...WORK.filter((w) => (PRINTS as readonly string[]).includes(w.slug)).map((w): ThingLink => w.href
+    ? { id: 'print:' + w.slug, href: w.href, ext: true, name: w.name, does: `${w.href.replace(/^https:\/\//, '').replace(/\/$/, '')}, opens in a new tab`, label: `${w.name}, opens in a new tab` }
+    : { id: 'print:' + w.slug, href: '#work', name: w.name, does: 'Read about it in Work.', label: `${w.name}: go to Work` }),
 ];
+
+/** The six-minute AC clock, kept by the watch on the desk. */
+const AC = 360;
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
 export default function Playground() {
   useVersion('playground');
@@ -57,6 +63,16 @@ export default function Playground() {
   const plan = useMemo(() => makePlan(phone), [phone]);
   const { notes, loaded } = useNotes();
   const gh = useGitHub();
+  const tagName = useRef<HTMLElement>(null), tagDoes = useRef<HTMLElement>(null);
+  const [acAt, setAcAt] = useState(0);
+  const [, setTick] = useState(0);
+  const acLeft = acAt ? Math.max(0, AC - Math.floor((performance.now() - acAt) / 1000)) : AC;
+  useEffect(() => {
+    stage.clock = acAt;
+    if (!acAt) return;
+    const t = setInterval(() => { setTick((n) => n + 1); stage.wake = Math.max(stage.wake, 2); if (performance.now() - acAt > AC * 1000) { clearInterval(t); stage.clock = 0; } }, 250);
+    return () => clearInterval(t);
+  }, [acAt]);
 
   useEffect(() => {
     const on = () => setPhone(isPhone());
@@ -86,7 +102,9 @@ export default function Playground() {
     resetStage();
     stage.onApple = (s) => setApple(s);
     let alive = true;
-    const go = () => { if (alive && !stage.go) { stage.go = true; stage.wake = Math.max(stage.wake, 90); setTimeout(() => alive && setLive(true), 120); } };
+    // The scene shows once its models are in; until then the flat desk stands in, readable.
+    const show = () => { if (!alive) return; if (stage.ready) setTimeout(() => alive && setLive(true), 120); else setTimeout(show, 100); };
+    const go = () => { if (alive && !stage.go) { stage.go = true; stage.wake = Math.max(stage.wake, 90); show(); } };
     const t0 = setTimeout(go, 1600);
     document.fonts.ready.then(() => setTimeout(go, 250));
     return () => { alive = false; clearTimeout(t0); stage.onApple = null; };
@@ -147,9 +165,15 @@ export default function Playground() {
   const open = (id: string, href: string | undefined, e: React.MouseEvent) => {
     if (stage.dragged) { stage.dragged = false; e.preventDefault(); return; }
     stage.cmds.push({ type: 'poke', id }); stage.wake = Math.max(stage.wake, 30);
+    if (id === 'watch') setAcAt(performance.now());
     if (href?.startsWith('#')) { e.preventDefault(); const to = href.slice(1); setTimeout(() => scrollToId(to), id === 'notepad' || id === 'paper' ? 380 : 120); }
   };
-  const hover = (id: string | null) => { stage.hover = id; stage.wake = Math.max(stage.wake, 30); const t = THING_LINKS.find((x) => x.id === id); if (t && stage.tag) stage.tag.textContent = t.tag; };
+  const hover = (id: string | null) => {
+    stage.hover = id; stage.wake = Math.max(stage.wake, 30);
+    const t = THING_LINKS.find((x) => x.id === id);
+    if (t && tagName.current && tagDoes.current) { tagName.current.textContent = t.name; tagDoes.current.textContent = t.does; }
+  };
+  const turn = (e: React.KeyboardEvent) => { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); stage.cmds.push({ type: 'spin', d: e.key === 'ArrowLeft' ? -1 : 1 }); stage.wake = Math.max(stage.wake, 30); } };
 
   const [w1, w2] = DEBATE.wins;
   const paper = RESEARCH[0], wess = RESEARCH[1];
@@ -167,13 +191,14 @@ export default function Playground() {
                 'data-thing': t.id, className: 'thing', 'aria-label': t.label,
                 ref: (el: HTMLElement | null) => { if (el) stage.links.set(t.id, el); else stage.links.delete(t.id); },
                 onPointerEnter: () => hover(t.id), onPointerLeave: () => hover(null), onFocus: () => hover(t.id), onBlur: () => hover(null),
+                onKeyDown: t.spin ? turn : undefined,
               };
               return t.href
                 ? <a key={t.id} {...common} href={t.href} target={t.ext ? '_blank' : undefined} rel={t.ext ? 'noopener' : undefined} onClick={(e) => open(t.id, t.href, e)} />
                 : <button key={t.id} {...common} type="button" onClick={(e) => open(t.id, undefined, e)} />;
             })}
           </nav>
-          <p className="tag" aria-hidden="true" ref={(el) => { stage.tag = el; }} />
+          <p className="tag" aria-hidden="true" ref={(el) => { stage.tag = el; }}><b ref={tagName} /><span ref={tagDoes} /></p>
         </div>
       )}
 
@@ -209,6 +234,11 @@ export default function Playground() {
                 </li>
               ))}
             </ol>
+            <div className="clock">
+              <h3 className="label">The AC clock, six minutes</h3>
+              <p className="clockface" aria-live="off"><time>{mmss(acLeft)}</time></p>
+              <button type="button" className="drop" onClick={() => setAcAt(acAt && acLeft > 0 ? 0 : performance.now())}>{acAt && acLeft > 0 ? 'Reset the clock' : 'Start the clock'}</button>
+            </div>
             <div className="next">
               <h3 className="label">Up next</h3>
               <ul>{DEBATE.next.map((n) => <li key={n.where}><b>{n.where}</b><span>{n.event}</span></li>)}</ul>
@@ -329,15 +359,6 @@ export default function Playground() {
               <p className="body">{NOW.club.body}</p>
             </div>
             <p className="status-line">{NOW.status}</p>
-            <div className="offrec">
-              <h3 className="label">Off the record</h3>
-              <div className="lists">
-                <div><h4>Likes</h4><ul>{LIKES.map((l) => <li key={l}>{l}</li>)}</ul></div>
-                <div><h4>Dislikes</h4><ul>{DISLIKES.map((l) => <li key={l}>{l}</li>)}</ul></div>
-                <div><h4>Favourites</h4><ul>{FAVOURITES.map((l) => <li key={l}>{l}</li>)}</ul></div>
-                <div><h4>Courses</h4><ul>{COURSES.map((c) => <li key={c.title}><b>{c.provider} {c.title}</b> {c.note}</li>)}</ul></div>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -351,6 +372,15 @@ export default function Playground() {
                 <li key={a.site}><a href={a.href} target="_blank" rel="noopener"><img src={BASE + a.img} alt={`Certificate: ${a.site}`} loading="lazy" width={720} height={1018} /><span><b>{a.site}</b>{a.note}</span></a></li>
               ))}
             </ul>
+            <div className="offrec">
+              <h3 className="label">Off the record</h3>
+              <div className="lists">
+                <div><h4>Likes</h4><ul>{LIKES.map((l) => <li key={l}>{l}</li>)}</ul></div>
+                <div><h4>Dislikes</h4><ul>{DISLIKES.map((l) => <li key={l}>{l}</li>)}</ul></div>
+                <div><h4>Favourites</h4><ul>{FAVOURITES.map((l) => <li key={l}>{l}</li>)}</ul></div>
+                <div><h4>Courses</h4><ul>{COURSES.map((c) => <li key={c.title}><b>{c.provider} {c.title}</b> {c.note}</li>)}</ul></div>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -364,6 +394,10 @@ export default function Playground() {
           <div className="colo">
             <small>Draft 61 of the portfolio. Not the live site.</small>
             <small>Built on draft 2, the letters, with the light and the push after the pmndrs examples (MIT). GitHub mark from primer/octicons (MIT).</small>
+            <small>Apple: “food_apple_01” from Poly Haven, CC0.</small>
+            <small>Plato: “Plato / Platon” by rjordanb2026 on Sketchfab, CC BY 4.0.</small>
+            <small>Armillary sphere: “Armillary sphere (1771)” by Franciszek Słupski, Jagiellonian University Museum Collegium Maius, Kraków; digitised by the Regional Digitalisation Lab, Małopolska Institute of Culture (“Virtual Museums of Małopolska”), CC BY 4.0.</small>
+            <small>Chronograph watch: KhronosGroup glTF-Sample-Assets ChronographWatch, from “Chronograph Watch Mudmaster” by graphiccompressor, CC BY 4.0. Teacup: KhronosGroup DiffuseTransmissionTeacup, CC0.</small>
           </div>
         </div>
       </footer>
