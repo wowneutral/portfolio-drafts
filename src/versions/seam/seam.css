@@ -1,0 +1,240 @@
+/* Draft 67: the seam. Split field after pmndrs/examples "landing-page" (MIT). */
+html[data-v="seam"] { background: #ece8df; }
+
+.v-seam {
+  --ink: #16171a;
+  --paper: #ece8df;
+  --red: #c8321e;
+  --mute-d: #b6b1a6;
+  --mute-p: #4f4d48;
+  --pad: clamp(20px, 4vw, 72px);
+  --gap: calc(120px + 8%);
+  --disp: 'Big Shoulders Display Variable', 'Big Shoulders Display', sans-serif;
+  --text: 'Newsreader Variable', 'Newsreader', Georgia, serif;
+  position: relative;
+  min-height: 100vh;
+  font-family: var(--text);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: transparent;
+  overflow-x: clip;
+}
+.v-seam *, .v-seam *::before, .v-seam *::after { box-sizing: border-box; }
+.v-seam ul, .v-seam ol { list-style: none; margin: 0; padding: 0; }
+.v-seam h1, .v-seam h2, .v-seam h3, .v-seam p, .v-seam figure, .v-seam blockquote { margin: 0; }
+.v-seam img { display: block; max-width: 100%; height: auto; }
+
+/* The two fields. The dark one is a fixed sheet that slides; text never moves with it. */
+.v-seam .field { position: fixed; inset: 0; background: var(--paper); z-index: 0; pointer-events: none; overflow: hidden; }
+.v-seam .field .dark { position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: var(--ink); transform-origin: 0 50%; will-change: transform; }
+
+/* The mark: a small canvas that rides the seam. Only the knock button takes the pointer. */
+.v-seam .mark { position: fixed; left: 0; top: 0; z-index: 4; pointer-events: none; will-change: transform; transform: translate3d(-400px, -600px, 0); }
+.v-seam .mark canvas { display: block; }
+.v-seam .knock { position: absolute; pointer-events: auto; background: transparent; border: 0; padding: 0; cursor: pointer; border-radius: 40px; touch-action: manipulation; }
+.v-seam .knock:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
+
+/* Rows: dark half, clear channel, pale half. Each half is sized for the seam at its furthest. */
+.v-seam .row { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) var(--gap) minmax(0, 1fr); }
+.v-seam .half { min-width: 0; }
+.v-seam .half.l { padding-left: var(--pad); color: var(--paper); background: var(--ink); }
+.v-seam .half.r { padding-right: var(--pad); color: var(--ink); background: var(--paper); }
+.v-seam .ch { display: flex; justify-content: center; align-items: center; }
+.v-seam main { position: relative; z-index: 1; }
+
+.v-seam .half.l ::selection, .v-seam .half.l::selection { background: var(--paper); color: var(--ink); }
+.v-seam .half.r ::selection, .v-seam .half.r::selection { background: var(--ink); color: var(--paper); }
+.v-seam a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.22em; transition: text-decoration-thickness 0.2s ease, text-underline-offset 0.2s ease; }
+.v-seam a:hover { text-decoration-thickness: 2px; text-underline-offset: 0.3em; }
+.v-seam a:focus-visible, .v-seam button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 2px; }
+.v-seam .skip-x { position: fixed; left: 16px; top: -80px; z-index: 10; background: var(--paper); color: var(--ink); padding: 12px 16px; font-family: var(--disp); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.v-seam .skip-x:focus { top: 16px; }
+
+/* Type */
+.v-seam .w, .v-seam .head, .v-seam .champ, .v-seam .jumbo, .v-seam .short, .v-seam .print h3, .v-seam .repos a, .v-seam .ledger.big .what, .v-seam .date {
+  font-family: var(--disp); text-transform: uppercase; font-weight: 900; letter-spacing: 0; line-height: 0.84;
+}
+.v-seam .head { font-size: clamp(40px, 4.4vw, 68px); font-weight: 800; margin-bottom: 36px; }
+.v-seam .body { font-size: 18px; line-height: 1.58; max-width: 34em; }
+.v-seam .body.big { font-size: clamp(20px, 1.7vw, 24px); line-height: 1.5; }
+.v-seam .body.small { font-size: 17px; }
+.v-seam .body + .body { margin-top: 0.9em; }
+.v-seam .meta, .v-seam .kind, .v-seam .frame, .v-seam .sub-h, .v-seam .stack, .v-seam .top a {
+  font-family: var(--disp); font-weight: 650; text-transform: uppercase; letter-spacing: 0.07em; font-size: 16px; line-height: 1.35;
+}
+.v-seam .half.l .meta, .v-seam .half.l .frame, .v-seam .half.l .stack { color: var(--mute-d); }
+.v-seam .half.r .meta, .v-seam .half.r .frame, .v-seam .half.r .stack, .v-seam .half.r .kind { color: var(--mute-p); }
+.v-seam .sub-h { margin: 48px 0 14px; font-size: 17px; }
+.v-seam .frame { margin: -20px 0 32px; }
+.v-seam .go { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--disp); font-weight: 750; text-transform: uppercase; letter-spacing: 0.06em; font-size: 18px; }
+
+/* Top line of links */
+.v-seam .top { padding-top: 22px; }
+.v-seam .top ul { display: flex; flex-wrap: wrap; gap: 4px 28px; }
+.v-seam .top a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-size: 17px; }
+.v-seam .top a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+.v-seam .top .half.r ul, .v-seam .top .half.r { justify-content: flex-end; }
+
+/* The name, broken at the seam */
+.v-seam .cross { align-items: end; }
+.v-seam .cross .half.l { text-align: right; }
+.v-seam .cross .half.r { text-align: left; }
+.v-seam .name { padding-top: clamp(28px, 5vh, 64px); }
+.v-seam .name .w, .v-seam .closing .w { display: inline-block; font-size: clamp(64px, calc(12.6vw - 22px), 220px); line-height: 0.8; }
+
+/* Opening: thin capitals on the dark, one jumbo line on the pale */
+.v-seam .about { padding-top: clamp(28px, 5vh, 60px); }
+.v-seam .thin { font-family: var(--disp); font-weight: 220; text-transform: uppercase; font-size: clamp(24px, 2.25vw, 36px); line-height: 1.08; letter-spacing: 0.01em; max-width: 19em; }
+.v-seam .sub { display: block; width: 200px; height: 2px; background: var(--paper); margin-top: 36px; }
+.v-seam .jumbo { font-size: clamp(48px, 6.3vw, 104px); line-height: 0.86; margin-bottom: 28px; }
+.v-seam .intro { padding-top: 56px; }
+.v-seam .role { font-family: var(--text); font-style: italic; font-size: clamp(20px, 1.7vw, 24px); line-height: 1.45; max-width: 22em; }
+.v-seam .short { font-size: clamp(30px, 2.8vw, 44px); line-height: 0.95; margin-bottom: 18px; }
+
+/* Debate: the two titles at display size, the Skeptical print, the line they meet on */
+.v-seam .debate { padding-top: clamp(120px, 16vh, 180px); }
+.v-seam .wins li + li { margin-top: 44px; }
+.v-seam .champ { font-size: clamp(76px, 10.2vw, 170px); line-height: 0.8; margin-bottom: 12px; }
+.v-seam .next li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; padding: 10px 0; border-top: 1px solid rgba(236, 232, 223, 0.28); }
+.v-seam .next li:last-child { border-bottom: 1px solid rgba(236, 232, 223, 0.28); }
+.v-seam .nx-where { font-family: var(--disp); font-weight: 800; text-transform: uppercase; font-size: 30px; line-height: 1; }
+.v-seam .nx-ev { font-size: 17px; color: var(--mute-d); }
+.v-seam .role-line { padding-top: 96px; }
+.v-seam .role-line .w { font-size: clamp(46px, 7vw, 120px); line-height: 0.8; display: inline-block; }
+.v-seam .role-line .ch { min-height: 240px; align-items: flex-end; }
+.v-seam .team { padding-top: 40px; }
+.v-seam .team .lead { font-size: clamp(20px, 1.7vw, 24px); line-height: 1.45; }
+
+/* Prints */
+.v-seam .print { margin-bottom: 104px; }
+.v-seam .print .plate { background: #f8f6f1; padding: 10px; box-shadow: 0 2px 4px rgba(22, 23, 26, 0.12), 0 22px 44px -22px rgba(22, 23, 26, 0.5); transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.v-seam .print:hover .plate, .v-seam .print:focus-within .plate { transform: translate3d(0, -6px, 0); box-shadow: 0 4px 8px rgba(22, 23, 26, 0.14), 0 34px 60px -26px rgba(22, 23, 26, 0.55); }
+.v-seam .print img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; background: #d9d4c8; }
+.v-seam .print figcaption { padding-top: 22px; }
+.v-seam .cap-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 18px; margin-bottom: 12px; }
+.v-seam .print h3 { font-size: clamp(34px, 3vw, 48px); font-weight: 850; }
+.v-seam .print .line { font-size: 18px; line-height: 1.55; max-width: 34em; }
+.v-seam .print .stack { margin-top: 10px; }
+.v-seam .print.big { margin-bottom: 0; }
+
+/* Research */
+.v-seam .paper { padding-top: clamp(140px, 18vh, 200px); }
+.v-seam .paper.two { padding-top: 0; }
+.v-seam .stick { position: sticky; top: 40px; padding-bottom: 80px; }
+.v-seam .ptitle { font-family: var(--text); font-weight: 500; font-size: clamp(28px, 2.5vw, 40px); line-height: 1.12; letter-spacing: -0.01em; margin-bottom: 14px; max-width: 16em; }
+.v-seam .ptitle.sm { font-size: clamp(24px, 2vw, 30px); margin-top: 56px; margin-bottom: 8px; }
+.v-seam .paper .meta + .body { margin-top: 22px; }
+.v-seam .keys { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 22px; font-style: italic; font-size: 17px; color: var(--mute-d); }
+.v-seam .plinks { display: flex; flex-wrap: wrap; gap: 0 26px; margin-top: 18px; }
+.v-seam .plinks a { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--disp); font-weight: 750; text-transform: uppercase; letter-spacing: 0.06em; font-size: 18px; }
+.v-seam .epi p { font-family: var(--disp); font-weight: 220; text-transform: uppercase; font-size: clamp(30px, 3vw, 48px); line-height: 1.04; max-width: 14em; }
+.v-seam .epi footer { margin-top: 14px; font-family: var(--disp); font-weight: 650; text-transform: uppercase; letter-spacing: 0.07em; font-size: 16px; color: var(--mute-d); }
+.v-seam .ladders li { display: grid; gap: 2px; padding: 14px 0; border-top: 1px solid rgba(236, 232, 223, 0.28); }
+.v-seam .ladders li:nth-child(2) { padding-left: 1.6em; }
+.v-seam .ladders li:nth-child(3) { padding-left: 3.2em; }
+.v-seam .ladders .who { font-family: var(--disp); font-weight: 800; text-transform: uppercase; font-size: 28px; line-height: 1; }
+
+/* Today and GitHub */
+.v-seam .daily { padding-top: clamp(140px, 18vh, 200px); }
+.v-seam .date { font-size: clamp(56px, 6.4vw, 104px); line-height: 0.82; margin-bottom: 28px; }
+.v-seam .earlier ul { display: flex; flex-wrap: wrap; gap: 0 18px; }
+.v-seam .earlier button { min-height: 44px; padding: 0 2px; background: none; border: 0; color: var(--mute-d); font-family: var(--disp); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 18px; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.25em; text-decoration-color: transparent; transition: color 0.2s ease, text-decoration-color 0.2s ease; }
+.v-seam .earlier button:hover { color: var(--paper); text-decoration-color: currentColor; }
+.v-seam .earlier button[aria-pressed="true"] { color: var(--paper); text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+.v-seam .commits { margin-bottom: 44px; }
+.v-seam .commits li { display: grid; gap: 2px; padding: 12px 0; border-top: 1px solid rgba(22, 23, 26, 0.22); }
+.v-seam .commits a { font-size: 18px; line-height: 1.4; text-decoration-color: rgba(22, 23, 26, 0.4); }
+.v-seam .repos li { padding: 18px 0 20px; border-top: 1px solid rgba(22, 23, 26, 0.22); }
+.v-seam .repos li:last-child { border-bottom: 1px solid rgba(22, 23, 26, 0.22); }
+.v-seam .repos a { display: inline-block; font-size: clamp(36px, 3.6vw, 58px); font-weight: 850; text-decoration: none; padding: 4px 0; }
+.v-seam .repos a:hover { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 0.12em; }
+.v-seam .repos .body { margin-top: 8px; font-size: 18px; }
+.v-seam .repos .meta { margin-top: 6px; }
+.v-seam .daily .go { margin-top: 18px; }
+
+/* Record */
+.v-seam .record { padding-top: clamp(140px, 18vh, 200px); }
+.v-seam .ledger li { display: grid; gap: 2px; padding: 14px 0; border-top: 1px solid rgba(236, 232, 223, 0.28); }
+.v-seam .ledger .what { font-size: clamp(20px, 1.6vw, 23px); line-height: 1.3; }
+.v-seam .half.r .ledger li { border-top-color: rgba(22, 23, 26, 0.22); }
+.v-seam .ledger.big li { padding: 18px 0; }
+.v-seam .ledger.big .what { font-size: clamp(34px, 3.4vw, 54px); font-weight: 850; line-height: 0.9; }
+.v-seam .certs { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 48px; }
+.v-seam .cert { display: grid; gap: 4px; text-decoration: none; }
+.v-seam .cert img { width: 100%; aspect-ratio: 720 / 1018; object-fit: cover; background: #f8f6f1; padding: 8px; box-shadow: 0 2px 4px rgba(22, 23, 26, 0.12), 0 22px 44px -22px rgba(22, 23, 26, 0.5); margin-bottom: 14px; transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.v-seam .cert:hover img, .v-seam .cert:focus-visible img { transform: translate3d(0, -6px, 0); }
+.v-seam .cert .what { font-family: var(--disp); font-weight: 800; text-transform: uppercase; font-size: 24px; line-height: 1; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.v-seam .cert:hover .what { text-decoration-thickness: 2px; }
+
+/* Now and off the record */
+.v-seam .now { padding-top: clamp(140px, 18vh, 200px); }
+.v-seam .status { font-family: var(--text); font-style: italic; font-size: clamp(24px, 2.2vw, 32px); line-height: 1.3; max-width: 18em; }
+.v-seam .shelves { margin-top: 18px; }
+.v-seam .shelves li { font-family: var(--disp); font-weight: 220; text-transform: uppercase; font-size: clamp(34px, 3.4vw, 54px); line-height: 1.02; }
+.v-seam .off { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 40px; }
+.v-seam .off .sub-h { margin-top: 0; }
+.v-seam .off > div { margin-bottom: 32px; }
+.v-seam .off li { font-size: 17px; line-height: 1.45; padding: 6px 0; }
+.v-seam .off b { font-weight: 600; }
+
+/* The ending: the halves close on the seam and meet on the whole name */
+.v-seam .end { padding-top: clamp(160px, 22vh, 240px); }
+.v-seam .closing { grid-template-columns: minmax(0, 1fr) 2px minmax(0, 1fr); }
+.v-seam .closing .half.l { padding-right: 14px; }
+.v-seam .closing .half.r { padding-left: 14px; }
+.v-seam .links { padding-top: 64px; }
+.v-seam .links .ch { min-height: 280px; align-items: flex-end; }
+.v-seam .links li { display: grid; gap: 2px; padding: 10px 0; }
+.v-seam .links .half.l { text-align: right; }
+.v-seam .links a, .v-seam .links .val { display: inline-flex; align-items: center; min-height: 44px; font-size: clamp(20px, 1.8vw, 26px); }
+.v-seam .links .half.l li { justify-items: end; }
+.v-seam .foot { padding-top: 120px; padding-bottom: 7rem; }
+.v-seam .foot p { font-family: var(--disp); font-weight: 650; text-transform: uppercase; letter-spacing: 0.07em; font-size: 16px; line-height: 1.4; max-width: 28em; }
+.v-seam .foot .half.l { color: var(--mute-d); text-align: right; justify-self: end; }
+.v-seam .foot .half.r { color: var(--mute-p); }
+
+/* Flat mark, for no WebGL or reduced motion */
+.v-seam .flatq { display: none; width: 76px; height: auto; fill: var(--red); }
+.v-seam .about .ch .flatq, .v-seam .role-line .ch .flatq, .v-seam .links .ch .flatq { display: block; }
+
+/* Phone: the seam turns horizontal. Each row is a dark band over a pale band, the mark in a slot between. */
+@media (max-width: 820px) {
+  .v-seam { font-size: 17px; }
+  .v-seam .field { display: none; }
+  .v-seam .row { grid-template-columns: minmax(0, 1fr); padding: 0 !important; }
+  .v-seam .half.l { background: var(--ink); padding: 44px 20px 40px; }
+  .v-seam .half.r { background: var(--paper); padding: 40px 20px 52px; }
+  .v-seam .ch { height: 124px; background: linear-gradient(to bottom, var(--ink) 50%, var(--paper) 50%); align-items: center; }
+  .v-seam .ch.none { display: none; }
+  .v-seam .flatq { display: block; width: 40px; transform: translateY(-50%); }
+  .v-seam .about .ch .flatq, .v-seam .role-line .ch .flatq, .v-seam .links .ch .flatq { display: block; }
+  .v-seam .body, .v-seam .print .line, .v-seam .repos .body { font-size: 17px; }
+  .v-seam .top .half { padding-top: 10px; padding-bottom: 10px; }
+  .v-seam .top .half.r { justify-content: flex-start; }
+  .v-seam .top ul { gap: 0 20px; }
+  .v-seam .cross .half.l { text-align: left; }
+  .v-seam .cross .half.r { text-align: right; }
+  .v-seam .name .half, .v-seam .closing .half { padding-top: 28px; padding-bottom: 20px; }
+  .v-seam .name .w, .v-seam .closing .w { font-size: clamp(72px, 25vw, 150px); }
+  .v-seam .about .half.l { padding-top: 32px; }
+  .v-seam .thin { font-size: 25px; }
+  .v-seam .jumbo { font-size: clamp(48px, 15vw, 72px); }
+  .v-seam .champ { font-size: clamp(64px, 21vw, 120px); }
+  .v-seam .role-line .w { font-size: clamp(54px, 17vw, 84px); }
+  .v-seam .role-line .ch, .v-seam .links .ch { min-height: 0; align-items: center; }
+  .v-seam .stick { position: static; padding-bottom: 0; }
+  .v-seam .print { margin-bottom: 64px; }
+  .v-seam .paper.two .half.l { padding-top: 0; }
+  .v-seam .off { grid-template-columns: 1fr; }
+  .v-seam .certs { gap: 16px; }
+  .v-seam .closing .half.l { padding-right: 20px; }
+  .v-seam .closing .half.r { padding-left: 20px; }
+  .v-seam .links .half.l, .v-seam .foot .half.l { text-align: left; justify-self: stretch; }
+  .v-seam .links .half.l li { justify-items: start; }
+  .v-seam .foot .half.r { padding-bottom: 7rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-seam *, .v-seam *::before, .v-seam *::after { transition: none !important; }
+}
