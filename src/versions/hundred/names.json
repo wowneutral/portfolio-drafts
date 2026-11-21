@@ -1,0 +1,602 @@
+[
+{
+"slug": "head",
+"n": 1,
+"name": "The head",
+"kind": "From your prompt"
+},
+{
+"slug": "statue",
+"n": 2,
+"name": "The statue",
+"kind": "From your prompt"
+},
+{
+"slug": "question",
+"n": 3,
+"name": "The question",
+"kind": "New"
+},
+{
+"slug": "flow",
+"n": 4,
+"name": "The flow",
+"kind": "New"
+},
+{
+"slug": "cards",
+"n": 5,
+"name": "The cards",
+"kind": "New, no centrepiece"
+},
+{
+"slug": "ladder",
+"n": 6,
+"name": "The ladder",
+"kind": "New"
+},
+{
+"slug": "blocks",
+"n": 7,
+"name": "The blocks",
+"kind": "New, no centrepiece"
+},
+{
+"slug": "board",
+"n": 8,
+"name": "The board",
+"kind": "New, round two"
+},
+{
+"slug": "badge",
+"n": 9,
+"name": "The badge",
+"kind": "New, round two"
+},
+{
+"slug": "terminal",
+"n": 10,
+"name": "The terminal",
+"kind": "New, round two"
+},
+{
+"slug": "spread",
+"n": 11,
+"name": "The spread",
+"kind": "New, round two"
+},
+{
+"slug": "metal",
+"n": 12,
+"name": "The metal",
+"kind": "New, round three"
+},
+{
+"slug": "letters",
+"n": 13,
+"name": "The letters",
+"kind": "3D centrepiece"
+},
+{
+"slug": "crossex",
+"n": 14,
+"name": "The cross-ex",
+"kind": "Debate-native"
+},
+{
+"slug": "drop",
+"n": 15,
+"name": "The drop",
+"kind": "Play with it"
+},
+{
+"slug": "elevator",
+"n": 16,
+"name": "The elevator",
+"kind": "Play with it"
+},
+{
+"slug": "look",
+"n": 17,
+"name": "The look",
+"kind": "Big type"
+},
+{
+"slug": "vault",
+"n": 18,
+"name": "The vault",
+"kind": "3D centrepiece"
+},
+{
+"slug": "ballot",
+"n": 19,
+"name": "The ballot",
+"kind": "Debate-native"
+},
+{
+"slug": "stickers",
+"n": 20,
+"name": "The stickers",
+"kind": "Play with it"
+},
+{
+"slug": "numbers",
+"n": 21,
+"name": "The numbers",
+"kind": "Big type"
+},
+{
+"slug": "redaction",
+"n": 22,
+"name": "The redaction",
+"kind": "Debate-native"
+},
+{
+"slug": "scale",
+"n": 23,
+"name": "The scale",
+"kind": "3D centrepiece"
+},
+{
+"slug": "pen",
+"n": 24,
+"name": "The pen",
+"kind": "3D centrepiece"
+},
+{
+"slug": "desktop",
+"n": 25,
+"name": "The desktop",
+"kind": "Play with it"
+},
+{
+"slug": "whiteboard",
+"n": 26,
+"name": "The whiteboard",
+"kind": "Play with it"
+},
+{
+"slug": "wall",
+"n": 27,
+"name": "The wall",
+"kind": "Play with it"
+},
+{
+"slug": "room",
+"n": 28,
+"name": "The room",
+"kind": "3D centrepiece"
+},
+{
+"slug": "orrery",
+"n": 29,
+"name": "The orrery",
+"kind": "3D centrepiece"
+},
+{
+"slug": "flip",
+"n": 30,
+"name": "The flip",
+"kind": "3D centrepiece"
+},
+{
+"slug": "zoom",
+"n": 31,
+"name": "The close read",
+"kind": "Big type"
+},
+{
+"slug": "quest",
+"n": 32,
+"name": "The hallway",
+"kind": "Play with it"
+},
+{
+"slug": "plaster",
+"n": 33,
+"name": "The plaster",
+"kind": "3D centrepiece"
+},
+{
+"slug": "shadow",
+"n": 34,
+"name": "The shadow",
+"kind": "3D centrepiece"
+},
+{
+"slug": "dither",
+"n": 35,
+"name": "The dither",
+"kind": "3D centrepiece"
+},
+{
+"slug": "poster",
+"n": 36,
+"name": "The poster",
+"kind": "Big type"
+},
+{
+"slug": "tunnel",
+"n": 37,
+"name": "The tunnel",
+"kind": "3D centrepiece"
+},
+{
+"slug": "marble",
+"n": 38,
+"name": "The marble",
+"kind": "3D centrepiece"
+},
+{
+"slug": "paper",
+"n": 39,
+"name": "The paper",
+"kind": "3D centrepiece"
+},
+{
+"slug": "podium",
+"n": 40,
+"name": "The podium",
+"kind": "Debate-native"
+},
+{
+"slug": "cast",
+"n": 41,
+"name": "The cast",
+"kind": "3D centrepiece"
+},
+{
+"slug": "specimen",
+"n": 42,
+"name": "The specimen",
+"kind": "Big type"
+},
+{
+"slug": "bend",
+"n": 43,
+"name": "The bend",
+"kind": "3D centrepiece"
+},
+{
+"slug": "veil",
+"n": 44,
+"name": "The veil",
+"kind": "3D centrepiece"
+},
+{
+"slug": "quotes",
+"n": 45,
+"name": "The quotes",
+"kind": "Big type"
+},
+{
+"slug": "press",
+"n": 46,
+"name": "The press",
+"kind": "3D centrepiece"
+},
+{
+"slug": "clock",
+"n": 47,
+"name": "The clock",
+"kind": "Debate-native"
+},
+{
+"slug": "thread",
+"n": 48,
+"name": "The thread",
+"kind": "3D centrepiece"
+},
+{
+"slug": "arch",
+"n": 49,
+"name": "The arch",
+"kind": "3D centrepiece"
+},
+{
+"slug": "vase",
+"n": 50,
+"name": "The vase",
+"kind": "3D centrepiece"
+},
+{
+"slug": "flaw",
+"n": 51,
+"name": "The flaw",
+"kind": "3D centrepiece"
+},
+{
+"slug": "register",
+"n": 52,
+"name": "The register",
+"kind": "Big type"
+},
+{
+"slug": "herm",
+"n": 53,
+"name": "The herm",
+"kind": "3D centrepiece"
+},
+{
+"slug": "pull",
+"n": 54,
+"name": "The pull",
+"kind": "3D centrepiece"
+},
+{
+"slug": "cut",
+"n": 55,
+"name": "The cut",
+"kind": "Big type"
+},
+{
+"slug": "wax",
+"n": 56,
+"name": "The wax",
+"kind": "3D centrepiece"
+},
+{
+"slug": "roadmap",
+"n": 57,
+"name": "The roadmap",
+"kind": "Debate-native"
+},
+{
+"slug": "knot",
+"n": 58,
+"name": "The knot",
+"kind": "3D centrepiece"
+},
+{
+"slug": "calligram",
+"n": 59,
+"name": "The calligram",
+"kind": "Big type"
+},
+{
+"slug": "loop",
+"n": 60,
+"name": "The loop",
+"kind": "3D centrepiece"
+},
+{
+"slug": "proof",
+"n": 61,
+"name": "The proof",
+"kind": "Big type"
+},
+{
+"slug": "vein",
+"n": 62,
+"name": "The vein",
+"kind": "3D centrepiece"
+},
+{
+"slug": "heap",
+"n": 63,
+"name": "The heap",
+"kind": "3D centrepiece"
+},
+{
+"slug": "angle",
+"n": 64,
+"name": "The angle",
+"kind": "Big type"
+},
+{
+"slug": "link",
+"n": 65,
+"name": "The link",
+"kind": "3D centrepiece"
+},
+{
+"slug": "hole",
+"n": 66,
+"name": "The hole",
+"kind": "Big type"
+},
+{
+"slug": "regress",
+"n": 67,
+"name": "The regress",
+"kind": "3D centrepiece"
+},
+{
+"slug": "pieces",
+"n": 68,
+"name": "The pieces",
+"kind": "3D centrepiece"
+},
+{
+"slug": "shell",
+"n": 69,
+"name": "The shell",
+"kind": "3D centrepiece"
+},
+{
+"slug": "mobile",
+"n": 70,
+"name": "The mobile",
+"kind": "3D centrepiece"
+},
+{
+"slug": "rubbing",
+"n": 71,
+"name": "The rubbing",
+"kind": "Big type"
+},
+{
+"slug": "entry",
+"n": 72,
+"name": "The entry",
+"kind": "Debate-native"
+},
+{
+"slug": "cradle",
+"n": 73,
+"name": "The cradle",
+"kind": "3D centrepiece"
+},
+{
+"slug": "strobe",
+"n": 74,
+"name": "The strobe",
+"kind": "3D centrepiece"
+},
+{
+"slug": "snag",
+"n": 75,
+"name": "The snag",
+"kind": "Big type"
+},
+{
+"slug": "replica",
+"n": 76,
+"name": "The replica",
+"kind": "3D centrepiece"
+},
+{
+"slug": "maze",
+"n": 77,
+"name": "The maze",
+"kind": "3D centrepiece"
+},
+{
+"slug": "domino",
+"n": 78,
+"name": "The domino",
+"kind": "3D centrepiece"
+},
+{
+"slug": "triangle",
+"n": 79,
+"name": "The triangle",
+"kind": "3D centrepiece"
+},
+{
+"slug": "mend",
+"n": 80,
+"name": "The mend",
+"kind": "3D centrepiece"
+},
+{
+"slug": "acrostic",
+"n": 81,
+"name": "The acrostic",
+"kind": "Big type"
+},
+{
+"slug": "bracket",
+"n": 82,
+"name": "The bracket",
+"kind": "Debate-native"
+},
+{
+"slug": "rattle",
+"n": 83,
+"name": "The rattleback",
+"kind": "3D centrepiece"
+},
+{
+"slug": "pins",
+"n": 84,
+"name": "The impression",
+"kind": "3D centrepiece"
+},
+{
+"slug": "across",
+"n": 85,
+"name": "The crossword",
+"kind": "Big type"
+},
+{
+"slug": "trophy",
+"n": 86,
+"name": "The trophy",
+"kind": "3D centrepiece"
+},
+{
+"slug": "perm",
+"n": 87,
+"name": "The perm",
+"kind": "Debate-native"
+},
+{
+"slug": "overhang",
+"n": 88,
+"name": "The overhang",
+"kind": "3D centrepiece"
+},
+{
+"slug": "tilt",
+"n": 89,
+"name": "The tilt",
+"kind": "Big type"
+},
+{
+"slug": "mirage",
+"n": 90,
+"name": "The mirage",
+"kind": "3D centrepiece"
+},
+{
+"slug": "compass",
+"n": 91,
+"name": "The compass",
+"kind": "Big type"
+},
+{
+"slug": "turn",
+"n": 92,
+"name": "The turn",
+"kind": "3D centrepiece"
+},
+{
+"slug": "watermark",
+"n": 93,
+"name": "The watermark",
+"kind": "3D centrepiece"
+},
+{
+"slug": "arrow",
+"n": 94,
+"name": "The arrow",
+"kind": "3D centrepiece"
+},
+{
+"slug": "facade",
+"n": 95,
+"name": "The facade",
+"kind": "3D centrepiece"
+},
+{
+"slug": "chart",
+"n": 96,
+"name": "The chart",
+"kind": "Big type"
+},
+{
+"slug": "shorthand",
+"n": 97,
+"name": "The shorthand",
+"kind": "Debate-native"
+},
+{
+"slug": "tower",
+"n": 98,
+"name": "The tower",
+"kind": "3D centrepiece"
+},
+{
+"slug": "tablet",
+"n": 99,
+"name": "The tablet",
+"kind": "3D centrepiece"
+},
+{
+"slug": "furrow",
+"n": 100,
+"name": "The furrow",
+"kind": "Big type"
+}
+]
