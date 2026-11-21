@@ -1,0 +1,297 @@
+/* Remixed from tufte-css (github.com/edwardtufte/tufte-css, MIT, Dave Liepmann): its column, sidenote and margin-note floats, figures, epigraph and newthought, scoped and reset in EB Garamond. */
+
+html[data-v="footnote"] { background: #fffff8; }
+
+.v-footnote {
+  --paper: #fffff8;
+  --ink: #111111;
+  --mute: #4d4c47;
+  --red: #a8321e;
+  --tint: #f4f0df;
+  --hair: #cfcbbb;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'EB Garamond Variable', Palatino, 'Palatino Linotype', Georgia, serif;
+  font-size: 20px;
+  line-height: 1.55;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+.v-footnote ::selection { background: #e6dfc4; color: var(--ink); }
+.v-footnote a:focus-visible, .v-footnote button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 2px; }
+
+/* The page: tufte's body, as a reusable wrapper so one note can break out between two of them */
+.v-footnote .page {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 4% 0 11%;
+}
+.v-footnote .page > p,
+.v-footnote .page > h2,
+.v-footnote .page > h3,
+.v-footnote .page > ul,
+.v-footnote .page > ol,
+.v-footnote .page > dl,
+.v-footnote .page > .col { width: 55%; }
+
+.v-footnote p { margin: 1.3rem 0; }
+.v-footnote a { color: inherit; text-decoration: underline; text-decoration-thickness: 0.06em; text-underline-offset: 0.16em; text-decoration-color: #8f8b7b; transition: text-decoration-color .2s; }
+.v-footnote a:hover { text-decoration-color: var(--ink); }
+.v-footnote em, .v-footnote i, .v-footnote cite { font-style: italic; }
+.v-footnote .sc { font-variant: small-caps; letter-spacing: 0.04em; font-variant-numeric: lining-nums; }
+
+/* Running head: tufte h1 + p.subtitle */
+.v-footnote .head { padding-top: 4.2rem; }
+.v-footnote .hero { min-height: 100svh; }
+.v-footnote .head h1 { font-weight: 400; font-size: 2.3rem; line-height: 1; margin: 0; letter-spacing: 0.005em; }
+.v-footnote .head .subtitle { font-style: italic; font-size: 1.35rem; line-height: 1.3; margin: .55rem 0 0; color: var(--mute); }
+
+/* ---- The sentence ---- */
+.v-footnote .sentence-wrap { position: relative; }
+.v-footnote .sentence {
+  width: 55%;
+  font-size: clamp(2.5rem, 4.75vw, 4.5rem);
+  line-height: 1.17;
+  letter-spacing: -0.012em;
+  margin: 0;
+  text-wrap: pretty;
+  hyphens: none;
+}
+.v-footnote .hero .sentence-wrap { margin-top: clamp(3.5rem, 9vh, 6.5rem); }
+.v-footnote .w { white-space: nowrap; }
+
+/* The note number: a big red numeral with a 44px target */
+.v-footnote .ref {
+  position: relative;
+  display: inline-block;
+  color: var(--red);
+  text-decoration: none;
+  font-size: 0.5em;
+  font-variant-numeric: lining-nums;
+  font-weight: 500;
+  line-height: 1;
+  vertical-align: baseline;
+  top: -0.92em;
+  margin-left: 0.06em;
+  padding: 0 0.08em;
+  cursor: pointer;
+}
+.v-footnote .ref::before { content: ''; position: absolute; left: 50%; top: 50%; width: 46px; height: 46px; transform: translate(-50%, -50%); }
+.v-footnote .ref::after { content: ''; position: absolute; left: 0.04em; right: 0.04em; bottom: -0.08em; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform .35s cubic-bezier(.16,1,.3,1); }
+.v-footnote .ref:hover::after, .v-footnote .ref.on::after { transform: scaleX(1); }
+
+/* Sidenotes in the wide margin (tufte .sidenote), placed by layout.ts so the pressed one sits level with its line */
+.v-footnote .sn {
+  position: absolute;
+  top: 0;
+  left: calc(55% + 4.6%);
+  width: 29%;
+  max-width: 380px;
+  font-size: 17px;
+  line-height: 1.42;
+  letter-spacing: 0;
+  white-space: normal;
+  color: var(--ink);
+  font-weight: 400;
+  text-align: left;
+  transition: color .4s;
+}
+.v-footnote .sn.ready { transition: transform .75s cubic-bezier(.16,1,.3,1), color .4s; }
+.v-footnote .sentence-wrap.has-on .sn:not(.on) { color: var(--mute); }
+/* While one note is pinned the others fold to their number and name, so the pinned one has the margin to itself */
+.v-footnote .hero .sentence-wrap.has-on .sn:not(.on) .sn-b { display: none; }
+.v-footnote .hero .sn { font-size: 18.5px; }
+.v-footnote .sn-n {
+  position: relative;
+  color: var(--red);
+  text-decoration: none;
+  font-variant-numeric: lining-nums;
+  font-weight: 600;
+  font-size: 1.25em;
+  margin-right: .3em;
+}
+.v-footnote .sn-n::before { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
+.v-footnote .sn-to { position: relative; font-style: italic; }
+.v-footnote .sn-to::before { content: ''; position: absolute; left: -2px; right: -2px; top: 50%; height: 44px; transform: translateY(-50%); }
+
+/* ---- Notes (sections) ---- */
+.v-footnote .note { position: relative; padding-top: clamp(5rem, 12vh, 8rem); }
+.v-footnote .note-head { position: relative; width: 55%; margin: 0 0 1.4rem; }
+.v-footnote .note-num {
+  position: absolute;
+  right: calc(100% + 1.6rem);
+  top: -0.1em;
+  color: var(--red);
+  font-size: 4.6rem;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+  text-decoration: none;
+  font-weight: 500;
+  min-width: 44px;
+  min-height: 44px;
+  text-align: right;
+}
+.v-footnote .note-num:hover { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: .1em; }
+.v-footnote h2 { font-style: italic; font-weight: 400; font-size: 2.6rem; line-height: 1.05; margin: 0; }
+.v-footnote .note-head .back { display: inline-block; margin-top: .4rem; font-size: 17px; color: var(--mute); }
+.v-footnote h3 { font-style: italic; font-weight: 400; font-size: 1.75rem; line-height: 1.15; margin: 2.6rem 0 0.6rem; }
+.v-footnote span.newthought { font-variant: small-caps; font-size: 1.12em; letter-spacing: 0.03em; }
+
+/* tufte margin notes and figures */
+.v-footnote .marginnote {
+  float: right;
+  clear: right;
+  margin-right: -60%;
+  width: 50%;
+  margin-top: 0.3rem;
+  margin-bottom: 1.2rem;
+  font-size: 17px;
+  line-height: 1.42;
+  position: relative;
+}
+.v-footnote .marginnote .label { display: block; font-variant: small-caps; letter-spacing: 0.05em; color: var(--mute); font-size: 16.5px; }
+.v-footnote .marginnote img { display: block; width: 100%; height: auto; margin-bottom: .55rem; background: #ebe7d6; }
+.v-footnote .row { display: flow-root; clear: both; }
+.v-footnote .big-n { display: block; font-size: 2.6rem; line-height: 1.05; font-variant-numeric: lining-nums; }
+.v-footnote .marginnote .big-n { margin-top: .2rem; }
+
+/* ---- Note 2's break-out: too big for a footnote ---- */
+.v-footnote .breakout { position: relative; margin: 4.5rem 0 1rem; padding: 3.2rem 0 3.4rem; }
+.v-footnote .breakout .rule { position: absolute; left: 0; right: 0; height: 1px; background: var(--ink); transform-origin: 11% 50%; }
+.v-footnote .breakout .rule.t { top: 0; }
+.v-footnote .breakout .rule.b { bottom: 0; }
+.v-footnote .wins { list-style: none; margin: 0 auto; padding: 0 4% 0 4%; max-width: 1600px; }
+.v-footnote .win { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); align-items: end; column-gap: 4%; padding: 1.6rem 0; }
+.v-footnote .win + .win { border-top: 1px solid var(--hair); }
+.v-footnote .win .title { font-style: italic; font-size: clamp(4.2rem, 11.4vw, 11.5rem); line-height: .86; letter-spacing: -0.03em; margin: 0; font-weight: 400; }
+.v-footnote .win .what { padding-bottom: .9rem; }
+.v-footnote .win .event { font-variant: small-caps; letter-spacing: 0.05em; font-size: clamp(1.4rem, 2.2vw, 2.1rem); line-height: 1.15; display: block; }
+.v-footnote .win .where { font-style: italic; font-size: clamp(1.4rem, 2.2vw, 2.1rem); line-height: 1.2; display: block; }
+.v-footnote .win .when { font-size: clamp(1.4rem, 2.2vw, 2.1rem); font-variant-numeric: lining-nums; display: block; color: var(--mute); }
+
+.v-footnote .plain { list-style: none; padding: 0; }
+.v-footnote .plain li { padding: .55rem 0; border-top: 1px solid var(--hair); }
+.v-footnote .plain li:last-child { border-bottom: 1px solid var(--hair); }
+
+/* ---- Research: tufte epigraph ---- */
+.v-footnote .epigraph { margin: 1.5rem 0 3rem; }
+.v-footnote .epigraph blockquote { margin: 0; width: 55%; }
+.v-footnote .epigraph blockquote p { font-style: italic; font-size: 1.85rem; line-height: 1.32; margin: 0 0 .7rem; }
+.v-footnote .epigraph footer { text-align: right; font-size: 18px; }
+.v-footnote .epigraph footer cite { font-style: italic; }
+.v-footnote .paper-title { font-style: normal; font-size: 2.05rem; line-height: 1.18; margin-top: 0; }
+.v-footnote .keywords { font-variant: small-caps; letter-spacing: 0.04em; color: var(--mute); }
+.v-footnote .links { display: flex; flex-wrap: wrap; gap: 0 1.6rem; }
+.v-footnote .links a { display: inline-block; padding: .55rem 0; }
+
+/* ---- Work ---- */
+.v-footnote .work-row { padding: 1.4rem 0 0.6rem; }
+.v-footnote .work-row h3 { margin-top: .8rem; }
+.v-footnote .work-row .kind { font-variant: small-caps; letter-spacing: .05em; color: var(--mute); font-size: 18px; display: block; }
+.v-footnote .work-row p { margin: .5rem 0; }
+.v-footnote .work-row .go { display: inline-block; padding: .5rem 0; }
+.v-footnote .work-fig.marginnote { width: 62%; margin-right: -72%; }
+.v-footnote .work-fig { transition: transform .5s cubic-bezier(.16,1,.3,1); }
+.v-footnote .work-fig a { text-decoration: none; display: block; }
+.v-footnote .work-fig a:hover img { outline: 1px solid var(--ink); outline-offset: 4px; }
+
+.v-footnote .repos li { display: grid; grid-template-columns: 11rem 1fr; gap: 0 1.2rem; }
+.v-footnote .repos .lang { color: var(--mute); font-size: 17px; }
+.v-footnote .commit .msg { display: block; }
+.v-footnote .commit .when { color: var(--mute); }
+
+/* ---- Today ---- */
+.v-footnote .today-date { font-variant: small-caps; letter-spacing: .05em; font-size: 1.25rem; color: var(--mute); display: block; margin-top: 1.2rem; font-variant-numeric: lining-nums; }
+.v-footnote .today-body p { font-size: 1.6rem; line-height: 1.42; margin: .6rem 0 1rem; }
+.v-footnote .days { list-style: none; padding: 0; margin: .3rem 0 0; }
+.v-footnote .days button { font: inherit; font-size: 17px; color: var(--ink); background: none; border: 0; padding: .45rem 0; min-height: 44px; cursor: pointer; text-align: left; text-decoration: underline; text-decoration-color: #8f8b7b; text-underline-offset: .16em; }
+.v-footnote .days button[aria-pressed="true"] { text-decoration: none; font-style: italic; }
+.v-footnote .days button[aria-pressed="true"]::before { content: ''; display: inline-block; width: .9em; height: 1px; background: var(--ink); vertical-align: middle; margin-right: .45em; }
+
+.v-footnote .certs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin: 2rem 0 1rem; }
+.v-footnote .certs a { display: block; text-decoration: none; }
+.v-footnote .certs img { display: block; width: 100%; height: auto; box-shadow: 0 6px 22px rgba(40, 34, 18, .14); transition: transform .45s cubic-bezier(.16,1,.3,1); }
+.v-footnote .certs a:hover img { transform: translateY(-4px); }
+.v-footnote .certs figcaption { font-size: 17px; margin-top: .7rem; line-height: 1.35; }
+.v-footnote .honors li { display: grid; grid-template-columns: 1fr auto; gap: 0 1.2rem; align-items: baseline; }
+.v-footnote .honors .d { font-style: italic; color: var(--mute); font-size: 18px; text-align: right; }
+.v-footnote .off { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2.4rem; }
+.v-footnote .off ul { list-style: none; padding: 0; margin: .3rem 0 1.6rem; font-size: 18px; }
+.v-footnote .off li { padding: .3rem 0; }
+.v-footnote .off h4 { font-variant: small-caps; letter-spacing: .05em; font-weight: 400; font-size: 19px; color: var(--mute); margin: 1.4rem 0 0; }
+
+/* ---- The ending ---- */
+.v-footnote .end { padding: clamp(7rem, 18vh, 12rem) 0 9rem; }
+.v-footnote .end .ref.read::before { width: 1.3em; height: 1.22em; border: 1.5px solid var(--red); border-radius: 50%; transform: translate(-50%, -50%) rotate(-8deg); }
+.v-footnote .end .ref.read { color: var(--ink); }
+.v-footnote .tally { width: 55%; color: var(--mute); font-size: 19px; margin: 0 0 2.4rem; font-style: italic; }
+.v-footnote .end .sn { color: var(--ink); }
+.v-footnote .contact { list-style: none; padding: 0; margin: .4rem 0 .9rem; }
+.v-footnote .contact li { padding: .12rem 0; }
+.v-footnote .contact a { display: inline-block; padding: .35rem 0; }
+.v-footnote .contact .k { color: var(--mute); font-variant: small-caps; letter-spacing: .04em; margin-right: .4em; }
+.v-footnote .colophon { margin-top: 1rem; color: var(--mute); }
+
+@media (max-width: 1100px) {
+  .v-footnote .page { padding: 0 4% 0 9%; }
+  .v-footnote .page > p, .v-footnote .page > h2, .v-footnote .page > h3, .v-footnote .page > ul, .v-footnote .page > ol, .v-footnote .page > dl, .v-footnote .page > .col, .v-footnote .note-head, .v-footnote .sentence, .v-footnote .tally, .v-footnote .epigraph blockquote { width: 60%; }
+  .v-footnote .sn { left: calc(60% + 4%); width: 34%; }
+  .v-footnote .marginnote { margin-right: -60%; width: 53%; }
+  .v-footnote .work-fig.marginnote { width: 56%; margin-right: -62%; }
+}
+
+/* Phone: tufte hides the margin; here every note opens in place, in a tinted block under its line */
+@media (max-width: 760px) {
+  .v-footnote { font-size: 18px; line-height: 1.55; }
+  .v-footnote .page { padding: 0 20px; }
+  .v-footnote .page > p, .v-footnote .page > h2, .v-footnote .page > h3, .v-footnote .page > ul, .v-footnote .page > ol, .v-footnote .page > dl, .v-footnote .page > .col, .v-footnote .note-head, .v-footnote .sentence, .v-footnote .tally, .v-footnote .epigraph blockquote { width: 100%; }
+  .v-footnote .head { padding-top: 2.4rem; }
+  .v-footnote .head h1 { font-size: 1.9rem; }
+  .v-footnote .head .subtitle { font-size: 1.15rem; }
+  .v-footnote .hero .sentence-wrap { margin-top: 2.4rem; }
+  .v-footnote .sentence { font-size: clamp(2.15rem, 9.6vw, 2.7rem); line-height: 1.2; }
+  .v-footnote .ref { font-size: .56em; top: -.8em; }
+  .v-footnote .hero .sentence-wrap.has-on .sn:not(.on) .sn-b { display: inline; }
+  .v-footnote .sn, .v-footnote .sn.ready, .v-footnote .hero .sn { position: static; display: none; transform: none !important; width: auto; max-width: none; transition: none; font-size: 17px; }
+  .v-footnote .sn.open {
+    display: block;
+    margin: .55rem 0 .8rem;
+    padding: .8rem 1rem .9rem;
+    background: var(--tint);
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+  .v-footnote .sentence-wrap.has-on .sn:not(.on) { color: var(--ink); }
+  .v-footnote .marginnote, .v-footnote .work-fig.marginnote {
+    float: none; display: block; width: auto; margin: 1rem 0; padding: .8rem 1rem .9rem; background: var(--tint);
+  }
+  .v-footnote .work-fig { padding: 0 !important; background: none !important; margin: .4rem 0 .8rem !important; }
+  .v-footnote .work-fig figcaption { padding: .2rem 0 0; }
+  .v-footnote .note { padding-top: 4.2rem; }
+  .v-footnote .note-num { position: static; display: block; text-align: left; font-size: 3.4rem; margin-bottom: .2rem; width: max-content; }
+  .v-footnote h2 { font-size: 2.15rem; }
+  .v-footnote .breakout { margin-top: 3rem; padding: 2rem 0; }
+  .v-footnote .wins { padding: 0 20px; }
+  .v-footnote .win { grid-template-columns: 1fr; padding: 1.4rem 0; }
+  .v-footnote .win .title { font-size: clamp(4rem, 20vw, 5.6rem); }
+  .v-footnote .win .what { padding: .8rem 0 0; }
+  .v-footnote .epigraph blockquote p { font-size: 1.45rem; }
+  .v-footnote .paper-title { font-size: 1.65rem; }
+  .v-footnote .today-body p { font-size: 1.3rem; }
+  .v-footnote .repos li { grid-template-columns: 1fr; }
+  .v-footnote .off { grid-template-columns: 1fr; }
+  .v-footnote .today { display: flex; flex-direction: column; }
+  .v-footnote .today > .marginnote { order: 9; }
+  .v-footnote .hero { min-height: 0; }
+  .v-footnote .certs { gap: .9rem; }
+  .v-footnote .end { padding: 5rem 0 8rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-footnote .sn.ready, .v-footnote .ref::after, .v-footnote .certs img, .v-footnote .work-fig.marginnote { width: 62%; margin-right: -72%; }
+.v-footnote .work-fig { transition: none; }
+  .v-footnote .breakout .rule { transform: none !important; }
+}
