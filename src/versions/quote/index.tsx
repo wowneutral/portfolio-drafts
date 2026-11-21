@@ -6,12 +6,15 @@ import '@fontsource-variable/newsreader/opsz.css';
 import '@fontsource-variable/newsreader/opsz-italic.css';
 import '@fontsource-variable/hanken-grotesk/index.css';
 import './quote.css';
-import { PERSON, DEBATE, RESEARCH, WORK, HONORS, AWARDS, STATS, NOW, LIKES, DISLIKES, FAVOURITES, COURSES, LINKS, GITHUB } from '@/content';
+import { PERSON, DEBATE, RESEARCH, HONORS, AWARDS, STATS, NOW, LIKES, DISLIKES, FAVOURITES, COURSES, GITHUB } from '@/content';
 import { useGitHub, ago } from '@/lib/github';
 import { useNotes, formatDate } from '@/lib/notes';
 import { still } from '@/lib/utils';
 import { useVersion } from '@/lib/version';
 import QuoteBlock, { WEBGL } from './QuoteBlock';
+import Plates from './Plates';
+import Ladder from './Ladder';
+import Closing from './Closing';
 
 const BASE = import.meta.env.BASE_URL;
 const PAPER = RESEARCH[0];
@@ -33,6 +36,8 @@ const CONTENTS = [
   { id: 'off', label: 'Off the record', page: 27 },
   { id: 'contact', label: 'Contact', page: 29 },
 ];
+
+const clip = (t: string, n = 96) => (t.length <= n ? t : t.slice(0, t.lastIndexOf(' ', n)).replace(/[,;:.]$/, '') + '\u2026');
 
 const Folio = ({ n }: { n: number }) => <p className="folio" aria-hidden="true">{n}</p>;
 
@@ -74,7 +79,7 @@ function Today() {
               <li key={n.date}>
                 <button type="button" className={i === pick ? 'on' : undefined} aria-pressed={i === pick} onClick={() => setPick(i)}>
                   <span className="nl-date">{formatDate(n.date, { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                  <span className="nl-text">{n.body[0]}</span>
+                  <span className="nl-text">{clip(n.body[0])}</span>
                 </button>
               </li>
             ))}
@@ -147,7 +152,7 @@ export default function Quote() {
 
       <main id="main">
         {/* Title page */}
-        <section className="titlepage" aria-labelledby="name">
+        <section className="titlepage" id="title" aria-labelledby="name">
           <QuoteBlock className="title-block" textSel=".title-text" still={still} enter>
             <p className="title-text" lang="en">
               <span className="tl">{words.slice(0, -1).join(' ')}</span>{' '}
@@ -224,13 +229,7 @@ export default function Quote() {
             <p className="abstract">{PAPER.abstract}</p>
           </div>
           <p className="keywords"><span className="kw-h">Keywords</span> {PAPER.keywords!.join(' · ')}</p>
-          <h4 className="sub">The three ladders</h4>
-          <table className="set ladders">
-            <thead><tr><th scope="col">Who</th><th scope="col">When</th><th scope="col">Where</th></tr></thead>
-            <tbody>
-              {PAPER.ladders!.map((l) => <tr key={l.who}><td>{l.who}</td><td className="num">{l.when}</td><td>{l.where}</td></tr>)}
-            </tbody>
-          </table>
+          <Ladder />
           <ul className="paper-links">
             {PAPER.links.map((l) => <li key={l.label}><Ext className="go" href={l.href}>{l.label}</Ext></li>)}
           </ul>
@@ -251,29 +250,7 @@ export default function Quote() {
           <Folio n={12} />
         </section>
 
-        {/* Work: one plate per project */}
-        <section className="work" id="work" aria-labelledby="work-h">
-          <h2 id="work-h" className="sec sec-center">Work</h2>
-          {WORK.map((w, i) => (
-            <article className="plate" key={w.slug} aria-labelledby={`w-${w.slug}`}>
-              {w.href ? (
-                <a className="plate-img" href={w.href} rel="noopener" tabIndex={-1} aria-hidden="true">
-                  <img src={BASE + w.img} alt="" loading="lazy" width={1200} height={660} />
-                </a>
-              ) : (
-                <div className="plate-img"><img src={BASE + w.img} alt={`${w.name}, a screenshot`} loading="lazy" width={1200} height={660} /></div>
-              )}
-              <div className="plate-cap">
-                <h3 id={`w-${w.slug}`}>{w.name}</h3>
-                <p className="plate-kind">{w.kind}</p>
-                <p className="plate-line">{w.line}</p>
-                <p className="plate-stack">{w.stack}</p>
-                {w.href ? <Ext className="go" href={w.href}>{w.href.replace(/^https:\/\//, '').replace(/\/$/, '')}</Ext> : <p className="plate-private">No public link</p>}
-              </div>
-              <Folio n={13 + i} />
-            </article>
-          ))}
-        </section>
+        <Plates />
 
         <GitHubPage />
 
@@ -328,19 +305,7 @@ export default function Quote() {
           <Folio n={27} />
         </section>
 
-        {/* Back cover */}
-        <section className="backcover" id="contact" aria-labelledby="contact-h">
-          <h2 id="contact-h" className="sec sec-center">Contact</h2>
-          <ul className="contact">
-            {LINKS.map((l) => (
-              <li key={l.label}>
-                <span className="ct-l">{l.label}</span>
-                {l.href ? <Ext className="ct-v" href={l.href}>{l.value}</Ext> : <span className="ct-v">{l.value}</span>}
-              </li>
-            ))}
-          </ul>
-          <p className="colophon-title">{PAPER.short}, and everything around it. {PERSON.short.join(' ')}</p>
-        </section>
+        <Closing />
       </main>
 
       <footer className="colophon">
