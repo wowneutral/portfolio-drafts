@@ -1,0 +1,214 @@
+html[data-v="questions"] { background: #e8e8ea; }
+
+.v-questions {
+  --bg: #e8e8ea; --ink: #111111; --mute: #46464b; --red: #c8321e; --field: #f4f4f5; --rule: #c9c9ce;
+  --pad: clamp(16px, 2.8vw, 44px);
+  --display: 'Anton', 'Arial Narrow', sans-serif;
+  --text: 'Schibsted Grotesk Variable', 'Helvetica Neue', sans-serif;
+  background: var(--bg); color: var(--ink);
+  font-family: var(--text); font-size: 18px; line-height: 1.55;
+  overflow-x: clip;
+}
+.v-questions ::selection { background: var(--red); color: #fff; }
+.v-questions a { color: inherit; text-decoration: none; }
+.v-questions a:focus-visible, .v-questions button:focus-visible, .v-questions summary:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; border-radius: 2px; }
+.v-questions p { margin: 0; }
+.v-questions ul, .v-questions ol { list-style: none; margin: 0; padding: 0; }
+.v-questions h1, .v-questions h2, .v-questions h3 { margin: 0; font-weight: 400; }
+
+.v-questions .q-canvas { position: absolute !important; inset: 0; z-index: 2; pointer-events: none; touch-action: pan-y; }
+.v-questions .q-still { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.v-questions .q-still svg { position: absolute; fill: var(--red); height: auto; }
+
+/* Headings: Anton, set like the example's small caps line. */
+.v-questions .q-h2 { font-family: var(--display); font-size: clamp(2.4rem, 4.6vw, 4.4rem); line-height: 0.95; text-transform: uppercase; letter-spacing: 0.005em; }
+.v-questions .q-h3 { font-family: var(--display); font-size: clamp(1.9rem, 2.6vw, 2.6rem); line-height: 1; text-transform: uppercase; margin-bottom: 0.7rem; }
+.v-questions .q-h4 { font-weight: 700; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
+.v-questions .q-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--red); text-decoration-thickness: 2px; text-underline-offset: 6px; transition: color 0.2s; }
+.v-questions .q-link:hover { color: var(--red); }
+
+/* 1. The studio: his name under a cloud of marks. */
+.v-questions .q-hero {
+  position: relative; height: 100svh; min-height: 620px; padding: var(--pad);
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto 1fr auto auto; column-gap: 2rem;
+}
+.v-questions .q-nav { grid-column: 1 / -1; position: relative; z-index: 3; display: flex; justify-content: space-between; gap: 1rem; font-size: 1.05rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; justify-self: stretch; }
+.v-questions .q-nav a { min-height: 44px; display: inline-flex; align-items: center; background-image: linear-gradient(var(--red), var(--red)); background-size: 0 2px; background-repeat: no-repeat; background-position: 0 78%; transition: background-size 0.3s cubic-bezier(.2,.7,.2,1); }
+.v-questions .q-nav a:hover { background-size: 100% 2px; }
+.v-questions .q-line { grid-row: 2; position: relative; z-index: 3; margin-top: 2.2rem; max-width: 26ch; font-weight: 600; font-size: 1.1rem; line-height: 1.4; justify-self: start; }
+.v-questions .q-role { grid-row: 2; grid-column: 2; position: relative; z-index: 3; margin-top: 2.2rem; justify-self: end; text-align: right; font-weight: 600; font-size: 1.1rem; max-width: 20ch; line-height: 1.4; }
+.v-questions .q-name {
+  grid-row: 4; grid-column: 1 / -1; position: relative; z-index: 1;
+  font-family: var(--display); text-transform: uppercase; line-height: 0.8; letter-spacing: -0.01em;
+  --f: calc((100vw - 2 * var(--pad)) / 5.36); display: flex; justify-content: space-between; align-items: flex-end;
+}
+.v-questions .q-word { display: block; height: calc(var(--f) * 0.862); width: auto; fill: var(--ink); overflow: visible; }
+.v-questions .q-short { grid-row: 5; position: relative; z-index: 3; margin: 1.2rem 0 0 14rem; font-weight: 600; font-size: 1.1rem; justify-self: start; }
+.v-questions .q-hint { grid-row: 5; grid-column: 2; position: relative; z-index: 3; margin-top: 1.2rem; justify-self: end; font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.6rem; }
+.v-questions .q-hint::after { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--red); }
+
+.v-questions main { display: block; }
+.v-questions main > section { padding: clamp(5rem, 10vw, 9rem) var(--pad) 0; }
+
+/* 2. Debate: the two titles at the size of the name. */
+.v-questions .q-wins { margin-top: 2rem; border-top: 2px solid var(--ink); }
+.v-questions .q-wins li { display: grid; grid-template-columns: auto 1fr; align-items: end; column-gap: clamp(1.2rem, 3vw, 3rem); padding: 1.6rem 0 1.4rem; border-bottom: 2px solid var(--ink); }
+.v-questions .q-champ { font-family: var(--display); text-transform: uppercase; font-size: calc((100vw - 2 * var(--pad)) / 5.36); line-height: 0.8; letter-spacing: -0.01em; }
+.v-questions .q-win { display: grid; gap: 0.15rem; padding-bottom: 0.4rem; font-size: clamp(1.3rem, 2vw, 2rem); line-height: 1.15; }
+.v-questions .q-win strong { font-weight: 700; }
+.v-questions .q-win span:last-child { color: var(--red); font-family: var(--display); font-size: 1.3em; margin-top: 0.4rem; }
+.v-questions .q-team { display: grid; grid-template-columns: 1.6fr 1fr; gap: clamp(2rem, 6vw, 7rem); margin-top: clamp(3rem, 6vw, 5rem); }
+.v-questions .q-team p { max-width: 58ch; margin-bottom: 0.9rem; }
+.v-questions .q-role2 { font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.95rem; }
+.v-questions .q-lede { font-size: 1.3rem; line-height: 1.45; }
+.v-questions .q-next li { display: grid; padding: 1rem 0; border-top: 1px solid var(--rule); }
+.v-questions .q-next li:last-child { border-bottom: 1px solid var(--rule); }
+.v-questions .q-next strong { font-family: var(--display); font-weight: 400; font-size: 1.9rem; line-height: 1.1; text-transform: uppercase; }
+
+/* 3. Today: a calm white band. */
+.v-questions main > .q-today { padding-left: 0; padding-right: 0; }
+.v-questions .q-today-in { background: var(--field); margin: 0 var(--pad); padding: clamp(2rem, 5vw, 4.5rem); display: grid; grid-template-columns: minmax(12rem, 1fr) 2.4fr; column-gap: clamp(2rem, 5vw, 5rem); }
+.v-questions .q-today .q-h2 { grid-row: 1 / span 2; }
+.v-questions .q-note { display: contents; }
+.v-questions .q-date { font-family: var(--display); font-size: clamp(1.6rem, 2.4vw, 2.3rem); line-height: 1; text-transform: uppercase; color: var(--red); margin-bottom: 1.2rem; }
+.v-questions .q-note-body p { font-size: clamp(1.35rem, 2.1vw, 1.9rem); line-height: 1.38; max-width: 36ch; margin-bottom: 0.8rem; }
+.v-questions .q-earlier { grid-column: 2; margin-top: 1.6rem; border-top: 1px solid var(--rule); }
+.v-questions .q-earlier summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; gap: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.95rem; list-style: none; }
+.v-questions .q-earlier summary::-webkit-details-marker { display: none; }
+.v-questions .q-earlier summary::after { content: '+'; margin-left: auto; font-size: 1.6rem; font-weight: 400; transition: transform 0.3s; }
+.v-questions .q-earlier[open] summary::after { transform: rotate(45deg); }
+.v-questions .q-earlier summary span { color: var(--mute); }
+.v-questions .q-earlier li { display: grid; grid-template-columns: 11rem 1fr; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--rule); }
+.v-questions .q-earlier time { font-weight: 700; }
+
+/* 4. About */
+.v-questions .q-about { display: grid; grid-template-columns: minmax(12rem, 1fr) 2.4fr; column-gap: clamp(2rem, 5vw, 5rem); }
+.v-questions .q-about-body p { font-size: clamp(1.15rem, 1.5vw, 1.4rem); line-height: 1.55; max-width: 60ch; margin-bottom: 1.1rem; }
+.v-questions .q-about-body .q-aside { font-size: 1.05rem; color: var(--mute); }
+
+/* 5. Research: the question waits for its mark. */
+.v-questions .q-stage { position: relative; min-height: 92svh; display: flex; align-items: center; margin: 1rem calc(-1 * var(--pad)) 0; padding: 4rem var(--pad); }
+.v-questions .q-question { position: relative; z-index: 1; font-family: var(--display); font-size: clamp(2.6rem, 8.3vw, 9.8rem); line-height: 1; letter-spacing: -0.005em; }
+.v-questions .q-last { white-space: nowrap; }
+.v-questions .q-slot { color: transparent; }
+.v-questions .q-slot i { display: inline-block; width: 0; height: 0; }
+.v-questions.is-flat .q-slot { color: var(--red); }
+.v-questions .q-paper { display: grid; grid-template-columns: 2.4fr 1fr; gap: clamp(2rem, 6vw, 7rem); border-top: 2px solid var(--ink); padding-top: 2.4rem; }
+.v-questions .q-title { font-family: var(--display); font-size: clamp(1.7rem, 2.6vw, 2.5rem); line-height: 1.1; max-width: 30ch; }
+.v-questions .q-status { color: var(--mute); font-weight: 600; margin-top: 0.6rem; }
+.v-questions .q-abstract { font-size: clamp(1.15rem, 1.5vw, 1.35rem); line-height: 1.55; max-width: 62ch; margin-top: 1.6rem; }
+.v-questions .q-keys { display: flex; flex-wrap: wrap; gap: 0.2rem 1.6rem; margin-top: 1.6rem; font-weight: 600; }
+.v-questions .q-plinks { align-self: start; border-top: 1px solid var(--rule); }
+.v-questions .q-plinks li { border-bottom: 1px solid var(--rule); }
+.v-questions .q-plinks .q-link { width: 100%; min-height: 64px; font-family: var(--display); font-weight: 400; font-size: 1.8rem; text-transform: uppercase; text-decoration: none; justify-content: space-between; }
+.v-questions .q-plinks .q-link::after { content: '\2197'; font-family: var(--text); font-size: 1.3rem; transition: transform 0.25s; }
+.v-questions .q-plinks .q-link:hover::after { transform: translate(3px, -3px); }
+.v-questions .q-wesso { margin-top: 4rem; max-width: 52rem; }
+.v-questions .q-wesso .q-h3 { font-size: clamp(1.4rem, 2vw, 1.9rem); }
+
+/* 6. Work: large screenshots, alternating. */
+.v-questions .q-works { margin-top: 2.4rem; display: grid; gap: clamp(4rem, 8vw, 7.5rem); }
+.v-questions .q-workrow { display: grid; grid-template-columns: 1.55fr 1fr; gap: clamp(1.6rem, 4vw, 4rem); align-items: center; }
+.v-questions .q-workrow:nth-child(even) .q-shot { order: 2; }
+.v-questions .q-shot { margin: 0; overflow: hidden; background: #d6d6da; box-shadow: 0 30px 60px -30px rgba(17,17,17,0.35); }
+.v-questions .q-shot img { display: block; width: 100%; height: auto; transition: transform 0.6s cubic-bezier(.2,.7,.2,1); }
+.v-questions .q-workrow:hover .q-shot img { transform: scale(1.025); }
+.v-questions .q-wname { font-family: var(--display); font-size: clamp(2.4rem, 4.4vw, 4.4rem); line-height: 0.95; text-transform: uppercase; }
+.v-questions .q-kind { color: #a32613; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.95rem; margin: 0.7rem 0 1rem; }
+.v-questions .q-wtext > p { max-width: 44ch; margin-bottom: 0.6rem; }
+.v-questions .q-stack { color: var(--mute); font-size: 1rem; }
+
+/* 7. GitHub: one small black mark per commit. */
+.v-questions .q-tally { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2.2rem; }
+.v-questions .q-tick { width: 1.6rem; height: auto; fill: var(--ink); }
+.v-questions .q-tally-label { color: var(--mute); font-weight: 600; margin-top: 0.8rem; }
+.v-questions .q-gh-cols { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(2rem, 5vw, 5rem); margin: 2rem 0 1rem; }
+.v-questions .q-gh-cols.is-repos-only { grid-template-columns: 1fr; }
+.v-questions .q-gh-cols.is-repos-only .q-repos { grid-template-columns: repeat(2, 1fr); column-gap: clamp(2rem, 5vw, 5rem); }
+.v-questions .q-commits li { display: grid; gap: 0.1rem; padding: 0.9rem 0; border-top: 1px solid var(--rule); }
+.v-questions .q-commits a { font-weight: 600; font-size: 1.1rem; }
+.v-questions .q-commits a:hover, .v-questions .q-repos a:hover { color: var(--red); }
+.v-questions .q-commits span { color: var(--mute); font-size: 1rem; }
+.v-questions .q-repos { display: grid; }
+.v-questions .q-repos li { padding: 1rem 0; border-top: 1px solid var(--rule); display: grid; gap: 0.2rem; }
+.v-questions .q-repos a { font-family: var(--display); font-size: 1.9rem; line-height: 1.1; text-transform: uppercase; min-height: 44px; display: inline-flex; align-items: center; justify-self: start; }
+.v-questions .q-repos span { color: var(--mute); font-size: 1rem; }
+
+/* 8. Now */
+.v-questions .q-status-big { font-size: clamp(1.5rem, 2.6vw, 2.4rem); line-height: 1.3; max-width: 32ch; margin: 2rem 0 3rem; }
+.v-questions .q-now-cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 7rem); border-top: 2px solid var(--ink); padding-top: 2rem; }
+.v-questions .q-now-cols p { max-width: 44ch; }
+.v-questions .q-shelves { margin-top: 1.2rem; }
+.v-questions .q-shelves li { padding: 0.55rem 0; border-top: 1px solid var(--rule); font-weight: 600; }
+
+/* 9. Record */
+.v-questions .q-honors { margin-top: 2rem; columns: 2; column-gap: clamp(2rem, 5vw, 5rem); }
+.v-questions .q-honors li { break-inside: avoid; display: grid; padding: 0.9rem 0; border-top: 1px solid var(--rule); }
+.v-questions .q-honors li span:first-child { font-weight: 600; }
+.v-questions .q-honors li span:last-child { color: var(--mute); font-size: 1rem; }
+.v-questions .q-awards { display: grid; grid-template-columns: repeat(2, minmax(0, 22rem)); gap: clamp(1.5rem, 4vw, 4rem); margin-top: 3.5rem; }
+.v-questions .q-awards a { display: grid; gap: 0.2rem; }
+.v-questions .q-awards img { display: block; width: 100%; height: auto; box-shadow: 0 24px 50px -28px rgba(17,17,17,0.45); margin-bottom: 0.9rem; transition: transform 0.4s cubic-bezier(.2,.7,.2,1); }
+.v-questions .q-awards a:hover img { transform: translateY(-6px) rotate(-1deg); }
+.v-questions .q-aw { font-family: var(--display); font-size: 1.6rem; text-transform: uppercase; }
+.v-questions .q-awn { color: var(--mute); font-size: 1rem; }
+
+/* 10. Off the record */
+.v-questions .q-off-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 2rem; }
+.v-questions .q-off-cols li { padding: 0.6rem 0; border-top: 1px solid var(--rule); font-size: 1rem; line-height: 1.45; }
+
+/* 11. The ending: empty, until you call them back. */
+.v-questions main > .q-end { position: relative; min-height: 100svh; margin-top: clamp(5rem, 10vw, 9rem); padding-bottom: var(--pad); display: grid; grid-template-rows: auto 1fr auto auto; justify-items: center; text-align: center; cursor: pointer; }
+.v-questions.is-flat main > .q-end { cursor: auto; }
+.v-questions .q-end .q-h2 { position: relative; z-index: 3; justify-self: start; }
+.v-questions .q-email { position: relative; z-index: 1; align-self: center; font-family: var(--display); font-size: clamp(2.4rem, 8.4vw, 9.5rem); line-height: 1; text-transform: uppercase; text-decoration: underline; text-decoration-color: var(--red); text-decoration-thickness: 0.06em; text-underline-offset: 0.12em; transition: color 0.2s; }
+.v-questions .q-email:hover { color: var(--red); }
+.v-questions .q-links { position: relative; z-index: 3; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 2.4rem; }
+.v-questions .q-links li { display: grid; text-align: center; }
+.v-questions .q-links li > span:first-child { color: var(--mute); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.v-questions .q-links a, .v-questions .q-plain { font-weight: 600; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+.v-questions .q-links a:hover { color: var(--red); }
+.v-questions .q-call { position: relative; z-index: 3; margin-top: 1.4rem; min-height: 48px; padding: 0 0.2rem; font: inherit; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.95rem; color: var(--ink); background: none; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 0.6rem; }
+.v-questions .q-call::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--red); transition: transform 0.3s; }
+.v-questions .q-call:hover::before { transform: scale(1.6); }
+
+.v-questions .q-foot { padding: 3rem var(--pad) 6rem 15rem; display: grid; gap: 0.4rem; color: var(--mute); font-size: 1rem; border-top: 1px solid var(--rule); margin-top: 2rem; }
+
+@media (max-width: 760px) {
+  .v-questions { font-size: 16px; }
+  .v-questions .q-hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto 1fr auto auto auto; min-height: 640px; padding-bottom: 5rem; }
+  .v-questions .q-short { margin-left: 0; }
+  .v-questions .q-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 0.5rem; font-size: 0.95rem; }
+  .v-questions .q-line, .v-questions .q-role { grid-column: 1; margin-top: 0.8rem; font-size: 1rem; }
+  .v-questions .q-line { grid-row: 2; }
+  .v-questions .q-role { grid-row: 3; justify-self: start; text-align: left; margin-top: 0.3rem; }
+  .v-questions .q-name { grid-row: 5; display: grid; justify-content: start; gap: calc(var(--f) * 0.07); --f: calc((100vw - 2 * var(--pad)) / 3.25); }
+  .v-questions .q-short { grid-row: 6; }
+  .v-questions .q-hint { grid-row: 7; grid-column: 1; justify-self: start; margin-top: 0.4rem; font-size: 0.85rem; }
+  .v-questions .q-wins li { grid-template-columns: minmax(0, 1fr); row-gap: 0.8rem; }
+  .v-questions .q-champ { font-size: calc((100vw - 2 * var(--pad)) / 4.1); line-height: 1.1; }
+  .v-questions .q-wins li { row-gap: 1.4rem; }
+  .v-questions .q-wins li > * { min-width: 0; }
+  .v-questions .q-team, .v-questions .q-paper, .v-questions .q-gh-cols, .v-questions .q-now-cols { grid-template-columns: 1fr; }
+  .v-questions .q-today-in, .v-questions .q-about { grid-template-columns: 1fr; }
+  .v-questions .q-today .q-h2 { grid-row: auto; margin-bottom: 1.2rem; }
+  .v-questions .q-earlier { grid-column: 1; }
+  .v-questions .q-earlier li { grid-template-columns: 1fr; gap: 0.2rem; }
+  .v-questions .q-about .q-h2 { margin-bottom: 1.2rem; }
+  .v-questions .q-stage { min-height: 78svh; }
+  .v-questions .q-question { font-size: clamp(2.3rem, 11.4vw, 4rem); }
+  .v-questions .q-workrow { grid-template-columns: 1fr; }
+  .v-questions .q-workrow:nth-child(even) .q-shot { order: 0; }
+  .v-questions .q-gh-cols.is-repos-only .q-repos { grid-template-columns: 1fr; }
+  .v-questions .q-honors { columns: 1; }
+  .v-questions .q-awards { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .v-questions .q-aw { font-size: 1.2rem; }
+  .v-questions .q-off-cols { grid-template-columns: 1fr; }
+  .v-questions .q-email { font-size: calc((100vw - 2 * var(--pad)) / 10.2); }
+  .v-questions .q-links { display: grid; gap: 0.6rem; }
+  .v-questions .q-foot { padding: 2.4rem var(--pad) 7rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-questions *, .v-questions *::before, .v-questions *::after { transition: none !important; }
+}

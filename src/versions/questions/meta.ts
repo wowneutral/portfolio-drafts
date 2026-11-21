@@ -1,0 +1,3 @@
+import type { Version } from '@/content';
+const meta: Version = { slug: 'questions', n: 94, name: 'The questions', color: '#e8e8ea', ink: '#111111', kind: '3D playground', text: 'Heavy red question marks, the mark of the debate team he founded, drift around his name in a soft studio; push them with your pointer, and as you scroll they thin out until one is left to end the question his paper asks.' };
+export default meta;
