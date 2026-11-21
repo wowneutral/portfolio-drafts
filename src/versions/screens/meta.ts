@@ -1,0 +1,3 @@
+import type { Version } from '@/content';
+const meta: Version = { slug: 'screens', n: 54, name: 'The screens', color: '#0b0b0c', ink: '#ece9e1', kind: 'Live data', text: 'A heap of old computers in a dark room, every screen showing something live of his: click the orange one for his next commit, scroll and the camera walks to his note, his work and finally a single lit screen with his email.' };
+export default meta;
