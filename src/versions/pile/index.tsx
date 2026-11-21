@@ -6,12 +6,14 @@ import '@fontsource/anton/400.css';
 import '@fontsource-variable/instrument-sans/wght.css';
 import './pile.css';
 import { ArrowUpRight } from 'lucide-react';
-import { AWARDS, CHAPTERS, COURSES, DEBATE, DISLIKES, FAVOURITES, GITHUB, HONORS, LIKES, LINKS, NOW, PERSON, RESEARCH, STATS, WORK } from '@/content';
+import { CHAPTERS, COURSES, DEBATE, DISLIKES, FAVOURITES, GITHUB, LIKES, NOW, PERSON, RESEARCH } from '@/content';
 import { useVersion } from '@/lib/version';
 import { useGitHub, ago } from '@/lib/github';
 import { useNotes, formatDate } from '@/lib/notes';
 import { still } from '@/lib/utils';
 import { Pile, type PileRef } from './Pile';
+import { HungRecord, LastTag, WorkPile } from './Pieces';
+import { scrollToY } from '@/lib/scroll';
 import antonUrl from '@fontsource/anton/files/anton-latin-400-normal.woff2?url';
 
 // Anton with its ascent trimmed to the caps, so tight poster leading never makes its line boxes collide.
@@ -21,10 +23,11 @@ if (typeof document !== 'undefined' && 'FontFace' in window) {
   ff.load().catch(() => { /* falls back to Anton */ });
 }
 
-const src = (p: string) => import.meta.env.BASE_URL + p;
 const host = (h: string) => h.replace(/^https?:\/\//, '').replace(/^mailto:/, '').replace(/\/$/, '');
 const paper = RESEARCH[0] as (typeof RESEARCH)[0] & { keywords: string[]; epigraph: { text: string; source: string }; pages: number };
 const wess = RESEARCH[1];
+// A short preview of an earlier note, cut at a word (a clamped box would leave hidden lines that collide).
+const clip = (t: string, n = 96) => (t.length <= n ? t : t.slice(0, t.lastIndexOf(' ', n)) + '\u2026');
 const debateCh = CHAPTERS.find((c) => c.id === 'debate')!;
 const NAV = [
   ['debate', 'Debate'],
@@ -51,6 +54,11 @@ export default function PilePage() {
   const [pick, setPick] = useState(0);
   const note = notes[pick] ?? notes[0];
   const commits = gh.activity.slice(0, 7);
+  // The closing move: back up to the first screen, and the pile drops again.
+  const back = () => {
+    scrollToY(0);
+    if (!still) window.setTimeout(() => pile.current?.drop(), 1100);
+  };
 
   return (
     <div className="v-pile">
@@ -169,22 +177,7 @@ export default function PilePage() {
         <section id="work" className="pl-sec pl-work" aria-labelledby="work-h">
           <div className="pl-wrap">
             <h2 id="work-h" className="pl-h2">Shipped</h2>
-            <ol className="pl-rows">
-              {WORK.map((w, i) => (
-                <li key={w.slug} className={'pl-row' + (i % 2 ? ' is-flip' : '')}>
-                  <div className="pl-shot">
-                    <img src={src(w.img)} alt={`Screenshot of ${w.name}`} loading="lazy" width={1200} height={750} />
-                  </div>
-                  <div className="pl-row-text">
-                    <span className="pl-chip">{w.kind}</span>
-                    <h3 className="pl-row-name">{w.name}</h3>
-                    <p className="pl-row-line">{w.line}</p>
-                    <p className="pl-meta">{w.stack}</p>
-                    {w.href ? <Out href={w.href}>{host(w.href)}</Out> : <p className="pl-meta pl-nolink">No public link.</p>}
-                  </div>
-                </li>
-              ))}
-            </ol>
+            <WorkPile />
           </div>
         </section>
 
@@ -213,7 +206,7 @@ export default function PilePage() {
                     <li key={n.date}>
                       <button type="button" aria-pressed={pick === i} onClick={() => setPick(i)}>
                         <time dateTime={n.date}>{formatDate(n.date, { day: 'numeric', month: 'short', year: 'numeric' })}</time>
-                        <span>{n.body[0]}</span>
+                        <span>{clip(n.body[0])}</span>
                       </button>
                     </li>
                   ))}
@@ -283,32 +276,7 @@ export default function PilePage() {
         <section id="record" className="pl-sec pl-record" aria-labelledby="record-h">
           <div className="pl-wrap">
             <h2 id="record-h" className="pl-h2">The record</h2>
-            <div className="pl-record-grid">
-              <div>
-                <ol className="pl-honors">
-                  {HONORS.map((h) => (
-                    <li key={h.what} className={h.what.startsWith('Champion') ? 'is-red' : ''}>
-                      <span className="pl-hn-what">{h.what}</span>
-                      <span className="pl-hn-det">{h.detail}</span>
-                    </li>
-                  ))}
-                </ol>
-                <ul className="pl-stats">
-                  {STATS.map((s) => <li key={s.label}><span>{s.to}{s.suffix}</span> {s.label}</li>)}
-                </ul>
-              </div>
-              <ul className="pl-certs">
-                {AWARDS.map((a) => (
-                  <li key={a.site}>
-                    <a href={a.href} target="_blank" rel="noreferrer">
-                      <img src={src(a.img)} alt={`WD Awards certificate for ${a.site}`} loading="lazy" width={800} height={1130} />
-                      <span className="pl-cert-site">{a.site}</span>
-                      <span className="pl-meta">{a.note}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <HungRecord />
           </div>
         </section>
 
@@ -324,20 +292,7 @@ export default function PilePage() {
           </div>
         </section>
 
-        <section id="contact" className="pl-sec pl-contact" aria-labelledby="contact-h">
-          <div className="pl-wrap">
-            <h2 id="contact-h" className="pl-h3">Write to him</h2>
-            <a className="pl-mail" href={LINKS[0].href!}>{LINKS[0].value}</a>
-            <ul className="pl-links">
-              {LINKS.slice(1).map((l) => (
-                <li key={l.label}>
-                  <span className="pl-l-label">{l.label}</span>
-                  {l.href ? <Out href={l.href}>{l.value}</Out> : <span className="pl-l-val">{l.value}</span>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <LastTag onBack={back} />
       </main>
 
       <footer className="pl-foot">
