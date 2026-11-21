@@ -13,7 +13,7 @@ const MODEL = BASE + 'laptop/mac-draco.glb';
 const DRACO = BASE + 'laptop/draco/';
 const OPEN = -0.425, SHUT = 1.575;
 
-type Props = { only?: 'og' | 'work'; small?: boolean };
+type Props = { only?: 'og' | 'work' | 'end'; small?: boolean };
 
 function Laptop({ only }: Props) {
   const group = useRef<THREE.Group>(null!);
@@ -54,15 +54,19 @@ function Laptop({ only }: Props) {
     let mode: Mode = S.mode, p = S.p;
     if (only === 'og') { mode = 'og'; p = 0; }
     if (only === 'work') mode = WORK_DARK(S.work) ? 'dark' : 'work';
-    const key = `${mode}|${S.work}|${p.toFixed(3)}|${S.data}`;
+    if (only === 'end') { mode = 'og'; p = 0; }
+    const key = `${mode}|${S.work}|${S.i}|${p.toFixed(3)}|${S.data}`;
     if (key !== screen.key) { screen.key = key; paint(screen.ctx, mode, S.work, p); screen.tex.needsUpdate = true; }
 
     // The lid: a weighted spring, a little overshoot when it opens.
     const shut = only === 'og' ? S.flip && S.mode === 'og' : S.shut !== S.flip;
+    // The ending: the scroll itself shuts the lid, a stiff spring so it still has weight.
+    const ending = (only === 'end' || !only) && S.close > 0.001 && !S.flip;
     const h = hinge.current;
     if (h.ready) {
-      const k = S.slow && shut ? 9 : 34, c = S.slow && shut ? 6 : 6.4;
-      h.v += ((shut ? SHUT : OPEN) - h.x) * k * dt - h.v * c * dt;
+      const goal = ending ? OPEN + (SHUT - OPEN) * S.close : shut ? SHUT : OPEN;
+      const k = ending ? 70 : S.slow && shut ? 9 : 34, c = ending ? 13 : S.slow && shut ? 6 : 6.4;
+      h.v += (goal - h.x) * k * dt - h.v * c * dt;
       h.x += h.v * dt;
       // The lid meets the base: it stops there, bounces a touch, and the whole machine dips.
       if (h.x > SHUT) { if (h.v > 0.6) h.bump = Math.min(0.35, h.v * 0.05); h.x = SHUT; h.v = -h.v * 0.22; }
@@ -71,12 +75,14 @@ function Laptop({ only }: Props) {
     lid.current.rotation.x = h.x;
 
     // Float while open; settle flat and low when shut. Lean a little toward the pointer.
-    const open = h.x < 1.2;
+    const open = h.x < 1.2 || (ending && S.close < 0.98);
     const g = group.current;
     easing.damp(g.rotation, 'x', open ? Math.cos(t / 10) / 10 + 0.25 - state.pointer.y * 0.06 : 0.42, 0.35, dt);
     easing.damp(g.rotation, 'y', open ? Math.sin(t / 10) / 4 + state.pointer.x * 0.16 : 0, 0.35, dt);
     easing.damp(g.rotation, 'z', open ? Math.sin(t / 10) / 10 : 0, 0.35, dt);
-    easing.damp(g.position, 'y', (open ? (-2 + Math.sin(t)) / 3 : -3.4) - h.bump, 0.3, dt);
+    // At the ending it lands a little higher, clear of his name beneath it.
+    const rest = (only === 'end' || !only) && S.close > 0.5 ? 0.5 : -3.4;
+    easing.damp(g.position, 'y', (open ? (-2 + Math.sin(t)) / 3 : rest) - h.bump, 0.3, dt);
   });
 
   return (

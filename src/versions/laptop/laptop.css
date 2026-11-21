@@ -80,6 +80,17 @@ html[data-v="laptop"] { background: #7a2b2b; }
 .v-laptop .keys { display: flex; flex-wrap: wrap; gap: 4px 0; color: var(--soft); font-weight: 560; }
 .v-laptop .keys li:not(:last-child)::after { content: '/'; padding: 0 10px; opacity: 0.6; }
 .v-laptop .links { display: flex; flex-wrap: wrap; gap: 0 28px; }
+.v-laptop .epi { display: grid; gap: 12px; margin: 3vh 0 2vh; padding-left: 22px; border-left: 3px solid var(--paper); }
+.v-laptop .epi blockquote { margin: 0; }
+.v-laptop .epi p { font-size: clamp(1.45rem, 2.1vw, 2.05rem); line-height: 1.2; font-weight: 650; letter-spacing: -0.015em; text-wrap: balance; }
+.v-laptop .epi figcaption { color: var(--soft); font-weight: 560; }
+/* The ladder: two rails and three rungs, one per thinker. */
+.v-laptop .ladder { display: grid; gap: 16px; margin: 2vh 0; }
+.v-laptop .ladder ol { padding: 26px 0; border-left: 3px solid var(--paper); border-right: 3px solid var(--paper); max-width: 34em; }
+.v-laptop .ladder li { display: grid; gap: 4px; padding: 18px 26px 26px; border-top: 3px solid var(--paper); }
+.v-laptop .ladder li:last-child { border-bottom: 3px solid var(--paper); }
+.v-laptop .ladder li b { font-size: clamp(1.6rem, 2.4vw, 2.3rem); line-height: 1; font-weight: 800; letter-spacing: -0.03em; font-variation-settings: 'opsz' 96; }
+.v-laptop .ladder li span { color: var(--soft); }
 .v-laptop .wess { display: grid; gap: 10px; margin-top: 4vh; padding-top: 22px; border-top: 1px solid var(--rule); }
 
 /* Work */
@@ -118,18 +129,23 @@ html[data-v="laptop"] { background: #7a2b2b; }
 .v-laptop .shelves { display: grid; gap: 2px; margin-top: 8px; }
 .v-laptop .shelves li { font-size: clamp(1.5rem, 2.2vw, 2.1rem); font-weight: 780; letter-spacing: -0.02em; line-height: 1.15; }
 
-/* Record */
-.v-laptop .rec-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 5vw; align-items: start; margin-top: -4vh; }
-.v-laptop .honors li { display: flex; justify-content: space-between; gap: 24px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--ox-rule); }
-.v-laptop .honors li:nth-child(-n + 2) b { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.015em; }
-.v-laptop .honors b { font-size: 1.15rem; font-weight: 650; }
-.v-laptop .honors span { font-weight: 520; text-align: right; flex: none; max-width: 40%; }
-.v-laptop .certs { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+/* Record: each row puts itself on the display, numbered, then the two certificates. */
+.v-laptop .record { gap: 0; }
+.v-laptop .record .h2 { margin-bottom: 5vh; }
+.v-laptop .honors { border-top: 1px solid var(--rule); }
+.v-laptop .honors li { position: relative; display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); column-gap: 12px; row-gap: 6px; align-content: center; min-height: 26vh; padding: 3vh 0; border-bottom: 1px solid var(--rule); }
+.v-laptop .honors li::before { content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 3px; background: var(--paper); transform: scaleX(0); transform-origin: left; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-laptop .honors li.is-on::before { transform: scaleX(1); }
+.v-laptop .hn { grid-row: span 2; font-weight: 720; font-variant-numeric: tabular-nums; color: var(--soft); padding-top: 0.5em; }
+.v-laptop .honors b { font-size: clamp(1.5rem, 2.3vw, 2.3rem); line-height: 1.08; font-weight: 780; letter-spacing: -0.02em; text-wrap: balance; }
+.v-laptop .honors li:nth-child(-n + 2) b { font-size: clamp(2rem, 3.3vw, 3.3rem); font-weight: 800; letter-spacing: -0.035em; font-variation-settings: 'opsz' 96; }
+.v-laptop .hd { color: var(--soft); font-weight: 560; }
+.v-laptop .certs { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; min-height: 100vh; align-content: center; }
 .v-laptop .certs a { display: grid; gap: 6px; }
-.v-laptop .certs img { box-shadow: 0 18px 36px -22px rgba(60, 15, 15, 0.55); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); margin-bottom: 8px; }
+.v-laptop .certs img { box-shadow: 0 22px 40px -24px rgba(20, 4, 4, 0.8); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); margin-bottom: 10px; }
 .v-laptop .certs a:hover img, .v-laptop .certs a:focus-visible img { transform: translateY(-6px); }
-.v-laptop .certs b { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
-.v-laptop .band-h.small { margin-top: 2vh; }
+.v-laptop .certs b { font-weight: 760; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+.v-laptop .certs span { color: var(--soft); }
 .v-laptop .off { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 3vw; margin-top: -4vh; }
 .v-laptop .off > div { display: grid; gap: 12px; align-content: start; }
 .v-laptop .off li { padding: 8px 0; border-bottom: 1px solid var(--ox-rule); line-height: 1.4; }
@@ -142,6 +158,16 @@ html[data-v="laptop"] { background: #7a2b2b; }
 .v-laptop .contacts a, .v-laptop .cval { font-size: clamp(1.3rem, 1.9vw, 1.8rem); font-weight: 760; letter-spacing: -0.02em; overflow-wrap: anywhere; justify-self: start; min-height: 44px; display: inline-flex; align-items: center; }
 .v-laptop .contacts a { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; text-decoration-color: rgba(244, 239, 230, 0.45); transition: text-decoration-color 0.2s; }
 .v-laptop .contacts a:hover, .v-laptop .contacts a:focus-visible { text-decoration-color: var(--paper); }
+/* The end: the laptop comes to the middle and the last of the scroll shuts its lid. */
+.v-laptop .end { position: relative; min-height: 210vh; pointer-events: none; }
+.v-laptop .end-in { position: sticky; top: 0; height: 100vh; display: grid; align-content: end; gap: 18px; padding: 0 var(--gut) 5.75rem; }
+.v-laptop .end-name { font-size: clamp(4rem, 13.4vw, 15rem); line-height: 0.8; font-weight: 800; letter-spacing: -0.05em; font-variation-settings: 'opsz' 96; white-space: nowrap; margin-left: -0.05em; }
+.v-laptop .end-row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 32px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.v-laptop .end-short { font-size: clamp(1.15rem, 1.4vw, 1.4rem); font-weight: 620; }
+.v-laptop .again { pointer-events: auto; min-height: 44px; padding: 0; background: none; border: 0; color: var(--paper); font: inherit; font-size: clamp(1.15rem, 1.4vw, 1.4rem); font-weight: 720; cursor: pointer; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; transition: text-decoration-thickness 0.2s; }
+.v-laptop .again:hover, .v-laptop .again:focus-visible { text-decoration-thickness: 4px; }
+.v-laptop.is-flat .end { min-height: 0; }
+.v-laptop.is-flat .end-in { position: static; height: auto; padding-top: 22vh; }
 .v-laptop .foot { position: relative; z-index: 1; width: var(--colw); margin-left: var(--gut); padding: 28px 0 120px; border-top: 1px solid var(--rule); display: grid; gap: 6px; color: var(--soft); font-size: 1rem; }
 
 /* No WebGL or reduced motion: the screenshots sit flat in a plain bezel. */
@@ -163,14 +189,12 @@ html[data-v="laptop"] { background: #7a2b2b; }
   .v-laptop .line { font-size: 1.15rem; }
   .v-laptop .band { margin-top: 14vh; }
   .v-laptop .band-in { padding: 10vh var(--gut) 12vh; gap: 7vh; }
-  .v-laptop .wins, .v-laptop .team, .v-laptop .next, .v-laptop .rec-grid { grid-template-columns: 1fr; margin-top: 0; }
+  .v-laptop .wins, .v-laptop .team, .v-laptop .next { grid-template-columns: 1fr; margin-top: 0; }
   .v-laptop .wins { gap: 7vh; }
   .v-laptop .champ { font-size: clamp(3.2rem, 19vw, 6rem); }
   .v-laptop .team { gap: 18px; }
   .v-laptop .next { gap: 8px; }
   .v-laptop .off { grid-template-columns: 1fr 1fr; gap: 28px 18px; margin-top: 0; }
-  .v-laptop .honors li { display: grid; gap: 2px; }
-  .v-laptop .honors span { text-align: left; max-width: none; }
   .v-laptop .pwork { margin-top: 4vh; }
   .v-laptop .pwork .pband { height: min(46svh, 92vw); }
   .v-laptop .strip { display: grid; grid-auto-flow: column; grid-auto-columns: 84%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--gut) 6px; scroll-padding: 0 var(--gut); scrollbar-width: none; overscroll-behavior-x: contain; }
@@ -184,7 +208,21 @@ html[data-v="laptop"] { background: #7a2b2b; }
   .v-laptop.is-flat .hero { padding: 0 var(--gut) 0 0; }
   .v-laptop.is-flat .hero-shot { margin: 4vh 0 6vh var(--gut); order: -1; }
   .v-laptop .foot { margin: 0 var(--gut); }
+  .v-laptop .honors li { min-height: 0; padding: 22px 0; grid-template-columns: 4.2rem minmax(0, 1fr); }
+  .v-laptop .hn { font-size: 2.6rem; line-height: 0.9; font-weight: 800; letter-spacing: -0.04em; color: var(--paper); padding-top: 0; }
+  .v-laptop .honors li::before { display: none; }
+  .v-laptop .certs { min-height: 0; padding-top: 6vh; gap: 16px; }
+  .v-laptop .ladder li { padding: 14px 18px 20px; }
+  .v-laptop .end { min-height: 190svh; }
+  .v-laptop .end-in { height: 100svh; grid-template-rows: minmax(0, 1fr) auto auto; align-content: stretch; padding-bottom: 5.25rem; gap: 14px; }
+  .v-laptop .end-band { height: auto; margin: 0 calc(var(--gut) * -1); }
+  .v-laptop .end-name { white-space: normal; font-size: clamp(3.6rem, 24vw, 7rem); line-height: 0.84; }
+  .v-laptop .end-row { flex-direction: column; align-items: flex-start; }
+  .v-laptop.is-flat .end-in { grid-template-rows: none; align-content: end; padding-top: 14vh; }
 }
 @media (max-width: 520px) {
   .v-laptop .off { grid-template-columns: 1fr; }
 }
+/* Without the display there is nothing for the rows to wait for. */
+.v-laptop.is-flat .honors li { min-height: 0; padding: 22px 0; }
+.v-laptop.is-flat .certs { min-height: 0; padding-top: 8vh; }

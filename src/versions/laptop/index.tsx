@@ -7,7 +7,7 @@ import './laptop.css';
 import { PERSON, CHAPTERS, DEBATE, RESEARCH, WORK, HONORS, AWARDS, NOW, LIKES, DISLIKES, FAVOURITES, COURSES, LINKS, GITHUB } from '@/content';
 import { useGitHub, ago } from '@/lib/github';
 import { useNotes, formatDate } from '@/lib/notes';
-import { gsap } from '@/lib/scroll';
+import { gsap, scrollToY } from '@/lib/scroll';
 import { clamp, isPhone, still } from '@/lib/utils';
 import { useVersion } from '@/lib/version';
 import { S, preload, type Mode } from './screen';
@@ -38,6 +38,8 @@ export default function Laptop() {
   useVersion('laptop');
   const root = useRef<HTMLDivElement>(null);
   const strip = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const end = useRef<HTMLElement>(null);
   const [phone, setPhone] = useState(isPhone);
   const [webgl] = useState(hasWebGL);
   const flat = still || !webgl;
@@ -62,7 +64,7 @@ export default function Laptop() {
     S.paper = [paper.short, sub];
     S.shelves = [...NOW.reading.shelves];
     document.fonts?.ready.then(() => { S.data++; });
-    return () => { S.mode = 'og'; S.flip = false; S.shut = false; S.slow = false; S.work = 0; S.p = 0; };
+    return () => { S.mode = 'og'; S.flip = false; S.shut = false; S.slow = false; S.work = 0; S.p = 0; S.i = 0; S.close = 0; };
   }, [paper.short, sub]);
   useEffect(() => {
     S.lines = commits.length
@@ -98,6 +100,20 @@ export default function Laptop() {
       if (at && r) {
         S.mode = at.dataset.screen as Mode;
         if (at.dataset.work) { S.work = +at.dataset.work; S.p = clamp((mid - r.top - r.height * 0.15) / (r.height * 0.7), 0, 1); }
+        else if (at.dataset.scroll !== undefined) S.p = clamp((mid - r.top - r.height * 0.08) / (r.height * 0.78), 0, 1);
+        if (at.dataset.i) S.i = +at.dataset.i;
+      }
+      // The record row the display is showing gets its mark.
+      if (S.mode === 'honor') el.querySelectorAll<HTMLElement>('.honors > li').forEach((li, i) => li.classList.toggle('is-on', i === S.i));
+      // The ending: the stage slides to the middle, then the scroll shuts the lid.
+      const e = end.current, st = stage.current;
+      if (e && st) {
+        const b = e.getBoundingClientRect();
+        const c = clamp(1 - b.top / vh, 0, 1), k = c * c * (3 - 2 * c);
+        // Once the end has passed, the laptop rides up with it so the footer gets a clear field.
+        const lift = Math.min(0, b.bottom - vh);
+        st.style.transform = k > 0 ? `translate3d(${(-20 * k).toFixed(3)}vw, calc(${(-14 * k).toFixed(3)}vh + ${lift.toFixed(1)}px), 0)` : '';
+        S.close = clamp(-b.top / Math.max(1, b.height - vh), 0, 1);
       }
       const closed = S.shut !== S.flip;
       setShut((v) => (v === closed ? v : closed));
@@ -115,7 +131,12 @@ export default function Laptop() {
   }, [card, phone, flat]);
   useEffect(() => {
     if (flat || !phone) return;
-    const tick = () => setShut((v) => (v === S.flip ? v : S.flip));
+    const tick = () => {
+      setShut((v) => (v === S.flip ? v : S.flip));
+      const e = end.current; if (!e) return;
+      const b = e.getBoundingClientRect();
+      S.close = clamp(-b.top / Math.max(1, b.height - window.innerHeight), 0, 1);
+    };
     gsap.ticker.add(tick);
     return () => gsap.ticker.remove(tick);
   }, [flat, phone]);
@@ -133,7 +154,7 @@ export default function Laptop() {
     <div className={`v-laptop${flat ? ' is-flat' : ''}${phone ? ' is-phone' : ''}`} ref={root}>
       <a className="skip-x" href="#main">Skip to content</a>
       {!flat && !phone && (
-        <div className="stage" aria-hidden="true"><Suspense fallback={null}><Stage /></Suspense></div>
+        <div className="stage" ref={stage} aria-hidden="true"><Suspense fallback={null}><Stage /></Suspense></div>
       )}
 
       <main id="main">
@@ -185,12 +206,25 @@ export default function Laptop() {
           </div>
         </section>
 
-        <section className="col sec research" id="research" data-screen="paper" aria-labelledby="h-research">
+        <section className="col sec research" id="research" data-screen="paper" data-scroll="" aria-labelledby="h-research">
           <h2 id="h-research" className="h2">{CHAPTERS[3].title}</h2>
           <h3 className="paper-title">{paper.title}</h3>
           <p className="meta">{paper.status}, {paper.pages} pages</p>
+          <figure className="epi">
+            <blockquote><p>{paper.epigraph!.text}</p></blockquote>
+            <figcaption>{paper.epigraph!.source}</figcaption>
+          </figure>
           <p className="body lead">{paper.abstract}</p>
+          <div className="ladder">
+            <h3 className="h3">One ladder, three times</h3>
+            <ol>
+              {paper.ladders!.map((l) => (
+                <li key={l.who}><b>{l.who}</b><span>{l.when}. {l.where}</span></li>
+              ))}
+            </ol>
+          </div>
           <ul className="keys" aria-label="Keywords">{(paper.keywords ?? []).map((k) => <li key={k}>{k}</li>)}</ul>
+          <p className="meta">DOI {paper.doi}</p>
           <ul className="links">{paper.links.map((l) => <li key={l.label}><Go href={l.href}>{l.label}</Go></li>)}</ul>
           <div className="wess">
             <h3 className="h3">{wess.title}</h3>
@@ -292,25 +326,31 @@ export default function Laptop() {
           </div>
         </section>
 
-        <section className="band record" id="record" data-shut="" aria-labelledby="h-record">
+        <section className="col sec record" id="record" aria-labelledby="h-record">
+          <h2 id="h-record" className="h2">Record</h2>
+          <ol className="honors">
+            {HONORS.map((h, i) => (
+              <li key={h.what} data-screen="honor" data-i={i}>
+                <span className="hn" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <b>{h.what}</b><span className="hd">{h.detail}</span>
+              </li>
+            ))}
+          </ol>
+          <ul className="certs" data-screen="certs">
+            {AWARDS.map((a) => (
+              <li key={a.site}>
+                <a href={a.href} rel="noopener">
+                  <img src={BASE + a.img} alt={`Certificate: ${a.site}, ${a.note}`} loading="lazy" width={600} height={848} />
+                  <b>{a.site}</b><span>{a.note}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="band offrec" id="off" data-shut="" aria-labelledby="h-off">
           <div className="band-in">
-            <h2 id="h-record" className="band-h">Record</h2>
-            <div className="rec-grid">
-              <ol className="honors">
-                {HONORS.map((h) => <li key={h.what}><b>{h.what}</b><span>{h.detail}</span></li>)}
-              </ol>
-              <ul className="certs">
-                {AWARDS.map((a) => (
-                  <li key={a.site}>
-                    <a href={a.href} rel="noopener">
-                      <img src={BASE + a.img} alt={`Certificate: ${a.site}, ${a.note}`} loading="lazy" width={600} height={848} />
-                      <b>{a.site}</b><span>{a.note}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <h2 className="band-h small" id="h-off">Off the record</h2>
+            <h2 className="band-h" id="h-off">Off the record</h2>
             <div className="off">
               <div><h3 className="h3">Likes</h3><ul>{LIKES.map((x) => <li key={x}>{x}</li>)}</ul></div>
               <div><h3 className="h3">Dislikes</h3><ul>{DISLIKES.map((x) => <li key={x}>{x}</li>)}</ul></div>
@@ -320,7 +360,7 @@ export default function Laptop() {
           </div>
         </section>
 
-        <section className="col sec contact" id="contact" data-screen="og" data-shut="slow" aria-labelledby="h-contact">
+        <section className="col sec contact" id="contact" data-screen="og" aria-labelledby="h-contact">
           <h2 id="h-contact" className="h2">Contact</h2>
           <ul className="contacts">
             {LINKS.map((l) => (
@@ -330,6 +370,17 @@ export default function Laptop() {
               </li>
             ))}
           </ul>
+        </section>
+
+        <section className="end" id="end" ref={end} data-screen="og" aria-label="The end">
+          <div className="end-in">
+            {!flat && phone && <div className="pband end-band" aria-hidden="true"><Suspense fallback={null}><Stage only="end" small /></Suspense></div>}
+            <p className="end-name">{PERSON.first} {PERSON.last}</p>
+            <div className="end-row">
+              <p className="end-short">{PERSON.short.join(' ')}</p>
+              <button type="button" className="again" onClick={() => { S.flip = false; scrollToY(0); }}>Back to the start</button>
+            </div>
+          </div>
         </section>
       </main>
 
