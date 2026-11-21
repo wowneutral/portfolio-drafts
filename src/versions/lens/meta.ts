@@ -1,0 +1,3 @@
+import type { Version } from '@/content';
+const meta: Version = { slug: 'lens', n: 41, name: 'The lens', color: '#e9e8e4', ink: '#111111', kind: '3D playground', text: 'His own words about why he debates and builds, set huge, with a heavy glass lens that follows your pointer and magnifies whatever it passes over; it comes back once more over the abstract of his paper.' };
+export default meta;
