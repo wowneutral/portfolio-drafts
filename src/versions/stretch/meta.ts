@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'stretch', n: 85, name: 'The stretch', color: '#ffd23f', ink: '#111111', kind: 'Idea interface',
+  text: 'Flat yellow, with his name in glossy black rubber: grab it and pull and it stretches toward you, then springs back with a wobble. The two championships, the paper, today\'s note and the last line he refuses to keep short are rubber too; everything else is calm type in white fields.',
+};
+export default meta;
