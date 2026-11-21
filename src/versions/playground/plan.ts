@@ -69,12 +69,12 @@ export function makePlan(phone: boolean): Plan {
     const w = width(NAME), x0 = -w / 2 - 0.35, x1 = row(NAME, x0, 0, letters);
     const L = (i: number) => letters[i];
     const spots: Record<ThingId, Spot> = {
-      skeptical: { x: x1 + 0.82, z: 0.55, ry: deg(-14) },
+      skeptical: { x: x1 + 0.82, z: 0.55, ry: deg(-21) },
       plato: { x: x0 - 1.0, z: 1.1, ry: deg(22) },
       github: { x: -4.0, z: 3.15, ry: deg(-16) },
       watch: { x: -1.85, z: 3.40, ry: deg(-24) },
       mitez: { x: 0.45, z: 3.10, ry: deg(-7) },
-      armillary: { x: 3.15, z: 3.05, ry: deg(-30) },
+      armillary: { x: 3.55, z: 3.55, ry: deg(-30) },
       notepad: { x: -2.55, z: 5.30, ry: deg(-9), y: PAD_H },
       paper: { x: -0.65, z: 5.25, ry: deg(7), y: PAD_H },
       tea: { x: 3.0, z: 5.45, ry: deg(30) },

@@ -287,12 +287,13 @@ function buildThing(id: ThingId, k: Kit): Built {
     }
     case 'skeptical': default: {
       const o = letter('?', 1.5, k.low ? 4 : 7);
-      const geo = toCreasedNormals(solid(o, 0.5, 0.034, k.low ? 2 : 4), 0.7); k.own(geo);
+      const QD = 0.28; // thin enough that the dot reads apart from the stem from the raised opening camera
+      const geo = toCreasedNormals(solid(o, QD, 0.03, k.low ? 2 : 4), 0.7); k.own(geo);
       const g = new THREE.Group(); g.add(shadowed(new THREE.Mesh(geo, M.red)));
       const cols: Desc[] = [];
-      for (const h of hulls(o, 0.5)) { const d = k.R.ColliderDesc.convexHull(h); if (d) cols.push(d as unknown as Desc); }
-      cols.push(cub(k, o.w / 2, 0.03, 0.25 - 0.004, 0, -o.h / 2 + 0.03, 0));
-      return { obj: g, half: v3(o.w / 2, o.h / 2, 0.25), cols, density: 1 };
+      for (const h of hulls(o, QD)) { const d = k.R.ColliderDesc.convexHull(h); if (d) cols.push(d as unknown as Desc); }
+      cols.push(cub(k, o.w / 2, 0.03, QD / 2 - 0.004, 0, -o.h / 2 + 0.03, 0));
+      return { obj: g, half: v3(o.w / 2, o.h / 2, QD / 2), cols, density: 1 };
     }
   }
 }
