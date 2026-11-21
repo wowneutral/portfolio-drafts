@@ -1,0 +1,6 @@
+import type { Version } from '@/content';
+const meta: Version = {
+  slug: 'debt', n: 70, name: 'The debt', color: '#f0ede4', ink: '#171612', kind: 'Idea interface',
+  text: 'His paper’s argument as something you can pull: on warm paper, his words, his two championships and the three names of his paper are tied by one red thread; drag any of them away and the thread stretches and bends but never lets go, then pulls it home.',
+};
+export default meta;
