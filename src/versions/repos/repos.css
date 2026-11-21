@@ -1,0 +1,212 @@
+/* Draft 97, The repos. Sphere styles adapted from React Bits InfiniteMenu.css. */
+html[data-v='repos'] { background: #101011; }
+
+.v-repos {
+  --bg: #101011;
+  --ink: #ecebe6;
+  --dim: #a8a69f;
+  --rule: #2b2b2d;
+  --amber: #f0a43c;
+  --sans: 'Schibsted Grotesk Variable', 'Schibsted Grotesk', system-ui, sans-serif;
+  --mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --gut: clamp(20px, 5.4vw, 88px);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 18px;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+  min-height: 100vh;
+}
+.v-repos ::selection { background: var(--amber); color: #101011; }
+.v-repos a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; text-underline-offset: 0.22em; transition: color 0.2s, text-underline-offset 0.2s; }
+.v-repos a:hover { color: var(--amber); text-underline-offset: 0.32em; }
+.v-repos a:focus-visible, .v-repos button:focus-visible, .v-repos .sph:focus-visible { outline: 2px solid var(--amber); outline-offset: 4px; border-radius: 2px; }
+.v-repos h1, .v-repos h2, .v-repos h3, .v-repos p, .v-repos ul, .v-repos ol, .v-repos blockquote { margin: 0; padding: 0; }
+.v-repos ul, .v-repos ol { list-style: none; }
+.v-repos button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+.v-repos .skip-x { position: absolute; left: -9999px; top: 8px; z-index: 50; background: var(--ink); color: var(--bg); padding: 10px 14px; }
+.v-repos .skip-x:focus { left: 12px; }
+
+/* Two columns: the copy, and the pinned sphere. */
+.v-repos .pg { display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr); }
+.v-repos .col { padding: 0 var(--gut); min-width: 0; }
+.v-repos .side { position: relative; min-width: 0; }
+.v-repos .stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; }
+.v-repos .stage > .sph, .v-repos .stage > .flat { flex: 1 1 auto; min-height: 0; height: auto; }
+
+/* The sphere (InfiniteMenu's root and canvas). */
+.v-repos .sph { position: relative; width: 100%; height: 100%; overflow: hidden; outline: none; -webkit-tap-highlight-color: transparent; }
+.v-repos .sph-c { position: absolute; inset: 0; display: block; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
+.v-repos .sph-c:active { cursor: grabbing; }
+.v-repos .sph:focus-visible { outline-offset: -6px; }
+.v-repos .sph-wide .sph-c { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10%); mask-image: linear-gradient(90deg, transparent 0, #000 10%); }
+.v-repos .cap { flex: 0 0 76px; display: flex; align-items: center; justify-content: flex-end; padding: 0 var(--gut) 8px 32px; font-size: 17px; color: var(--dim); }
+.v-repos .cap p { display: flex; gap: 18px; align-items: baseline; }
+.v-repos .cap a { display: inline-flex; min-height: 44px; align-items: center; }
+.v-repos .cap-t { font-family: var(--mono); color: var(--ink); }
+
+/* First screen. */
+.v-repos .hero { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; padding: 30px 0 92px; }
+.v-repos .nav { display: flex; flex-wrap: wrap; gap: 4px 22px; margin-bottom: auto; padding-bottom: 40px; }
+.v-repos .nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: 17px; text-decoration-color: transparent; }
+.v-repos .nav a:hover, .v-repos .nav a:focus-visible { text-decoration-color: var(--amber); color: var(--ink); }
+.v-repos .name { font-size: clamp(3rem, 5.6vw, 5.4rem); font-weight: 800; line-height: 0.94; letter-spacing: -0.04em; text-transform: uppercase; }
+.v-repos .who { margin-top: 18px; max-width: 30ch; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.4; color: var(--dim); }
+.v-repos .rest { margin-top: clamp(36px, 6vh, 72px); padding-top: 22px; border-top: 1px solid var(--rule); min-height: 15.5rem; }
+.v-repos .rest-name { font-size: clamp(2.4rem, 4.2vw, 4.2rem); font-weight: 800; line-height: 1; letter-spacing: -0.035em; overflow-wrap: anywhere; }
+.v-repos .rest-line { margin-top: 14px; max-width: 36ch; font-size: clamp(19px, 1.45vw, 22px); line-height: 1.4; }
+.v-repos .rest-meta { margin-top: 10px; font-family: var(--mono); font-size: 16px; color: var(--dim); }
+.v-repos .rest-links { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 0 24px; }
+.v-repos .rest-links a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; font-size: 19px; }
+.v-repos .rest-s { margin-top: 18px; min-height: 0; border-top: 0; padding-top: 0; }
+.v-repos .rest-s .rest-name { font-size: 2.2rem; }
+.v-repos .hint { margin-top: 20px; font-size: 17px; color: var(--dim); }
+
+/* Sections. */
+.v-repos .sec { padding: clamp(96px, 16vh, 168px) 0 0; max-width: 40rem; }
+.v-repos h2 { font-size: clamp(2.4rem, 4vw, 3.6rem); font-weight: 800; line-height: 1; letter-spacing: -0.035em; margin-bottom: 36px; }
+.v-repos h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+.v-repos .lead { font-size: clamp(19px, 1.45vw, 22px); line-height: 1.5; max-width: 38ch; }
+.v-repos .lead + .lead { margin-top: 20px; }
+.v-repos .aside { margin-top: 28px; color: var(--dim); max-width: 44ch; }
+
+/* Debate: the two titles at display size. */
+.v-repos .wins li { padding: 26px 0 30px; border-top: 1px solid var(--rule); }
+.v-repos .wins li:last-child { border-bottom: 1px solid var(--rule); }
+.v-repos .win-t { font-size: 19px; font-weight: 600; }
+.v-repos .win-w { font-size: clamp(2.8rem, 5.2vw, 5rem); font-weight: 800; line-height: 0.98; letter-spacing: -0.04em; margin-top: 8px; }
+.v-repos .win-y { font-family: var(--mono); color: var(--dim); margin-top: 10px; font-size: 16px; }
+.v-repos .team { margin-top: 64px; }
+.v-repos .team h3 { font-size: 2.4rem; letter-spacing: -0.03em; }
+.v-repos .role { font-family: var(--mono); font-size: 16px; color: var(--dim); margin: 6px 0 16px; }
+.v-repos .team p + p { margin-top: 12px; }
+.v-repos .rec { color: var(--dim); }
+.v-repos .go { display: flex; flex-wrap: wrap; gap: 0 26px; }
+.v-repos .go a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+.v-repos .next { margin-top: 56px; }
+.v-repos .next h3 { margin-bottom: 12px; }
+.v-repos .next li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 20px; padding: 14px 0; border-top: 1px solid var(--rule); }
+.v-repos .nx-w { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+.v-repos .nx-e { color: var(--dim); align-self: center; }
+
+/* Today. */
+.v-repos .t-date { font-size: clamp(2rem, 3.2vw, 3rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+.v-repos .t-body { margin-top: 18px; font-size: clamp(20px, 1.6vw, 24px); line-height: 1.45; max-width: 34ch; }
+.v-repos .earlier { margin-top: 36px; border-top: 1px solid var(--rule); }
+.v-repos .earlier button { min-height: 52px; font-weight: 600; text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; text-underline-offset: 0.22em; }
+.v-repos .earlier button:hover { color: var(--amber); }
+.v-repos .earlier li { padding: 16px 0; border-top: 1px solid var(--rule); }
+.v-repos .earlier time { font-family: var(--mono); font-size: 16px; color: var(--dim); }
+.v-repos .earlier li p { margin-top: 6px; max-width: 44ch; }
+
+/* Research. */
+.v-repos .r-status { font-family: var(--mono); font-size: 16px; color: var(--dim); }
+.v-repos .r-title { margin: 12px 0 22px; font-size: clamp(1.9rem, 2.8vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; text-wrap: balance; }
+.v-repos .r-keys { margin-top: 22px; font-family: var(--mono); font-size: 16px; color: var(--dim); line-height: 1.7; }
+.v-repos .r-links { display: flex; flex-wrap: wrap; gap: 0 28px; margin-top: 22px; }
+.v-repos .r-links a { display: inline-flex; align-items: center; min-height: 48px; font-size: 1.35rem; font-weight: 700; }
+.v-repos .r-epi { margin-top: 44px; padding-top: 22px; border-top: 1px solid var(--rule); }
+.v-repos .r-epi p { font-size: 1.4rem; line-height: 1.35; max-width: 32ch; }
+.v-repos .r-epi cite { display: block; margin-top: 10px; font-style: normal; font-family: var(--mono); font-size: 16px; color: var(--dim); }
+.v-repos .wesso { margin-top: 56px; }
+.v-repos .wesso h3 { margin-bottom: 6px; }
+.v-repos .wesso p + p { margin-top: 12px; max-width: 44ch; }
+
+/* Work: one project per screen, the sphere follows. */
+.v-repos .w-intro { color: var(--dim); max-width: 36ch; }
+.v-repos .wk { min-height: 88vh; padding: 64px 0 24px; display: flex; flex-direction: column; justify-content: center; }
+.v-repos .wk img { width: 100%; height: auto; display: block; border-radius: 6px; background: #1b1b1d; box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.8); }
+.v-repos .wk h3 { margin-top: 26px; font-size: clamp(2.2rem, 3.6vw, 3.2rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1; }
+.v-repos .wk-k { margin-top: 10px; font-family: var(--mono); font-size: 16px; color: var(--dim); }
+.v-repos .wk-l { margin-top: 14px; font-size: 20px; line-height: 1.45; max-width: 38ch; }
+.v-repos .wk-a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 10px; font-weight: 700; align-self: flex-start; }
+.v-repos .wk-n { margin-top: 18px; color: var(--dim); }
+
+/* GitHub. */
+.v-repos .gh-src { color: var(--dim); max-width: 40ch; margin-bottom: 30px; }
+.v-repos .commits { margin-bottom: 44px; }
+.v-repos .commits li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 18px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.v-repos .commits a { grid-column: 1 / -1; font-weight: 600; overflow-wrap: anywhere; }
+.v-repos .c-r, .v-repos .c-t { font-family: var(--mono); font-size: 16px; color: var(--dim); }
+.v-repos .repos li { padding: 22px 0; border-top: 1px solid var(--rule); }
+.v-repos .repos li > * { transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-repos .repos li > .rp-n { display: inline-block; }
+.v-repos .repos li:hover > *, .v-repos .repos li:focus-within > * { transform: translateX(14px); }
+.v-repos .rp-n { font-family: var(--mono); font-size: clamp(1.5rem, 2.4vw, 2.1rem); font-weight: 600; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.v-repos .rp-d { margin-top: 6px; }
+.v-repos .rp-m { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 0 20px; font-family: var(--mono); font-size: 16px; color: var(--dim); }
+.v-repos .dot::before { content: ''; display: inline-block; width: 9px; height: 9px; margin-right: 9px; border-radius: 50%; background: var(--amber); vertical-align: 0.08em; }
+.v-repos .gh-all { display: inline-flex; align-items: center; min-height: 48px; margin-top: 22px; font-weight: 700; font-size: 19px; }
+
+/* Now. */
+.v-repos .now-g { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 44px; }
+.v-repos .now-g h3 { margin-bottom: 10px; }
+.v-repos .shelves { margin-top: 14px; }
+.v-repos .shelves li { padding: 8px 0; border-top: 1px solid var(--rule); font-weight: 600; }
+
+/* Record. */
+.v-repos .honors li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; padding: 13px 0; border-top: 1px solid var(--rule); }
+.v-repos .h-d { color: var(--dim); text-align: right; }
+.v-repos .certs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+.v-repos .cert { display: flex; flex-direction: column; text-decoration: none; }
+.v-repos .cert img { width: 100%; height: auto; border-radius: 4px; transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-repos .cert:hover img { transform: translateY(-6px); }
+.v-repos .cert-s { margin-top: 14px; font-weight: 700; text-decoration: underline; text-decoration-color: var(--amber); text-decoration-thickness: 2px; text-underline-offset: 0.22em; }
+.v-repos .cert-n { color: var(--dim); font-size: 17px; }
+
+/* Off the record. */
+.v-repos .off-g { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 32px; }
+.v-repos .off-g h3 { font-size: 1.2rem; margin-bottom: 8px; }
+.v-repos .off-g li { padding: 6px 0; color: var(--dim); font-size: 17px; line-height: 1.4; }
+
+/* Contact: the closing. */
+.v-repos .contact { min-height: 92vh; padding-bottom: 80px; }
+.v-repos .links li { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 4px 18px; padding: 10px 0; border-top: 1px solid var(--rule); align-items: baseline; }
+.v-repos .l-l { font-family: var(--mono); font-size: 16px; color: var(--dim); }
+.v-repos .links a, .v-repos .l-v { font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 700; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.v-repos .again { margin-top: 36px; min-height: 52px; padding: 0 22px; border: 1px solid var(--rule); border-radius: 4px; font-weight: 600; transition: border-color 0.2s, color 0.2s; }
+.v-repos .again:hover { border-color: var(--amber); color: var(--amber); }
+
+.v-repos .foot { display: flex; flex-wrap: wrap; gap: 8px 32px; align-items: center; padding: 40px var(--gut) 112px; border-top: 1px solid var(--rule); color: var(--dim); font-size: 17px; }
+.v-repos .foot a { margin-left: auto; display: inline-flex; min-height: 44px; align-items: center; }
+
+/* No WebGL, or reduced motion: the discs laid flat. */
+.v-repos .flat { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 16px; padding: 48px var(--gut) 48px 24px; align-content: center; height: 100%; }
+.v-repos .fd { position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%; background: var(--ink); color: #121212; display: flex; align-items: center; justify-content: center; padding: 12px; overflow: hidden; font-size: 15px; font-weight: 700; line-height: 1.1; text-align: center; overflow-wrap: anywhere; box-shadow: inset 0 0 0 0 var(--amber); transition: box-shadow 0.2s; }
+.v-repos .fd[data-img] { background: #101011; color: var(--ink); align-items: flex-end; padding-bottom: 16%; }
+.v-repos .fd img { position: absolute; inset: 0; width: 100%; height: 50%; object-fit: cover; object-position: top; }
+.v-repos .fd[data-img] span { font-size: 0.86em; }
+.v-repos .fd span { position: relative; }
+.v-repos .fd[aria-pressed='true'] { box-shadow: inset 0 0 0 4px var(--amber); }
+
+/* Below 1000px: nothing pins, the sphere is a square band. */
+@media (max-width: 999px) {
+  .v-repos .pg { display: block; }
+  .v-repos .col { padding: 0 16px; }
+  .v-repos .hero { min-height: 0; padding: 0 0 24px; }
+  .v-repos .band { margin: 0 -16px; }
+  .v-repos .sph-band { width: 100%; height: auto; aspect-ratio: 1; max-height: 78vh; }
+  .v-repos .hero .band { order: -1; }
+  .v-repos .nav { margin: 8px 0 0; padding-bottom: 20px; gap: 0 18px; }
+  .v-repos .rest { min-height: 0; margin-top: 28px; }
+  .v-repos .band-w { margin: 24px -16px 0; }
+  .v-repos .band-w .rest-s { padding: 0 16px; }
+  .v-repos .flat { grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px 16px; height: auto; }
+  .v-repos .fd { font-size: 12px; padding: 6px; }
+  .v-repos .sec { padding-top: 96px; }
+  .v-repos .wk { min-height: 0; padding-top: 56px; }
+}
+@media (max-width: 560px) {
+  .v-repos { font-size: 17px; }
+  .v-repos .now-g, .v-repos .off-g { grid-template-columns: 1fr; }
+  .v-repos .links li { grid-template-columns: 1fr; }
+  .v-repos .honors li { grid-template-columns: 1fr; }
+  .v-repos .h-d { text-align: left; }
+  .v-repos .flat { grid-template-columns: repeat(3, 1fr); }
+  .v-repos .foot { padding: 32px 16px 120px; }
+  .v-repos .foot a { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-repos *, .v-repos *::before { transition: none !important; }
+}

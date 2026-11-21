@@ -1,0 +1,11 @@
+import type { Version } from '@/content';
+const meta: Version = {
+  slug: 'repos',
+  n: 97,
+  name: 'The repos',
+  color: '#101011',
+  ink: '#ecebe6',
+  kind: 'Live data',
+  text: 'A sphere of discs you spin with your hand, one for each of his GitHub repositories and each thing he built, printed with its name, its language and its latest commit; it settles on one disc and the column beside it reads that disc, and scrolling the page turns the sphere to whatever you are reading.',
+};
+export default meta;
