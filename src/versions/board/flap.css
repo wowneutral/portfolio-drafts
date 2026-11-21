@@ -1,0 +1,30 @@
+/* Remixed from React Bits SplitFlapText.css (MIT + Commons Clause): the hinge, the two flaps, their keyframes and the cast shade. Flat tiles: no glare, no bevel, no frame. */
+.v-board .flap { display: inline-flex; gap: var(--tg, 3px); flex: none; font-family: 'Big Shoulders Display Variable', 'Big Shoulders Display', sans-serif; font-weight: 800; line-height: 1; user-select: none; font-variant-numeric: tabular-nums; }
+.v-board .flap__tile { position: relative; flex: none; width: var(--cw, 32px); height: calc(var(--cw, 32px) * 1.62); font-size: calc(var(--cw, 32px) * 1.3); border-radius: calc(var(--cw, 32px) * 0.07); background: var(--tile); perspective: calc(var(--cw, 32px) * 9); isolation: isolate; overflow: hidden; }
+.v-board .flap__tile::before { content: ''; position: absolute; z-index: 8; left: 0; right: 0; top: calc(50% - 0.5px); height: 1px; background: rgba(0, 0, 0, 0.75); pointer-events: none; }
+.v-board .flap__half, .v-board .flap__flap { position: absolute; left: 0; width: 100%; height: 50%; overflow: hidden; background: var(--tile); backface-visibility: hidden; }
+.v-board .flap__half--top, .v-board .flap__flap--front { top: 0; }
+.v-board .flap__half--bottom, .v-board .flap__flap--back { bottom: 0; background: var(--tile-low); }
+.v-board .flap__char { position: absolute; left: 0; width: 100%; height: 200%; display: flex; align-items: center; justify-content: center; color: var(--tile-ink); padding-top: 0.04em; }
+.v-board .flap__char.is-acc { color: var(--acc); }
+.v-board .flap__half--top .flap__char, .v-board .flap__flap--front .flap__char { top: 0; }
+.v-board .flap__half--bottom .flap__char, .v-board .flap__flap--back .flap__char { bottom: 0; }
+.v-board .flap__flap { z-index: 6; will-change: transform, filter; }
+.v-board .flap__flap--front { transform-origin: center bottom; animation: bd-front var(--flip, 170ms) linear both; }
+.v-board .flap__flap--back { transform-origin: center top; transform: rotateX(90deg); animation: bd-back var(--flip, 170ms) linear both; }
+.v-board .flap__shade { position: absolute; z-index: 4; left: 0; width: 100%; height: 50%; pointer-events: none; }
+.v-board .flap__shade--top { top: 0; background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), transparent 85%); animation: bd-shade-top var(--flip, 170ms) linear both; }
+.v-board .flap__shade--bottom { bottom: 0; background: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 90%); animation: bd-shade-bottom var(--flip, 170ms) linear both; }
+@keyframes bd-front {
+  0% { transform: rotateX(0deg); filter: brightness(1.06); animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); }
+  50%, 100% { transform: rotateX(-90deg); filter: brightness(0.5); }
+}
+@keyframes bd-back {
+  0%, 50% { transform: rotateX(90deg); filter: brightness(0.55); animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1); }
+  100% { transform: rotateX(0deg); filter: brightness(1); }
+}
+@keyframes bd-shade-top { 0%, 32% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes bd-shade-bottom { 0% { opacity: 0; animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); } 50%, 100% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .v-board .flap__flap, .v-board .flap__shade { animation: none !important; display: none; }
+}

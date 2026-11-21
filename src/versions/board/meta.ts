@@ -1,0 +1,3 @@
+import type { Version } from '@/content';
+const meta: Version = { slug: 'board', n: 56, name: 'The board', color: '#e8e4da', ink: '#141414', kind: 'Debate native', text: 'A split-flap results board: his two tournaments flip to CHAMPION, and the two he is going to next say UP NEXT. Press a row to turn it over; the commits, the daily note and the contact lines are set on the same tiles.' };
+export default meta;
