@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'seeming', n: 87, name: 'The seeming', color: '#f5f1e8', ink: '#1a1714', kind: 'Idea interface',
+  text: 'One switch, Says or Seems. Flip it and every claim on the page is restated the way a skeptic speaks: not what is, only what appears.',
+};
+export default meta;
