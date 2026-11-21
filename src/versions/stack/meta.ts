@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'stack', n: 47, name: 'The stack', color: '#1c1b19', ink: '#f2efe7', kind: 'Idea interface',
+  text: 'His five chapters (debate, coaching, the nonprofit, research, building) arrive as big paper cards that slide up over each other as you scroll, leaving a stack whose numbered edges take you back; then his daily note, live GitHub and the record on the same dark desk.',
+};
+export default meta;
