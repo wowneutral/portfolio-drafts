@@ -1,0 +1,1 @@
+var e={slug:`study`,n:64,name:`The study`,color:`#5b6b52`,ink:`#1b1a16`,kind:`3D playground`,text:`One apple on an olive table, painted live like a quick oil sketch: wipe the paint with your pointer and the photographed apple shows through, then the paint closes over it again.`};export{e as default};

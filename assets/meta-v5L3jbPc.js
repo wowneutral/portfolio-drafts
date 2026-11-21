@@ -1,0 +1,1 @@
+var e={slug:`tower`,n:93,name:`The tower`,color:`#dddcd7`,ink:`#121212`,kind:`3D playground`,text:`His record stands as a tower of heavy black type on a grey paper sweep, the two championships on top in red: knock a line out and the tower rebuilds itself, while the camera walks round it as you scroll.`};export{e as default};

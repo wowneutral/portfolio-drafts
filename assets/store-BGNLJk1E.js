@@ -1,0 +1,1 @@
+var e={open:-1,t:[0,0,0],work:0,hover:-1,end:!1,fit:null,panel:0,phone:!1,px:0,py:0},t=[`debater`,`researcher`,`builder`],n=[`#e3cfae`,`#e7e4dc`,`#d1d0c8`];export{t as n,e as r,n as t};

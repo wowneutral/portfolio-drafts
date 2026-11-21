@@ -1,0 +1,1 @@
+var e={slug:`pages`,n:52,name:`The pages`,color:`#f4f4f2`,ink:`#1a1a19`,kind:`3D playground`,text:`The fifteen pages of his paper stand fanned up like a flight of stairs: point at a page to slide it out and read it, climb them as you scroll, and at the end they fold down into one flat stack.`};export{e as default};

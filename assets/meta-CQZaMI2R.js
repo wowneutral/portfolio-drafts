@@ -1,0 +1,1 @@
+var e={slug:`outline`,n:92,name:`The outline`,color:`#fbfaf7`,ink:`#141414`,kind:`Debate native`,text:`His life set out the way a debater files a speech doc, in pockets, hats, blocks and tags, with the outline at your left to jump anywhere in one move, or one press to collapse the whole page to its bold tags.`};export{e as default};

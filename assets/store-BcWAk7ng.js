@@ -1,0 +1,1 @@
+var e={apple:`SKEPTICISM`,watch:`DEBATE`,paper:`RESEARCH`,prints:`WORK`,slips:`GITHUB`,tea:`TODAY`,sphere:`NOW`,certs:`RECORD`,empty:`OFF THE RECORD`,name:`ARMAAN SETH`},t={want:`apple`,near:new Set([`apple`]),work:0,cert:0,slips:[],hover:!1,onPrint:null};export{t as n,e as t};

@@ -1,0 +1,1 @@
+var e={slug:`flyer`,n:82,name:`The flyer`,color:`#ebe6d8`,ink:`#121110`,kind:`Idea interface`,text:`A warm wall of his flyers, starting with the philosophy club he is setting up: pull a tear-off tab and it stretches, tears along its holes and drops away, and the link printed on it opens.`};export{e as default};

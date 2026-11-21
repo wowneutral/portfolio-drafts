@@ -1,0 +1,1 @@
+var e={slug:`rebus`,n:90,name:`The rebus`,color:`#efece4`,ink:`#161412`,kind:`3D playground`,text:`His own sentences set huge, with his real things standing in the gaps between the words: the watch where he says timer, Plato where he says terrible frameworks, the apple where he says skepticism. Drag any of them to turn it; tap the apple and it is gone.`};export{e as default};

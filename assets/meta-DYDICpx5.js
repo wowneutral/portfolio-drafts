@@ -1,0 +1,1 @@
+var e={slug:`cite`,n:60,name:`The cite`,color:`#faf8f2`,ink:`#111111`,kind:`Debate native`,text:`His page opens on one line, the way a debater would cite him; a teal frame follows your pointer or keyboard through it, every part of the cite opens that part of his life, and the frame climbs the three ladders of his paper as you scroll.`};export{e as default};

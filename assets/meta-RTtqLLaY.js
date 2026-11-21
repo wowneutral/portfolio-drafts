@@ -1,0 +1,1 @@
+var e={slug:`why`,n:79,name:`The why`,color:`#14213d`,ink:`#f3efe4`,kind:`Idea interface`,text:`Press Why? and his own words answer, one reason under another, until the reasons run out and you have to choose how to stop.`};export{e as t};

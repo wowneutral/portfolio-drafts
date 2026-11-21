@@ -1,0 +1,1 @@
+var e={slug:`hundred`,n:69,name:`The hundred`,color:`#edebe6`,ink:`#141414`,kind:`3D playground`,text:`A slowly turning ring of the hundred drafts he built for his debate team’s site. Point at one to lift it and read its name; his eight projects stand in front of the ring, and at the end the hundred fold into the one that shipped.`};export{e as default};

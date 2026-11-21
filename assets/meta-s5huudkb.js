@@ -1,0 +1,1 @@
+var e={slug:`reply`,n:81,name:`The reply`,color:`#f4f4f1`,ink:`#151515`,kind:`Live data`,text:`A conversation with him already under way: tap a question or type your own, and he answers in bubbles cut tight to his own words, from both championships to every project and his latest note, with the whole thread printed below.`};export{e as default};

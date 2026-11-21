@@ -1,0 +1,1 @@
+import{r as e}from"./rolldown-runtime-XKyaHtl9.js";import{n as t}from"./jsx-runtime-C3cWAN_r.js";var n=e(t());function r(e,t=`pointer`,r=`auto`,i=document.body){n.useEffect(()=>{if(e)return i.style.cursor=t,()=>void(i.style.cursor=r)},[e])}export{r as t};

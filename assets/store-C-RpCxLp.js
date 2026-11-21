@@ -1,0 +1,1 @@
+var e={stop:`open`,swap:0,keep:!1,cx:.28,cy:.5,phone:!1,segs:[],lastPaint:-10,autoAt:-1,force:-1,ready:!1};function t(t,n,r,i){e.segs.length>24&&e.segs.shift(),e.segs.push([t,n,r,i])}export{e as n,t};

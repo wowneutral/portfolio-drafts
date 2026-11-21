@@ -1,0 +1,1 @@
+var e=new URL(`schibsted-grotesk-latin-500-normal-Ba39e-CX.woff`,import.meta.url).href;export{e as t};

@@ -1,0 +1,1 @@
+var e={slug:`edition`,n:89,name:`The edition`,color:`#f4f2eb`,ink:`#121212`,kind:`Live data`,text:`Today’s edition of his own daily broadsheet: the two championships as the lead story, his latest note as the column and the dateline, his commits on the wire, and columns of measured type that reflow line by line around any picture you drag.`};export{e as default};

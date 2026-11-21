@@ -1,0 +1,1 @@
+import{t as e}from"./react-ZnTNku0Q.js";var t={stop:`hero`,stopAt:0,px:0,py:0},n=e(e=>({entries:[],repos:[],note:null,idx:0,work:0,hover:null,push:()=>e(e=>({idx:e.idx+1})),setWork:t=>e({work:t}),setHover:t=>e({hover:t})}));export{n,t};

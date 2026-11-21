@@ -1,0 +1,1 @@
+import{t as e}from"./shaderMaterial-CFiosO_P.js";var t=e({},`void main() { }`,`void main() { gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); discard;  }`);export{t};
