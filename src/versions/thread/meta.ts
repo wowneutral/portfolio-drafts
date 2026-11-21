@@ -1,0 +1,3 @@
+import type { Version } from '@/content';
+const meta: Version = { slug: 'thread', n: 55, name: 'The thread', color: '#f3f1ea', ink: '#121212', kind: 'Live data', text: 'His name is drawn only by his own commit messages, running around the outline of every letter and moving as you scroll; drag across it to pull the thread, and every project and his email are framed by a line of type that slides as you pass.' };
+export default meta;
