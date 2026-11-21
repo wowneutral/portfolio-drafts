@@ -1,0 +1,7 @@
+import type { Version } from '@/content';
+
+const meta: Version = {
+  slug: 'crossword', n: 95, name: 'The crossword', color: '#f6f5f0', ink: '#111111', kind: 'Idea interface',
+  text: 'A real crossword whose answers come from his life, with clues in his own words: type an answer or reveal it, and the page takes you to that part of him; below, every section opens with its word set in the grid’s squares.',
+};
+export default meta;
