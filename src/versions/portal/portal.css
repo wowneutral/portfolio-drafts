@@ -1,0 +1,212 @@
+/* Draft 66: the portal. Pale grey ground, three card faces, ink, one vermilion. */
+html[data-v="portal"] { background: #efeeea; }
+
+.v-portal {
+  --ground: #efeeea; --ink: #151515; --soft: #46453f; --red: #d2401f; --rule: rgba(21, 21, 21, 0.2);
+  --gut: clamp(16px, 3.2vw, 48px);
+  --cw: min(21vw, calc((100svh - 270px) / 1.618));
+  --pw: min(620px, 45vw);
+  position: relative; color: var(--ink); background: var(--ground);
+  font: 400 1.125rem/1.55 'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  font-synthesis: none; overflow-x: clip;
+}
+.v-portal ::selection { background: var(--ink); color: var(--ground); }
+.v-portal :focus-visible { outline: 3px solid var(--red); outline-offset: 4px; border-radius: 4px; }
+.v-portal h1, .v-portal h2, .v-portal h3, .v-portal h4, .v-portal p, .v-portal blockquote { margin: 0; }
+.v-portal ul, .v-portal ol { list-style: none; margin: 0; padding: 0; }
+.v-portal img { display: block; max-width: 100%; height: auto; }
+.v-portal a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+.v-portal a:hover { text-decoration-thickness: 2px; }
+.v-portal button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+
+.v-portal .stage { position: fixed; inset: 0; z-index: 0; }
+.v-portal .stage canvas { display: block; touch-action: pan-y; }
+.v-portal main, .v-portal .foot { position: relative; z-index: 1; }
+
+/* ───── the hall: name, line, three windows ───── */
+.v-portal .hall { min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; padding: clamp(20px, 3vh, 36px) var(--gut) 22px; }
+.v-portal .title { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+.v-portal h1 {
+  font: 400 clamp(52px, 7.2vw, 116px)/0.86 'Anton', Impact, sans-serif; text-transform: uppercase; letter-spacing: -0.005em;
+}
+.v-portal .line { max-width: 30ch; font-size: 1.125rem; line-height: 1.4; color: var(--soft); text-align: right; padding-bottom: 6px; }
+.v-portal .cards { display: flex; justify-content: center; align-items: center; gap: calc(var(--cw) * 0.15); padding: 28px 0; }
+.v-portal .card, .v-portal .ghost { flex: 0 0 auto; width: var(--cw); aspect-ratio: 1 / 1.618; border-radius: calc(var(--cw) * 0.1); }
+.v-portal .card { display: block; text-decoration: none; }
+.v-portal .card:focus-visible { outline: 3px solid var(--red); outline-offset: 10px; border-radius: calc(var(--cw) * 0.1); }
+.v-portal .hint { text-align: center; font-size: 1rem; color: var(--soft); }
+
+/* Between rooms the cards stand again for a moment: an empty stretch the camera steps back into. */
+.v-portal .gap { height: 92svh; display: flex; justify-content: center; align-items: center; gap: calc(var(--cw) * 0.15); overflow: hidden; }
+
+/* ───── the rooms: a solid panel to read, the world beside it ───── */
+.v-portal .room { display: grid; grid-template-columns: var(--pw) 1fr; min-height: 230svh; }
+.v-portal .panel { background: var(--face); padding: 22svh clamp(28px, 3.6vw, 56px) 30svh; display: flex; flex-direction: column; gap: 64px; }
+.v-portal .room .view { min-height: 100%; }
+.v-portal .no { font: 500 1rem/1 'Schibsted Grotesk', sans-serif; color: var(--soft); margin-bottom: -48px; letter-spacing: 0.02em; }
+.v-portal .word { font: 500 clamp(56px, 6vw, 92px)/0.95 'Schibsted Grotesk', sans-serif; letter-spacing: -0.04em; }
+.v-portal .panel h3 { font: 700 1.5rem/1.2 'Schibsted Grotesk', sans-serif; letter-spacing: -0.01em; }
+.v-portal .panel h4 { font: 700 1rem/1.2 'Schibsted Grotesk', sans-serif; margin-bottom: -48px; }
+.v-portal .go { font-weight: 700; display: inline-flex; align-items: center; min-height: 44px; align-self: flex-start; }
+.v-portal .go.off { font-weight: 500; color: var(--soft); }
+
+/* Debater: the two wins at display size. */
+.v-portal .wins { display: flex; flex-direction: column; gap: 48px; }
+.v-portal .wins li { display: flex; flex-direction: column; gap: 6px; border-top: 2px solid var(--ink); padding-top: 18px; }
+.v-portal .champ { font: 400 clamp(64px, 7.4vw, 120px)/0.9 'Anton', Impact, sans-serif; text-transform: uppercase; }
+.v-portal .event { font: 700 1.5rem/1.2 'Schibsted Grotesk', sans-serif; margin-top: 10px; }
+.v-portal .where { font-size: 1.125rem; color: var(--soft); }
+.v-portal .team { display: flex; flex-direction: column; gap: 14px; }
+.v-portal .team h3 { font: 400 clamp(44px, 4.4vw, 68px)/0.95 'Anton', Impact, sans-serif; text-transform: uppercase; }
+.v-portal .role { font-weight: 700; }
+.v-portal .record { color: var(--soft); }
+.v-portal .next ul { margin-top: 14px; border-top: 1px solid var(--rule); }
+.v-portal .next li { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.v-portal .next li span:first-child { font-weight: 700; }
+.v-portal .next li span:last-child { color: var(--soft); text-align: right; }
+
+/* Researcher. */
+.v-portal .paper-title { font: 500 clamp(28px, 2.5vw, 38px)/1.12 'Schibsted Grotesk', sans-serif !important; letter-spacing: -0.02em !important; margin-bottom: -48px; }
+.v-portal .status { color: var(--soft); }
+.v-portal .epi { border-left: 0; padding: 0; }
+.v-portal .epi p { font: 500 1.375rem/1.4 'Schibsted Grotesk', sans-serif; }
+.v-portal .epi cite { display: block; margin-top: 10px; font-style: normal; color: var(--soft); font-size: 1rem; }
+.v-portal .abstract { font-size: 1.25rem; line-height: 1.55; }
+.v-portal .ladders { counter-reset: rung; border-top: 1px solid var(--rule); }
+.v-portal .ladders li { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.v-portal .ladders .who { font-weight: 700; }
+.v-portal .ladders .when { color: var(--soft); text-align: right; }
+.v-portal .ladders .src { grid-column: 1 / -1; color: var(--soft); font-size: 1rem; }
+.v-portal .keys { color: var(--ink); }
+.v-portal .plinks { display: flex; flex-wrap: wrap; gap: 4px 28px; }
+.v-portal .plinks a { display: inline-flex; min-height: 44px; align-items: center; font-weight: 700; }
+.v-portal .wesso { display: flex; flex-direction: column; gap: 10px; border-top: 2px solid var(--ink); padding-top: 20px; }
+
+/* Builder. */
+.v-portal .works { display: flex; flex-direction: column; gap: 88px; }
+.v-portal .work { display: flex; flex-direction: column; gap: 10px; }
+.v-portal .work img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-radius: 6px; box-shadow: 0 18px 40px -22px rgba(21, 21, 21, 0.55); margin-bottom: 8px; background: var(--ground); }
+.v-portal .wrow { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.v-portal .wn { color: var(--soft); font-weight: 500; font-size: 1rem; }
+.v-portal .wrow h3 { font: 400 2.5rem/1 'Anton', Impact, sans-serif !important; text-transform: uppercase; }
+.v-portal .kind { color: var(--soft); margin-left: auto; font-size: 1rem; }
+.v-portal .stack { color: var(--soft); font-size: 1rem; }
+.v-portal .gh { display: flex; flex-direction: column; gap: 14px; border-top: 2px solid var(--ink); padding-top: 20px; }
+.v-portal .gh h3 { font: 400 clamp(40px, 4vw, 60px)/0.95 'Anton', Impact, sans-serif !important; text-transform: uppercase; }
+.v-portal .ghsub { color: var(--soft); font-size: 1rem; margin-top: 8px; }
+.v-portal .commits li a, .v-portal .repos li a { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); text-decoration: none; }
+.v-portal .commits, .v-portal .repos { border-top: 1px solid var(--rule); }
+.v-portal .commits .meta { grid-column: 1 / -1; color: var(--soft); font-size: 1rem; }
+.v-portal .repos .rn { font-weight: 700; }
+.v-portal .repos .rl { color: var(--soft); font-size: 1rem; text-align: right; }
+.v-portal .repos .rd { grid-column: 1 / -1; grid-row: 2; color: var(--soft); font-size: 1rem; }
+.v-portal .commits a:hover .msg, .v-portal .repos a:hover .rn { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+
+/* ───── the plain grey page ───── */
+.v-portal .page { background: var(--ground); padding: 18svh var(--gut) 8svh; display: flex; flex-direction: column; gap: 22svh; }
+.v-portal .page h2 { font: 400 clamp(64px, 9vw, 150px)/0.86 'Anton', Impact, sans-serif; text-transform: uppercase; margin-bottom: 40px; }
+.v-portal .page h3 { font: 700 1.25rem/1.25 'Schibsted Grotesk', sans-serif; margin-bottom: 10px; }
+
+.v-portal .about .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; max-width: 1240px; }
+.v-portal .about .cols p { font-size: 1.375rem; line-height: 1.5; }
+.v-portal .about .aside { margin-top: 36px; max-width: 60ch; color: var(--soft); }
+
+.v-portal .tgrid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 64px; align-items: start; }
+.v-portal .note { background: #e7e4dc; border-radius: 18px; padding: clamp(28px, 4vw, 56px); min-height: 320px; }
+.v-portal .note .date { font: 400 clamp(40px, 4.6vw, 72px)/0.95 'Anton', Impact, sans-serif; text-transform: uppercase; margin-bottom: 28px; color: var(--ink); }
+.v-portal .note p + p { margin-top: 16px; }
+.v-portal .note .lead { font-size: 1.5rem; line-height: 1.45; }
+.v-portal .earlier ol { border-top: 1px solid var(--rule); }
+.v-portal .earlier button { display: grid; grid-template-columns: 5.5em 1fr; gap: 12px; width: 100%; padding: 12px 6px; min-height: 48px; border-bottom: 1px solid var(--rule); }
+.v-portal .earlier button span:first-child { font-weight: 700; }
+.v-portal .earlier .peek { color: var(--soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.v-portal .earlier button { border-radius: 6px; transition: background-color 0.2s ease; }
+.v-portal .earlier button:hover { background: rgba(21, 21, 21, 0.05); }
+.v-portal .earlier button[aria-pressed="true"] { background: #e7e4dc; }
+.v-portal .earlier button[aria-pressed="true"] span:first-child { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.25em; }
+
+.v-portal .status-line { font: 500 clamp(26px, 2.8vw, 42px)/1.2 'Schibsted Grotesk', sans-serif; letter-spacing: -0.02em; max-width: 26ch; margin-bottom: 56px; }
+.v-portal .ngrid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; max-width: 1100px; }
+.v-portal .shelves { margin-top: 20px; border-top: 2px solid var(--ink); }
+.v-portal .shelves li { padding: 12px 0; border-bottom: 1px solid var(--rule); font-weight: 500; }
+
+.v-portal .stats { display: flex; flex-wrap: wrap; gap: 24px 72px; margin-bottom: 56px; }
+.v-portal .stats li { display: flex; flex-direction: column; }
+.v-portal .stats .big { font: 400 clamp(52px, 5vw, 80px)/1.15 'Anton', Impact, sans-serif; margin-bottom: 8px; }
+.v-portal .stats li span:last-child { color: var(--soft); }
+.v-portal .rgrid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 64px; align-items: start; }
+.v-portal .honors { border-top: 2px solid var(--ink); }
+.v-portal .honors li { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.v-portal .honors .d { color: var(--soft); text-align: right; }
+.v-portal .certs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.v-portal .cert { display: flex; flex-direction: column; gap: 4px; text-decoration: none; }
+.v-portal .cert img { border-radius: 4px; box-shadow: 0 20px 40px -24px rgba(21, 21, 21, 0.6); margin-bottom: 10px; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-portal .cert:hover img { transform: translateY(-6px) rotate(-1deg); }
+.v-portal .cs { font-weight: 700; }
+.v-portal .cn { color: var(--soft); font-size: 1rem; }
+
+.v-portal .ogrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; }
+.v-portal .ogrid li { padding: 10px 0; border-bottom: 1px solid var(--rule); font-size: 1.0625rem; }
+.v-portal .ogrid ul { border-top: 2px solid var(--ink); }
+
+/* ───── the close ───── */
+.v-portal .end { padding: 6svh var(--gut) 0; text-align: center; --cw: min(13vw, calc(46svh / 1.618)); }
+.v-portal .row { display: flex; justify-content: center; gap: calc(var(--cw) * 0.15); padding: 4svh 0 7svh; }
+.v-portal .end h2 { font: 400 clamp(56px, 7vw, 112px)/0.9 'Anton', Impact, sans-serif; text-transform: uppercase; margin-bottom: 36px; }
+.v-portal .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 40px; max-width: 1100px; margin: 0 auto; }
+.v-portal .links li { display: flex; flex-direction: column; align-items: center; min-width: 8em; }
+.v-portal .links .ll { color: var(--soft); font-size: 1rem; }
+.v-portal .links a, .v-portal .links .lv { font-weight: 700; font-size: 1.25rem; min-height: 44px; display: inline-flex; align-items: center; }
+.v-portal .foot { padding: 14svh var(--gut) 110px; text-align: center; color: var(--soft); font-size: 1rem; display: flex; flex-direction: column; gap: 6px; }
+
+/* ───── no WebGL, or reduced motion: flat cards holding a still of each world ───── */
+.v-portal.is-flat .gap { display: none; }
+.v-portal .flat { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; border-radius: inherit; background: var(--face); color: var(--ink); }
+.v-portal .flat img { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 72%; object-fit: cover; }
+.v-portal .flat .fw { position: absolute; left: 10%; top: 6%; font: 500 calc(var(--cw) * 0.135)/1 'Schibsted Grotesk', sans-serif; letter-spacing: -0.035em; }
+.v-portal .flat .fn { position: absolute; right: 10%; bottom: 5%; font-size: calc(var(--cw) * 0.075); line-height: 1; font-weight: 500; }
+.v-portal .card:hover .flat .fn, .v-portal .card:focus-visible .flat .fn { color: #b5361a; }
+.v-portal.is-flat .card .flat { transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.v-portal.is-flat .card:hover .flat { transform: translateY(-8px); }
+.v-portal.is-flat .room .view img { position: sticky; top: 0; width: 100%; height: 100svh; object-fit: cover; }
+
+/* ───── phone: one card at a time in a row you swipe, the world above its panel ───── */
+@media (max-width: 820px) {
+  .v-portal { --cw: 62vw; font-size: 1rem; }
+  .v-portal .title { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .v-portal h1 { font-size: clamp(44px, 14.5vw, 84px); }
+  .v-portal .line { text-align: left; font-size: 1.0625rem; }
+  .v-portal .cards { justify-content: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(var(--gut) * -1); padding: 24px calc((100vw - var(--cw)) / 2); scrollbar-width: none; }
+  .v-portal .cards::-webkit-scrollbar { display: none; }
+  .v-portal .card { scroll-snap-align: center; }
+  .v-portal .hint { font-size: 1rem; }
+  .v-portal .hall { padding-bottom: 84px; }
+  .v-portal .gap { height: 80svh; }
+  .v-portal .room { grid-template-columns: 1fr; min-height: 0; }
+  .v-portal .room .view { display: none; }
+  .v-portal .panel { margin-top: 54svh; border-radius: 22px 22px 0 0; padding: 40px 20px 18svh; gap: 52px; }
+  .v-portal .no { margin-bottom: -40px; }
+  .v-portal .panel h4 { margin-bottom: -40px; }
+  .v-portal .paper-title { margin-bottom: -40px; }
+  .v-portal .champ { font-size: 22vw; }
+  .v-portal .wrow h3 { font-size: 2rem !important; }
+  .v-portal .page { gap: 16svh; padding-top: 12svh; }
+  .v-portal .page h2 { font-size: 17vw; margin-bottom: 28px; }
+  .v-portal .about .cols, .v-portal .tgrid, .v-portal .ngrid, .v-portal .rgrid { grid-template-columns: 1fr; gap: 32px; }
+  .v-portal .about .cols p { font-size: 1.1875rem; }
+  .v-portal .note .lead { font-size: 1.25rem; }
+  .v-portal .ogrid { grid-template-columns: 1fr 1fr; gap: 32px 20px; }
+  .v-portal .end { --cw: calc((100vw - 2 * var(--gut)) / 3.4); }
+  .v-portal .end h2 { font-size: 16vw; }
+  .v-portal .links { flex-direction: column; align-items: center; }
+  .v-portal.is-flat .room .view { display: block; order: -1; }
+  .v-portal.is-flat .room .view img { position: static; height: 46svh; }
+  .v-portal.is-flat .panel { margin-top: 0; border-radius: 0; }
+}
+@media (max-width: 520px) {
+  .v-portal .ogrid { grid-template-columns: 1fr; }
+  .v-portal .certs { gap: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-portal *, .v-portal *::before, .v-portal *::after { transition: none !important; }
+}
